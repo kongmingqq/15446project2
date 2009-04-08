@@ -50,11 +50,20 @@ public class InvitationBean {
 		this.active = active;
 	}
 	
+	public String[] getVoteData() {
+		return voteData;
+	}
+	
+	public void setVoteData(String[] voteData) {
+		this.voteData = voteData;
+	}
+	
 	private int sender;
 	private int[] inviteList;
 	private int id;
 	private float timeout;
 	private String[] data;
+	private String[] voteData;
 	private boolean active;
 	
 	public InvitationBean(){};
