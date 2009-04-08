@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView
+    	android:id="@+id/label1"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="Event Name:"/>
+    	
+    <EditText
+        android:id="@+id/eventname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:layout_below="@id/label1"/>
+        
+    <TextView
+    	android:id="@+id/label2"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_below="@id/eventname"
+    	android:text="Event Description:"/>
+    	
+    <EditText
+        android:id="@+id/eventdescription"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:layout_below="@id/label2"/>
+        
+	<ListView
+		android:id="@+id/invitable"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/eventdescription"/>
+		
+    <Button
+    	android:id="@+id/createevent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/invitable"
+        android:text="Create" />
+
+    <Button
+    	android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/invitable"
+        android:layout_toRightOf="@id/createevent"
+        android:text="Cancel" />
+        
+</RelativeLayout>
