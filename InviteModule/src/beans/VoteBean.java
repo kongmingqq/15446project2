@@ -8,16 +8,25 @@ public class VoteBean {
 		this.whichInvite = whichInvite;
 	}
 	
-	public int[] getVoter() {
+	public int[] getVoters() {
 		return voters;
 	}
 
-	public void setVoter(int[] voters) {
+	public void setVoters(int[] voters) {
 		this.voters = voters;
+	}
+	
+	public String[] getData() {
+		return data;
+	}
+	
+	public void setData(String[] data) {
+		this.data = data;
 	}
 	
 	private int whichInvite;
 	private int[] voters;
+	private String[] data;
 	
 	public VoteBean(){};
 }

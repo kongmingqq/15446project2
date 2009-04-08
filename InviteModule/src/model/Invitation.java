@@ -1,7 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Vector;
 
 import beans.InvitationBean;
 import beans.VoteBean;
@@ -25,6 +27,9 @@ public class Invitation {
 	private static int TITLE_INDEX = 0;
 	private static int DESCRIPTION_INDEX = 1;
 	private static int NUM_DATA_ITEMS = 2;
+	
+	private static String categoryString = "Category";
+	private static String voterString = "Voter";
 	
 	private int iid;
 	private int creator;
@@ -63,13 +68,42 @@ public class Invitation {
 	 */
 	public void addVote(VoteBean vb)
 	{
-		int voter = vb.getVoter()[0];
+		addVote(vb, 0);
+	}
+	
+	protected void addVotes(VoteBean vb)
+	{
+		int[] voters = vb.getVoters();
+		
+		for(int i=0; i<voters.length; i++)
+		{
+			addVote(vb, i);
+		}
+	}
+	
+	private void addVote(VoteBean vb, int index)
+	{
+		int voter = vb.getVoters()[index];
+		Vector<String> voteData = new Vector<String>(Arrays.asList(vb.getData()));
+		addVotesFromArray(voter, voteData);
+	}
+	
+	private void addVotesFromArray(int voter, Vector<String> voteData)
+	{
 		ArrayList<String> categories = new ArrayList<String>(options.keySet());
+		int voterIndex = voteData.indexOf(voterString + voter);
 		
 		for(int i=0; i<categories.size(); i++)
 		{
+			int catIndex = voteData.indexOf(categories.get(i), voterIndex);
+			int nextCategory = voteData.indexOf(categoryString, catIndex);
+			options.get(categories.get(i)).removeVotesOf(voter);
 			
-		}
+			for(int j=catIndex+1; j<nextCategory; j++)
+			{
+				options.get(categories.get(i)).addVote(voter, voteData.get(j));
+			}
+		}		
 	}
 	
 	/**
@@ -82,8 +116,32 @@ public class Invitation {
 	public VoteBean getVotingInfo()
 	{
 		VoteBean vb = new VoteBean();
+		vb.setWhichInvite(iid);
+		vb.setVoters(getInvitedUsers());
+		vb.setData(createVotingArray());
 		
 		return vb;
+	}
+	
+	private String[] createVotingArray()
+	{
+		ArrayList<String> voteData = new ArrayList<String>();
+		ArrayList<String> categories = new ArrayList<String>(options.keySet());
+		
+		for(int i=0; i<invitedUsers.size(); i++)
+		{
+			int voterNum = invitedUsers.get(i);
+			voteData.add(voterString + voterNum);
+			for(int j=0; j<categories.size(); j++)
+			{
+				OptionList catOptions = options.get(categories.get(i));
+				voteData.add(categoryString);
+				voteData.add(categories.get(j));
+				voteData.addAll(Arrays.asList(catOptions.getVotesOf(voterNum)));
+			}
+		}
+		
+		return (String[]) voteData.toArray();
 	}
 	
 	/**
@@ -103,8 +161,11 @@ public class Invitation {
 		
 		int[] invited = ib.getInviteList();
 		invite.invitedUsers = new ArrayList<Integer>();
+		Vector<String> voteData = new Vector<String>(Arrays.asList(ib.getVoteData()));
+		
 		for(int i=0; i<invited.length; i++) {
 			invite.invitedUsers.add(invited[i]);
+			invite.addVotesFromArray(invited[i], voteData);
 		}
 		
 		invite.isActive = ib.getActive();
@@ -138,6 +199,7 @@ public class Invitation {
 		
 		ib.setData(data);
 		ib.setActive(isActive);
+		ib.setVoteData(createVotingArray());
 		
 		return ib;
 	}
