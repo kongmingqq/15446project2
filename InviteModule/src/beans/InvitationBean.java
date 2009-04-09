@@ -1,6 +1,6 @@
 package beans;
 
-public class InvitationBean {
+public class InvitationBean{
 
 	public int getSender() {
 		return sender;

@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import beans.VoteBean;
+
 import simulator.ComWrapper;
 
 /**
@@ -43,5 +45,17 @@ public class User {
 	 */
 	public void addInvite(Invitation invite) {
 		myInvites.add(invite);
+	}
+	
+	public void addVote(VoteBean vb, int invId)
+	{
+		for(int i=0; i<myInvites.size(); i++)
+		{
+			if(myInvites.get(i).getId() == invId)
+			{
+				myInvites.get(i).addVotes(vb);
+				return;
+			}
+		}
 	}
 }

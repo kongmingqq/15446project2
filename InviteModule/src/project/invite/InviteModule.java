@@ -1,5 +1,7 @@
 package project.invite;
 
+import beans.InvitationBean;
+import beans.VoteBean;
 import simulator.ComWrapper;
 import model.Invitation;
 import model.User;
@@ -43,20 +45,61 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		{
 			Intent viewActive = new Intent(this, dialogs.ViewInvitesDialog.class);
 			viewActive.putExtra("active", true);
+			
+			Invitation[] myInvites = thisUser.getMyInvites();
+			int item = 0;
+			for(int i=0; i<myInvites.length; i++)
+			{
+				if(myInvites[i].isActive())
+				{
+					InvitationBean ib = myInvites[i].toInvitationBean();
+					viewActive.putExtra("invite" + item, constructInviteBundle(ib));
+					item++;
+				}
+			}
+			
 			startActivity(viewActive);
 		}
 		else if(v.getId() == R.id.vote)
 		{
 			Intent viewVotes = new Intent(this, dialogs.ViewInvitesDialog.class);
 			viewVotes.putExtra("active", false);
+			
+			Invitation[] myInvites = thisUser.getMyInvites();
+			int item = 0;
+			for(int i=0; i<myInvites.length; i++)
+			{
+				if(!myInvites[i].isActive())
+				{
+					InvitationBean ib = myInvites[i].toInvitationBean();
+					viewVotes.putExtra("invite" + item, constructInviteBundle(ib));
+					item++;
+				}
+			}
+			
 			startActivityForResult(viewVotes, VIEW_VOTES);
 		}
 	}
 	
+	private Bundle constructInviteBundle(InvitationBean ib)
+	{
+		Bundle invBundle = new Bundle();
+		
+		invBundle.putBoolean("active", ib.getActive());
+		invBundle.putStringArray("data", ib.getData());
+		invBundle.putInt("id", ib.getId());
+		invBundle.putIntArray("inviteList", ib.getInviteList());
+		invBundle.putInt("sender", ib.getSender());
+		invBundle.putFloat("timeout", ib.getTimeout());
+		invBundle.putStringArray("voteData", ib.getVoteData());
+		
+		return invBundle;
+	}
+	
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CREATE_INVITE) 
+        if(resultCode == RESULT_OK)
         {
-        	if(resultCode == RESULT_OK)
+        	if (requestCode == CREATE_INVITE) 
         	{
         		Bundle eventProps = data.getBundleExtra("details");
         		String eventName = eventProps.getString("name").toString();
@@ -69,14 +112,20 @@ public class InviteModule extends Activity implements View.OnClickListener{
         			newInvite.addInvite(ComWrapper.getComm().lookUp(invited[i]));
         		}
         		
-//        		String[] inviteData = newInvite.toStringArray();
-//        		DataObject sendData = new DataObject(DataObject.INVITATION, inviteData);
-//        		ComWrapper.getComm().send(sendData);
+        		thisUser.addInvite(newInvite);
+        		ComWrapper.getComm().send(0, newInvite.toInvitationBean());
         	}
-        }
-        else if(requestCode == VIEW_VOTES)
-        {
-        	
+	        else if(requestCode == VIEW_VOTES)
+	        {
+	        	Bundle voteProps = data.getBundleExtra("voting");
+	        	VoteBean vb = new VoteBean();
+	        	
+	        	vb.setData(voteProps.getStringArray("data"));
+	        	vb.setVoters(voteProps.getIntArray("voters"));
+	        	vb.setWhichInvite(voteProps.getInt("whichInvite"));
+	        	
+	        	ComWrapper.getComm().send(1, vb);
+	        }
         }
     }
 

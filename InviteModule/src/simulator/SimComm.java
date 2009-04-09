@@ -1,7 +1,5 @@
 package simulator;
 
-import project.invite.DataObject;
-
 public class SimComm extends AbstractComm {
 
 	private int eid;
@@ -14,11 +12,7 @@ public class SimComm extends AbstractComm {
 		return 0;
 	}
 
-	public DataObject query(DataObject obj) {
-		return null;
-	}
-
-	public void send(int identifier, DataObject obj) {
+	public void send(int identifier, Object obj) {
 
 	}
 
