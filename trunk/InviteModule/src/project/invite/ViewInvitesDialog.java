@@ -1,4 +1,4 @@
-package dialogs;
+package project.invite;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,18 @@ import android.widget.TextView;
 
 public class ViewInvitesDialog extends Activity{
 
+	public static String INVITE = "invite";
+	public static String ACTIVE = "active";
+	public static String DATA = "data";
+	public static String IID = "id";
+	public static String INVITE_LIST = "inviteList";
+	public static String SENDER = "sender";
+	public static String TIMEOUT = "timeout";
+	public static String VOTE_DATA = "voteData";
+	
+	public static String VOTING = "voting";
+	public static String VOTER_LIST = "voters";
+	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean isActive = this.getIntent().getBooleanExtra("active", true);
@@ -39,6 +51,8 @@ public class ViewInvitesDialog extends Activity{
         	inviteButtons[i].setText(buttonText);
         	
         	events[i].addView(inviteNames[i]);
+        	events[i].addView(inviteButtons[i]);
+        	eventList.addView(events[i]);
         }
         
         setContentView(eventList);
@@ -48,18 +62,18 @@ public class ViewInvitesDialog extends Activity{
 	{
 		ArrayList<Invitation> inviteArray = new ArrayList<Invitation>();
         int item = 0;
-        while(this.getIntent().hasExtra("invite" + item))
+        while(this.getIntent().hasExtra(INVITE + item))
         {
-        	Bundle inviteData = this.getIntent().getBundleExtra("invite" + item);
+        	Bundle inviteData = this.getIntent().getBundleExtra(INVITE + item);
         	InvitationBean ib = new InvitationBean();
         	
-        	ib.setActive(inviteData.getBoolean("active"));
-        	ib.setData(inviteData.getStringArray("data"));
-        	ib.setId(inviteData.getInt("id"));
-        	ib.setInviteList(inviteData.getIntArray("inviteList"));
-        	ib.setSender(inviteData.getInt("sender"));
-        	ib.setTimeout(inviteData.getFloat("timeout"));
-        	ib.setVoteData(inviteData.getStringArray("voteData"));
+        	ib.setActive(inviteData.getBoolean(ACTIVE));
+        	ib.setData(inviteData.getStringArray(DATA));
+        	ib.setId(inviteData.getInt(IID));
+        	ib.setInviteList(inviteData.getIntArray(INVITE_LIST));
+        	ib.setSender(inviteData.getInt(SENDER));
+        	ib.setTimeout(inviteData.getFloat(TIMEOUT));
+        	ib.setVoteData(inviteData.getStringArray(VOTE_DATA));
         		
         	inviteArray.add(Invitation.fromInvitationBean(ib));
         }
