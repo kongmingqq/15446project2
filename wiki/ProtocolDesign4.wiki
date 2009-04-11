@@ -1,6 +1,6 @@
 #labels Phase-Design
 =Assumptions:=
-1.	Vector format: Vector<Object> sampleVector = new Vector();
+1.Vector format: Vector*<Object*> sampleVector = new Vector();
 Object contains two element: data type(String), data content(Java Bean)
 2.	C: client
 S: server
