@@ -11,5 +11,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="CreationDialog"
+        		  android:enabled="true"
+                  android:label="@string/app_create">
+        </activity>
+        <activity android:name="ViewInvitesDialog"
+        		  android:enabled="true"
+        		  android:label="@string/app_view">
+        </activity>
     </application>
 </manifest> 

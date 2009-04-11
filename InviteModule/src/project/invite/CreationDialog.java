@@ -1,8 +1,7 @@
-package dialogs;
+package project.invite;
 
 import java.util.ArrayList;
 
-import project.invite.R;
 import simulator.ComWrapper;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,12 +10,18 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class CreationDialog extends Activity implements View.OnClickListener{
 
 	private ListView inviteUsers;
+	private LinearLayout options;
+	public static String EVENT_NAME = "name";
+	public static String EVENT_DESCRIPTION = "description";
+	public static String EVENT_DETAILS = "details";
+	public static String INVITED_LIST = "invited";
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,14 +29,19 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		
 		Button create = (Button) findViewById(R.id.createevent);
 		Button cancel = (Button) findViewById(R.id.cancel);
+		Button addOptions = (Button) findViewById(R.id.addoption);
 		
 		create.setOnClickListener(this);
 		cancel.setOnClickListener(this);
+		addOptions.setOnClickListener(this);
 		
 		inviteUsers = (ListView) findViewById(R.id.invitable);
 		ArrayAdapter<String> userList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ComWrapper.getComm().getPhoneBook());
 		inviteUsers.setAdapter(userList);
 		inviteUsers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		
+		options = new LinearLayout(this);
+		options.setOrientation(LinearLayout.VERTICAL);
 	}
 
 	private ArrayList<String> getInvitedUsers()
@@ -56,17 +66,25 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			String eventData = ((EditText)findViewById(R.id.eventdescription)).getText().toString();
 		
 			Bundle eventDetails = new Bundle();
-			eventDetails.putString("name", eventName);
-			eventDetails.putString("description", eventData);
+			eventDetails.putString(EVENT_NAME, eventName);
+			eventDetails.putString(EVENT_DESCRIPTION, eventData);
 		
 			Intent eventProps = new Intent();
-			eventProps.putExtra("details", eventDetails);
-			eventProps.putStringArrayListExtra("invited", getInvitedUsers());
+			eventProps.putExtra(EVENT_DETAILS, eventDetails);
+			eventProps.putStringArrayListExtra(INVITED_LIST, getInvitedUsers());
 			
 			setResult(RESULT_OK, eventProps);
 			finish();
 		}
-		else
+		else if(v.getId() == R.id.addoption)
+		{
+			LinearLayout newOption = new LinearLayout(this);
+			Button addOptionButton = new Button(this);
+			addOptionButton.setText("Add Option");
+			
+			options.addView(newOption);
+		}
+		else if(v.getId() == R.id.cancel)
 		{
 			setResult(RESULT_CANCELED);
 			finish();

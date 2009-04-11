@@ -38,12 +38,12 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	public void onClick(View v) {
 		if(v.getId() == R.id.create)
 		{
-			Intent create = new Intent(this, dialogs.CreationDialog.class);
+			Intent create = new Intent(this, project.invite.CreationDialog.class);
 			startActivityForResult(create, CREATE_INVITE);
 		}
 		else if(v.getId() == R.id.active)
 		{
-			Intent viewActive = new Intent(this, dialogs.ViewInvitesDialog.class);
+			Intent viewActive = new Intent(this, project.invite.ViewInvitesDialog.class);
 			viewActive.putExtra("active", true);
 			
 			Invitation[] myInvites = thisUser.getMyInvites();
@@ -53,7 +53,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 				if(myInvites[i].isActive())
 				{
 					InvitationBean ib = myInvites[i].toInvitationBean();
-					viewActive.putExtra("invite" + item, constructInviteBundle(ib));
+					viewActive.putExtra(ViewInvitesDialog.INVITE + item, constructInviteBundle(ib));
 					item++;
 				}
 			}
@@ -62,7 +62,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		}
 		else if(v.getId() == R.id.vote)
 		{
-			Intent viewVotes = new Intent(this, dialogs.ViewInvitesDialog.class);
+			Intent viewVotes = new Intent(this, project.invite.ViewInvitesDialog.class);
 			viewVotes.putExtra("active", false);
 			
 			Invitation[] myInvites = thisUser.getMyInvites();
@@ -72,7 +72,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 				if(!myInvites[i].isActive())
 				{
 					InvitationBean ib = myInvites[i].toInvitationBean();
-					viewVotes.putExtra("invite" + item, constructInviteBundle(ib));
+					viewVotes.putExtra(ViewInvitesDialog.INVITE + item, constructInviteBundle(ib));
 					item++;
 				}
 			}
@@ -85,13 +85,13 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	{
 		Bundle invBundle = new Bundle();
 		
-		invBundle.putBoolean("active", ib.getActive());
-		invBundle.putStringArray("data", ib.getData());
-		invBundle.putInt("id", ib.getId());
-		invBundle.putIntArray("inviteList", ib.getInviteList());
-		invBundle.putInt("sender", ib.getSender());
-		invBundle.putFloat("timeout", ib.getTimeout());
-		invBundle.putStringArray("voteData", ib.getVoteData());
+		invBundle.putBoolean(ViewInvitesDialog.ACTIVE, ib.getActive());
+		invBundle.putStringArray(ViewInvitesDialog.DATA, ib.getData());
+		invBundle.putInt(ViewInvitesDialog.IID, ib.getId());
+		invBundle.putIntArray(ViewInvitesDialog.INVITE_LIST, ib.getInviteList());
+		invBundle.putInt(ViewInvitesDialog.SENDER, ib.getSender());
+		invBundle.putFloat(ViewInvitesDialog.TIMEOUT, ib.getTimeout());
+		invBundle.putStringArray(ViewInvitesDialog.VOTE_DATA, ib.getVoteData());
 		
 		return invBundle;
 	}
@@ -101,11 +101,11 @@ public class InviteModule extends Activity implements View.OnClickListener{
         {
         	if (requestCode == CREATE_INVITE) 
         	{
-        		Bundle eventProps = data.getBundleExtra("details");
-        		String eventName = eventProps.getString("name").toString();
-        		String eventData = eventProps.getString("description").toString();
+        		Bundle eventProps = data.getBundleExtra(CreationDialog.EVENT_DETAILS);
+        		String eventName = eventProps.getString(CreationDialog.EVENT_NAME).toString();
+        		String eventData = eventProps.getString(CreationDialog.EVENT_DESCRIPTION).toString();
         		
-        		String[] invited = (String[]) data.getStringArrayListExtra("invited").toArray();
+        		String[] invited = (String[]) data.getStringArrayListExtra(CreationDialog.INVITED_LIST).toArray();
         		
         		Invitation newInvite = new Invitation(ComWrapper.getComm().nextEventId(), eventName, eventData, thisUser.getNumber());
         		for(int i=0; i<invited.length; i++) {
@@ -117,12 +117,12 @@ public class InviteModule extends Activity implements View.OnClickListener{
         	}
 	        else if(requestCode == VIEW_VOTES)
 	        {
-	        	Bundle voteProps = data.getBundleExtra("voting");
+	        	Bundle voteProps = data.getBundleExtra(ViewInvitesDialog.VOTING);
 	        	VoteBean vb = new VoteBean();
 	        	
-	        	vb.setData(voteProps.getStringArray("data"));
-	        	vb.setVoters(voteProps.getIntArray("voters"));
-	        	vb.setWhichInvite(voteProps.getInt("whichInvite"));
+	        	vb.setData(voteProps.getStringArray(ViewInvitesDialog.VOTE_DATA));
+	        	vb.setVoters(voteProps.getIntArray(ViewInvitesDialog.VOTER_LIST));
+	        	vb.setWhichInvite(voteProps.getInt(ViewInvitesDialog.INVITE));
 	        	
 	        	ComWrapper.getComm().send(1, vb);
 	        }

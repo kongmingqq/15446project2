@@ -30,25 +30,44 @@
         android:background="@android:drawable/editbox_background"
         android:layout_below="@id/label2"/>
         
+    <TextView
+    	android:id="@+id/invitelabel"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_below="@id/eventdescription"
+    	android:text="Select people to invite:"/>
+        
 	<ListView
 		android:id="@+id/invitable"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/eventdescription"/>
+		android:layout_below="@id/invitelabel"/>
+		
+	<Button
+		android:id="@+id/addoption"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/invitable"
+		android:text="Add Category"/>
+		
+	<LinearLayout
+		android:id="@+id/alloptions"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/addoption"/>
 		
     <Button
     	android:id="@+id/createevent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/invitable"
+        android:layout_below="@id/alloptions"
         android:text="Create" />
 
     <Button
     	android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/invitable"
+        android:layout_below="@id/alloptions"
         android:layout_toRightOf="@id/createevent"
         android:text="Cancel" />
-        
 </RelativeLayout>
