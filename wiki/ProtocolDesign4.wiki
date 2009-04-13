@@ -9,7 +9,7 @@ Object contains two element: data type(String), data content(Java Bean)
 Clients get to the initialization status. (e.g ID) from the server. Once the clients receive INIT message from the server, it proceeds to the voting stage.
  * C -> S: INIT, InvitationBean
  * S -> C: INIT, InvitationBean with ID
-Server sends SMS to the client according to the phone number.
+Server sends SMS to the client according to the phone number, client side application is called when it received the message.
 ==Stage2 Voting stage==
 After this stage finished, server start listening to the map message sent from the client. And when the client received the SMS, it starts communicating with server.
  * C -> S: VOTE, VoteBean
