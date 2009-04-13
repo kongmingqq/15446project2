@@ -1,28 +1,30 @@
 #labels Phase-Design
 =Assumptions:=
-1.Vector format: Vector*<Object*> sampleVector = new Vector();
+ * Vector format: Vector*<Object*> sampleVector = new Vector();
 Object contains two element: data type(String), data content(Java Bean)
-2.	C: client
-S: server
+ * C: client / S: server
+----
 =Normal Case: (the type could be only one character)=
-==Stage1:== Initialization: clients get to the initialization status. (e.g ID) from the server. Once the clients receive INIT message from the server, it proceeds to the voting stage.
-1.	C -> S: INIT, InvitationBean
-2.	S -> C: INIT, InvitationBean with ID
+==Stage1 Initialization==
+Clients get to the initialization status. (e.g ID) from the server. Once the clients receive INIT message from the server, it proceeds to the voting stage.
+ * C -> S: INIT, InvitationBean
+ * S -> C: INIT, InvitationBean with ID
 Server sends SMS to the client according to the phone number.
-==Stage2:== Voting stage: After this stage finished, server start listening to the map message sent from the client. And when the client received the SMS, it starts communicating with server.
-3.	C -> S: VOTE, VoteBean
+==Stage2 Voting stage==
+After this stage finished, server start listening to the map message sent from the client. And when the client received the SMS, it starts communicating with server.
+ * C -> S: VOTE, VoteBean
 Server waits for 1. All the node finished voting. OR 2. Time out to start the voting stage.
-4.	S -> C: VOTE, VoteBean
+ * S -> C: VOTE, VoteBean
 Server calculates the voting result and send the result back the all the clients.
-Stage3: Tracing stage:
-5.	C -> S: TRACE, TraceBean
+==Stage3 Tracing stage==
+ * C -> S: TRACE, TraceBean
 TraceBean could be replaced with a simple array or string since the data flow may be larger
-6.	S -> C (only when requested): TRACE, TraceBean
-Stage4: Terminate (Client requests)
-7.	C -> S: TERM, TermBean
-8.	S -> C: TERM
-Stage5: Terminate (Server requests)
-9.	S -> C: TERM, TermBean
-Additional Explanations:
-1.	In each stage, server only deals the message with the specified data type. For example, in the Voting stage, server will only accept the vector with VOTE in the first element, and drops all other messages.
-2.	
+ * S -> C (only when requested): TRACE, TraceBean
+==Stage4 Terminate (Client requests)==
+ * C -> S: TERM, TermBean
+ * S -> C: TERM
+==Stage5 Terminate (Server requests)==
+ * S -> C: TERM, TermBean
+----
+=Additional Explanations:=
+ # In each stage, server only deals the message with the specified data type. For example, in the Voting stage, server will only accept the vector with VOTE in the first element, and drops all other messages.
