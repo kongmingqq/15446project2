@@ -1,4 +1,6 @@
+#summary An overall description of the protocol design
 #labels Phase-Design
+
 =Assumptions:=
  * Vector format: Vector*<Object*> sampleVector = new Vector();
 Object contains two element: data type(String), data content(Java Bean)
