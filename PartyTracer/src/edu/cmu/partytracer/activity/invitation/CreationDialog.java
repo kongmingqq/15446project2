@@ -82,14 +82,21 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		{
 			LinearLayout newOption = new LinearLayout(this);
 			
-			LinearLayout catLabel = new LinearLayout(this);
-			catLabel.addView(new TextView(this));
-			((TextView)catLabel.getChildAt(0)).setText("Category Name");
+			LinearLayout catDetails = new LinearLayout(this);
+			catDetails.setOrientation(LinearLayout.VERTICAL);
+			TextView catLabel = new TextView(this);
+			catLabel.setText("Category Name");
+			EditText catName = new EditText(this);
+			catDetails.addView(catLabel);
+			catDetails.addView(catName);
+			
+			newOption.addView(catDetails);
 			
 			Button addOptionButton = new Button(this);
-			addOptionButton.setText("Add Option");
+			addOptionButton.setText("Add Another Option");
 			newOption.addView(addOptionButton);
 			
+			addOptionButton.setOnClickListener(new AddCategoryListener(newOption, this));
 			options.addView(newOption);
 			options.requestLayout();
 		}
