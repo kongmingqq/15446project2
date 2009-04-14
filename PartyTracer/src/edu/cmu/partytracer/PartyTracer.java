@@ -15,7 +15,9 @@ public class PartyTracer extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         Button moduleTrace = (Button) findViewById(R.id.module_trace);
+        Button moduleInvite = (Button) findViewById(R.id.module_invite);
         
+        moduleInvite.setOnClickListener(this);
         moduleTrace.setOnClickListener(this);
     }
 
