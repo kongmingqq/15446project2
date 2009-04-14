@@ -5,4 +5,5 @@
     <string name="invite_prompt">Select People To Invite</string>
     <string name="app_create">Create Invite</string>
     <string name="app_view">View Invites</string>
+    <string name="app_invite">Invitation Module</string>
 </resources>
