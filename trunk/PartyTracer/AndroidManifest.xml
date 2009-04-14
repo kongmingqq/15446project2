@@ -15,6 +15,15 @@
         <activity android:name=".activity.trace.Map"
         		  android:enabled="true"
         		  android:label="@string/module_trace" />
+		<activity android:name=".activity.invitation.InviteModule"
+				  android:enabled="true"
+                  android:label="@string/app_invite" />
+        <activity android:name=".activity.invitation.CreationDialog"
+        		  android:enabled="true"
+                  android:label="@string/app_create" />
+        <activity android:name=".activity.invitation.ViewInvitesDialog"
+        		  android:enabled="true"
+        		  android:label="@string/app_view" />
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest> 
