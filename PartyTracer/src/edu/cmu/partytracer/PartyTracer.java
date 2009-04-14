@@ -1,6 +1,7 @@
 package edu.cmu.partytracer;
 
 import edu.cmu.partytracer.activity.trace.*;
+import edu.cmu.partytracer.activity.invitation.*;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,11 +19,15 @@ public class PartyTracer extends Activity implements View.OnClickListener{
         moduleTrace.setOnClickListener(this);
     }
 
-	@Override
 	public void onClick(View v) {
 		if(v.getId() == R.id.module_trace)
 		{
 			Intent i = new Intent(this, Map.class);
+			startActivity(i);
+		}
+		else if(v.getId() == R.id.module_invite)
+		{
+			Intent i = new Intent(this, InviteModule.class);
 			startActivity(i);
 		}
 		
