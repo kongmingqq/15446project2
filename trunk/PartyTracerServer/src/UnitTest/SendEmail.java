@@ -1,6 +1,6 @@
 package UnitTest;
 
-import DataProcessor.SendMailUsingAuthentication;
+import dataProcessor.SendMailUsingAuthentication;
 
 public class SendEmail {
 	private static final String emailMsgTxt = "SMS is reachable to your phone";

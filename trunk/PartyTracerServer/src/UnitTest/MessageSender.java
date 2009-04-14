@@ -4,7 +4,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Vector;
 
-import DataBeans.InvitationBean;
+import dataBeans.InvitationBean;
+
 
 public class MessageSender {
 	/**

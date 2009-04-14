@@ -2,7 +2,8 @@ package DataProcessor;
 
 import java.util.Vector;
 
-import DataBeans.InvitationBean;
+import dataBeans.InvitationBean;
+
 
 
 public class DataDispatcher {
