@@ -1,4 +1,5 @@
-import DataProcessor.DataDispatcher;
+package serverThread;
+import dataProcessor.DataDispatcher;
 
 
 public class PartyTracer {
