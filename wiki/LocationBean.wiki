@@ -5,4 +5,4 @@
 The bean client sends to server during TRACE.
 
   * long time, each LocationBean has a timestamp such that it can be ordered
-  * Location location, the location data structure
+  * [Location] location, the location data structure
