@@ -1,0 +1,12 @@
+#summary Description of the LocationBean class
+
+= Introduction =
+
+The bean client sends to server during TRACE.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * long time, each LocationBean has a timestamp such that it can be ordered
+  * Location location, the location data structure
