@@ -17,13 +17,13 @@
         		  android:label="@string/module_trace" />
 		<activity android:name=".activity.invitation.InviteModule"
 				  android:enabled="true"
-                  android:label="@string/app_invite" />
+                  android:label="@string/module_invite" />
         <activity android:name=".activity.invitation.CreationDialog"
         		  android:enabled="true"
-                  android:label="@string/app_create" />
+                  android:label="@string/module_create" />
         <activity android:name=".activity.invitation.ViewInvitesDialog"
         		  android:enabled="true"
-        		  android:label="@string/app_view" />
+        		  android:label="@string/module_view" />
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest> 
