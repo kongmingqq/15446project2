@@ -1,6 +1,6 @@
 #summary Description of the Location class
 
-= Location =
+= [Location] =
 
 The data structure of location information
 
