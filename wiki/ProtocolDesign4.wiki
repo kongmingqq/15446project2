@@ -24,7 +24,7 @@ Each client sends its location info to the server.
  * S -> C (only when requested): TRACE:AGGLOC, AggLocationBean
 Server sends back aggregated location info to client.
 Notice that the beans in two ways are different, but the type name is the same.
-* BeanVector class implements this protocol.
+* BeanVector and Protocol class implements this protocol.
 ==Stage4 Terminate (Client requests)==
  * C -> S: TERM, TermBean
  * S -> C: TERM
