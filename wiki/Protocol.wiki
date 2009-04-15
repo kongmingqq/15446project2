@@ -1,0 +1,9 @@
+#summary Description of the Protocol class
+
+= [Protocol] =
+
+This class defines the shared information for the protocol. The class is a final static and all variables are public.
+
+  * *TYPE_xxxBean* - Type name of different beans.
+  * *EPOCH* - unified time interval in millisecond for both client and server sending TRACE packet
+  * *QUEUE_LENGTH* - the number of queue elements for the server to cache received LocationBean packets
