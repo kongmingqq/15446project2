@@ -1,5 +1,6 @@
 package edu.cmu.partytracer.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * @author km
  *
  */
-public class AggLocationBean extends Bean {
+public class AggLocationBean extends Bean implements Serializable {
 	private static final long serialVersionUID = 8229402698712080479L;
 	private List<Location> locations;
 	
