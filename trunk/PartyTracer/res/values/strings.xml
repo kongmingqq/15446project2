@@ -3,7 +3,7 @@
     <string name="hello">Hello World, PartyTracer</string>
     <string name="app_name">Party Tracer</string>
     <string name="module_trace">Map Location</string>
-    <string name="app_invite">Invitation Module</string>
-    <string name="app_create">Create Invite</string>
-    <string name="app_view">View Invitations</string>
+    <string name="module_invite">Invitation Module</string>
+    <string name="module_create">Create Invite</string>
+    <string name="module_view">View Invitations</string>
 </resources>
