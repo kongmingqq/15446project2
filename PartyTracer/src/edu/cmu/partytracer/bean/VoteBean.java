@@ -1,6 +1,10 @@
 package edu.cmu.partytracer.bean;
 
-public class VoteBean {
+import java.io.Serializable;
+
+public class VoteBean implements Serializable{
+	private static final long serialVersionUID = -1946436334567959551L;
+
 	public int getWhichInvite() {
 		return whichInvite;
 	}
