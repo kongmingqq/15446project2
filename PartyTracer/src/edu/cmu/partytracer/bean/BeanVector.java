@@ -7,7 +7,7 @@ import java.util.Vector;
  *
  */
 public final class BeanVector {
-	Vector<Object> v;
+	private Vector<Object> v;
 	
 	@SuppressWarnings("unchecked")
 	public BeanVector(Object o) throws BeanVectorException {
@@ -18,25 +18,25 @@ public final class BeanVector {
 		}
 	}
 	
-	public Object wrapBean(Bean b) {
-		Vector<Object> v = new Vector<Object>();
-		if(b instanceof LocationBean) { //only for the application
-			v.add("TRACE");
-		} else if(b instanceof AggLocationBean) { //only for the server
-			v.add("TRACE");
-		} else {
-			return null;
-		}
-		v.add(b);
-		return v;
-	}
-	
 	public String getType() {
 		return (String)(v.get(0));
 	}
 	
 	public Bean getBean() {
 		return (Bean)(v.get(1));
+	}
+	
+	public static Object wrapBean(Bean b) {
+		Vector<Object> vo = new Vector<Object>();
+		if(b instanceof LocationBean) { //only for the application
+			vo.add(Protocol.TYPE_LocationBean);
+		} else if(b instanceof AggLocationBean) { //only for the server
+			vo.add(Protocol.TYPE_AggLocationBean);
+		} else {
+			return null;
+		}
+		vo.add(b);
+		return vo;
 	}
 
 	private class BeanVectorException extends Exception {
