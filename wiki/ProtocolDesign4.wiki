@@ -19,11 +19,12 @@ Server waits for 1. All the node finished voting. OR 2. Time out to start the vo
  * S -> C: VOTE, VoteBean
 Server calculates the voting result and send the result back the all the clients.
 ==Stage3 Tracing stage==
- * C -> S: TRACE, LocationBean
+ * C -> S: TRACE:LOC, LocationBean
 Each client sends its location info to the server.
- * S -> C (only when requested): TRACE, AggLocationBean
+ * S -> C (only when requested): TRACE:AGGLOC, AggLocationBean
 Server sends back aggregated location info to client.
 Notice that the beans in two ways are different, but the type name is the same.
+* BeanVector class implements this protocol.
 ==Stage4 Terminate (Client requests)==
  * C -> S: TERM, TermBean
  * S -> C: TERM
