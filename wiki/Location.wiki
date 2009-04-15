@@ -1,0 +1,9 @@
+#summary Description of the Location class
+
+= Location =
+
+The data structure of location information
+
+  * String id: client id, phone number
+  * int latitude
+  * int longitude
