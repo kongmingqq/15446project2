@@ -93,7 +93,7 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			newOption.addView(catDetails);
 			
 			Button addOptionButton = new Button(this);
-			addOptionButton.setText("Add Another Option");
+			addOptionButton.setText("Add Option");
 			newOption.addView(addOptionButton);
 			
 			addOptionButton.setOnClickListener(new AddCategoryListener(newOption, this));
