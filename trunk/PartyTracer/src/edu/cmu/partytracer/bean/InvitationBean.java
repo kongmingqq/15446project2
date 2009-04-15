@@ -1,6 +1,9 @@
 package edu.cmu.partytracer.bean;
 
-public class InvitationBean{
+import java.io.Serializable;
+
+public class InvitationBean implements Serializable{
+	private static final long serialVersionUID = -9192761827464932529L;
 
 	public int getSender() {
 		return sender;
