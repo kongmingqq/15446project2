@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class Location implements Serializable {
 	private static final long serialVersionUID = 1920709317746244839L;
-	private String id;
+	private String id; //sender id, i.e. phone number
 	private int latitude;
 	private int longitude;
 	public Location(String id, int lat, int lng) {
