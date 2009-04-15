@@ -19,9 +19,11 @@ Server waits for 1. All the node finished voting. OR 2. Time out to start the vo
  * S -> C: VOTE, VoteBean
 Server calculates the voting result and send the result back the all the clients.
 ==Stage3 Tracing stage==
- * C -> S: TRACE, TraceBean
-TraceBean could be replaced with a simple array or string since the data flow may be larger
- * S -> C (only when requested): TRACE, TraceBean
+ * C -> S: TRACE, LocationBean
+Each client sends its location info to the server.
+ * S -> C (only when requested): TRACE, AggLocationBean
+Server sends back aggregated location info to client.
+Notice that the beans in two ways are different, but the type name is the same.
 ==Stage4 Terminate (Client requests)==
  * C -> S: TERM, TermBean
  * S -> C: TERM
