@@ -108,7 +108,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		
         		String[] invited = (String[]) data.getStringArrayListExtra(CreationDialog.INVITED_LIST).toArray();
         		
-        		Invitation newInvite = new Invitation(ComWrapper.getComm().nextEventId(), eventName, eventData, thisUser.getNumber());
+        		Invitation newInvite = new Invitation(0, eventName, eventData, thisUser.getNumber());
         		for(int i=0; i<invited.length; i++) {
         			newInvite.addInvite(ComWrapper.getComm().lookUp(invited[i]));
         		}
