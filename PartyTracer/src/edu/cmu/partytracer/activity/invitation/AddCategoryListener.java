@@ -14,6 +14,7 @@ public class AddCategoryListener implements View.OnClickListener{
 	public AddCategoryListener(LinearLayout newOption, Context c)
 	{
 		optionDetails = newOption;
+		myContext = c;
 	}
 	
 	public void onClick(View v) {
