@@ -74,8 +74,8 @@ public class Map extends MapActivity {
         destinationOverlay.addOverlay(destination);
         mapOverlays.add(destinationOverlay);
         
-        GeoPoint myPoint = new GeoPoint(40444634,-79942851);
-        OverlayItem me = new OverlayItem(myPoint, "xxx", "xxx");
+        GeoPoint myPoint = new GeoPoint(40444314,-79942961);
+        OverlayItem me = new OverlayItem(myPoint, "Destination", "Party info here");
         itemizedOverlay = new MapItemizedOverlay(marker_unknown);
         itemizedOverlay.addOverlay(me);
         itemizedOverlay.setMarker(0, info_waiting);
