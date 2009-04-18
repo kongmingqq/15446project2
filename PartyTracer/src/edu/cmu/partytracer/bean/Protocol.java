@@ -9,5 +9,5 @@ package edu.cmu.partytracer.bean;
 public final class Protocol {
 	public static final String TYPE_LocationBean = "TRACE:LOC";
 	public static final String TYPE_AggLocationBean = "TRACE:AGGLOC";
-	public static final int EPOCH = 15000;
+	public static final int EPOCH = 5000;
 }

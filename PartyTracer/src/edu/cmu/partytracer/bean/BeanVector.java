@@ -39,7 +39,7 @@ public final class BeanVector {
 		return vo;
 	}
 
-	private class BeanVectorException extends Exception {
+	public class BeanVectorException extends Exception {
 		/**
 		 * 
 		 */
