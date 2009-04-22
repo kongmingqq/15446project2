@@ -24,12 +24,13 @@ import edu.cmu.partytracer.bean.VoteBean;
  */
 public class Invitation {
 
-	private static int TITLE_INDEX = 0;
-	private static int DESCRIPTION_INDEX = 1;
-	private static int NUM_DATA_ITEMS = 2;
+	public static int TITLE_INDEX = 0;
+	public static int DESCRIPTION_INDEX = 1;
+	public static int NUM_DATA_ITEMS = 2;
 	
-	private static String categoryString = "Category";
-	private static String voterString = "Voter";
+	public static String categoryString = "Category";
+	public static String voterString = "Voter";
+	public static String endString = "End";
 	
 	private int iid;
 	private int creator;
@@ -96,10 +97,10 @@ public class Invitation {
 		for(int i=0; i<categories.size(); i++)
 		{
 			int catIndex = voteData.indexOf(categories.get(i), voterIndex);
-			int nextCategory = voteData.indexOf(categoryString, catIndex);
+			int catEnd = Math.min(voteData.indexOf(categoryString, catIndex), voteData.indexOf(endString, catIndex));
 			options.get(categories.get(i)).removeVotesOf(voter);
 			
-			for(int j=catIndex+1; j<nextCategory; j++)
+			for(int j=catIndex+1; j<catEnd; j++)
 			{
 				options.get(categories.get(i)).addVote(voter, voteData.get(j));
 			}
@@ -139,6 +140,7 @@ public class Invitation {
 				voteData.add(categories.get(j));
 				voteData.addAll(Arrays.asList(catOptions.getVotesOf(voterNum)));
 			}
+			voteData.add(endString);
 		}
 		
 		return (String[]) voteData.toArray();
@@ -166,6 +168,21 @@ public class Invitation {
 		for(int i=0; i<invited.length; i++) {
 			invite.invitedUsers.add(invited[i]);
 			invite.addVotesFromArray(invited[i], voteData);
+		}
+		
+		String[] catList = ib.getOptions();
+		int i=1;
+		String catName;
+		while(i < catList.length);
+		{
+			catName = catList[i];
+			i++;
+			
+			while(!(catList[i].equals(categoryString) || catList[i].equals(endString)))
+			{
+				invite.addOption(catName, catList[i]);
+				i++;
+			}
 		}
 		
 		invite.isActive = ib.getActive();
@@ -201,6 +218,21 @@ public class Invitation {
 		ib.setActive(isActive);
 		ib.setVoteData(createVotingArray());
 		
+		ArrayList<String> categories = new ArrayList<String>();
+		ArrayList<String> headers = new ArrayList<String>(options.keySet());
+		for(int i=0; i<headers.size(); i++)
+		{
+			categories.add(categoryString);
+			categories.add(headers.get(i));
+			String[] optList = options.get(headers.get(i)).getAllOptions();
+			for(int j=0; j<optList.length; j++)
+			{
+				categories.add(optList[j]);
+			}
+		}
+		
+		ib.setOptions((String[]) categories.toArray());
+		
 		return ib;
 	}
 	
@@ -223,8 +255,7 @@ public class Invitation {
 	 * returns a hash code that is consistent with the contract specified in the java Object class: two events that are equal will always
 	 * return the same hash code
 	 */
-	public int hashCode()
-	{
+	public int hashCode() {
 		return iid;
 	}
 	

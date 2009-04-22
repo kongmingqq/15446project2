@@ -1,9 +1,12 @@
 package edu.cmu.partytracer.activity.invitation;
 
+import java.util.ArrayList;
+
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.VoteBean;
 import edu.cmu.partytracer.network.ComWrapper;
 import edu.cmu.partytracer.R;
+import edu.cmu.partytracer.model.invitation.BundleParser;
 import edu.cmu.partytracer.model.invitation.Invitation;
 import edu.cmu.partytracer.model.invitation.User;
 import android.app.Activity;
@@ -40,6 +43,8 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		if(v.getId() == R.id.create)
 		{
 			Intent create = new Intent(this, edu.cmu.partytracer.activity.invitation.CreationDialog.class);
+			create.putExtra("number", thisUser.getNumber());
+			
 			startActivityForResult(create, CREATE_INVITE);
 		}
 		else if(v.getId() == R.id.active)
@@ -102,19 +107,25 @@ public class InviteModule extends Activity implements View.OnClickListener{
         {
         	if (requestCode == CREATE_INVITE) 
         	{
+        		InvitationBean ib = new InvitationBean();
         		Bundle eventProps = data.getBundleExtra(CreationDialog.EVENT_DETAILS);
-        		String eventName = eventProps.getString(CreationDialog.EVENT_NAME).toString();
-        		String eventData = eventProps.getString(CreationDialog.EVENT_DESCRIPTION).toString();
+        		String[] voteData = new String[0];
+        		String[] eventData = BundleParser.parseEventData(eventProps);
         		
-        		String[] invited = (String[]) data.getStringArrayListExtra(CreationDialog.INVITED_LIST).toArray();
+        		ib.setSender(thisUser.getNumber());
+        		ib.setVoteData(voteData);
+        		ib.setData(eventData);
+        		ib.setId(0);
         		
-        		Invitation newInvite = new Invitation(0, eventName, eventData, thisUser.getNumber());
-        		for(int i=0; i<invited.length; i++) {
-        			newInvite.addInvite(ComWrapper.getComm().lookUp(invited[i]));
-        		}
+        		ArrayList<String> invited = data.getStringArrayListExtra(CreationDialog.INVITED_LIST);
+        		int[] invitedNumbers = BundleParser.parseInvitedNumbers(invited);
+        		ib.setInviteList(invitedNumbers);
         		
-        		thisUser.addInvite(newInvite);
-        		ComWrapper.getComm().send(0, newInvite.toInvitationBean());
+        		ArrayList<String> voteOptions = data.getStringArrayListExtra(Invitation.voterString);
+        		ib.setOptions((String[]) voteOptions.toArray());
+        		
+        		thisUser.addInvite(Invitation.fromInvitationBean(ib));
+        		ComWrapper.getComm().send(0, ib);
         	}
 	        else if(requestCode == VIEW_VOTES)
 	        {

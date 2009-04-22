@@ -61,6 +61,14 @@ public class InvitationBean implements Serializable{
 		this.voteData = voteData;
 	}
 	
+	public String[] getOptions() {
+		return options;
+	}
+	
+	public void setOptions(String[] options) {
+		this.options = options;
+	}
+	
 	private int sender;
 	private int[] inviteList;
 	private int id;
@@ -68,6 +76,7 @@ public class InvitationBean implements Serializable{
 	private String[] data;
 	private String[] voteData;
 	private boolean active;
+	private String[] options;
 	
 	public InvitationBean(){};
 }
