@@ -49,7 +49,7 @@
 			android:layout_below="@id/invitelabel"/>
 			
 		<Button
-			android:id="@+id/addoption"
+			android:id="@+id/addcategory"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_below="@id/invitable"
@@ -60,7 +60,7 @@
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:orientation="vertical"
-			android:layout_below="@id/addoption"/>
+			android:layout_below="@id/addcategory"/>
 			
 	    <Button
 	    	android:id="@+id/createevent"
