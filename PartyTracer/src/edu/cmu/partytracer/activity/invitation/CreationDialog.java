@@ -1,14 +1,17 @@
 package edu.cmu.partytracer.activity.invitation;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import edu.cmu.partytracer.R;
 
+import edu.cmu.partytracer.model.invitation.Invitation;
 import edu.cmu.partytracer.network.ComWrapper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,22 +24,27 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 
 	private ListView inviteUsers;
 	private LinearLayout options;
+	private Vector<String> votingData;
+	
 	public static String EVENT_NAME = "name";
 	public static String EVENT_DESCRIPTION = "description";
 	public static String EVENT_DETAILS = "details";
 	public static String INVITED_LIST = "invited";
+	public static String VOTING_DETAILS = "voting";
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		setContentView(R.layout.creation);
 		
+		votingData = new Vector<String>();
+		
 		Button create = (Button) findViewById(R.id.createevent);
 		Button cancel = (Button) findViewById(R.id.cancel);
-		Button addOptions = (Button) findViewById(R.id.addoption);
+		Button addCategory = (Button) findViewById(R.id.addcategory);
 		
 		create.setOnClickListener(this);
 		cancel.setOnClickListener(this);
-		addOptions.setOnClickListener(this);
+		addCategory.setOnClickListener(this);
 		
 		inviteUsers = (ListView) findViewById(R.id.invitable);
 		ArrayAdapter<String> userList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ComWrapper.getComm().getPhoneBook());
@@ -75,10 +83,16 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			eventProps.putExtra(EVENT_DETAILS, eventDetails);
 			eventProps.putStringArrayListExtra(INVITED_LIST, getInvitedUsers());
 			
+			for(int i=0; i<options.getChildCount(); i++)
+			{
+				
+			}
+			eventProps.putStringArrayListExtra(Invitation.voterString, new ArrayList<String>(votingData));
+			
 			setResult(RESULT_OK, eventProps);
 			finish();
 		}
-		else if(v.getId() == R.id.addoption)
+		else if(v.getId() == R.id.addcategory)
 		{
 			LinearLayout newOption = new LinearLayout(this);
 			
@@ -90,13 +104,13 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			catDetails.addView(catLabel);
 			catDetails.addView(catName);
 			
-			newOption.addView(catDetails);
-			
 			Button addOptionButton = new Button(this);
 			addOptionButton.setText("Add Option");
+			addOptionButton.setOnClickListener(this);
+			
+			newOption.addView(catDetails);
 			newOption.addView(addOptionButton);
 			
-			addOptionButton.setOnClickListener(new AddCategoryListener(newOption, this));
 			options.addView(newOption);
 			options.requestLayout();
 		}
@@ -104,6 +118,20 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		{
 			setResult(RESULT_CANCELED);
 			finish();
+		}
+		else
+		{
+			LinearLayout optName = new LinearLayout(this);
+			optName.setOrientation(LinearLayout.VERTICAL);
+			TextView catLabel = new TextView(this);
+			catLabel.setText("Option Name");
+			EditText catName = new EditText(this);
+			
+			optName.addView(catLabel);
+			optName.addView(catName);
+			
+			((ViewGroup) v.getParent()).addView(optName);
+			v.getParent().requestLayout();
 		}
 	}
 }

@@ -12,11 +12,19 @@ public final class R {
     }
     public static final class drawable {
         public static final int icon=0x7f020000;
-        public static final int marker=0x7f020001;
+        public static final int info_waiting=0x7f020001;
+        public static final int marker=0x7f020002;
+        public static final int marker_destination=0x7f020003;
+        public static final int marker_me=0x7f020004;
+        public static final int marker_unknown=0x7f020005;
+        public static final int menu_settings=0x7f020006;
+        public static final int menu_stop=0x7f020007;
+        public static final int menu_viewall=0x7f020008;
+        public static final int menu_zoom=0x7f020009;
     }
     public static final class id {
         public static final int active=0x7f05000b;
-        public static final int addoption=0x7f050006;
+        public static final int addcategory=0x7f050006;
         public static final int alloptions=0x7f050007;
         public static final int cancel=0x7f050009;
         public static final int create=0x7f05000a;
