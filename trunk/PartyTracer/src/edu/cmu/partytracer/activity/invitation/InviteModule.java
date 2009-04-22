@@ -27,8 +27,8 @@ public class InviteModule extends Activity implements View.OnClickListener{
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-    	ComWrapper.getComm().initNumber(tm.getDeviceId());
+    	//TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    	//ComWrapper.getComm().initNumber(tm.getDeviceId());
     	
     	thisUser = new User();
     	    	
@@ -122,7 +122,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		ib.setId(0);
         		
         		ArrayList<String> invited = data.getStringArrayListExtra(CreationDialog.INVITED_LIST);
-        		String[] invitedNumbers = BundleParser.parseInvitedNumbers(invited);
+        		String[] invitedNumbers = (String[]) invited.toArray();
         		ib.setInviteList(invitedNumbers);
         		
         		ArrayList<String> voteOptions = data.getStringArrayListExtra(Invitation.voterString);

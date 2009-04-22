@@ -34,25 +34,12 @@
 	        android:layout_height="wrap_content"
 	        android:background="@android:drawable/editbox_background"
 	        android:layout_below="@id/label2"/>
-	        
-	    <TextView
-	    	android:id="@+id/invitelabel"
-	    	android:layout_width="fill_parent"
-	    	android:layout_height="wrap_content"
-	    	android:layout_below="@id/eventdescription"
-	    	android:text="Select people to invite:"/>
-	        
-		<ListView
-			android:id="@+id/invitable"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_below="@id/invitelabel"/>
 			
 		<Button
 			android:id="@+id/addcategory"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_below="@id/invitable"
+			android:layout_below="@id/eventdescription"
 			android:text="Add Category"/>
 			
 		<LinearLayout

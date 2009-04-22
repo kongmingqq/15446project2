@@ -6,23 +6,18 @@ import java.util.Vector;
 import edu.cmu.partytracer.R;
 
 import edu.cmu.partytracer.model.invitation.Invitation;
-import edu.cmu.partytracer.network.ComWrapper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class CreationDialog extends Activity implements View.OnClickListener{
 
-	private ListView inviteUsers;
 	private LinearLayout options;
 	private Vector<String> votingData;
 	
@@ -46,25 +41,12 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		cancel.setOnClickListener(this);
 		addCategory.setOnClickListener(this);
 		
-		inviteUsers = (ListView) findViewById(R.id.invitable);
-		ArrayAdapter<String> userList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ComWrapper.getComm().getPhoneBook());
-		inviteUsers.setAdapter(userList);
-		inviteUsers.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		
 		options = (LinearLayout) findViewById(R.id.alloptions);
 	}
 
 	private ArrayList<String> getInvitedUsers()
 	{
-		ListAdapter adapt = inviteUsers.getAdapter();
-		int numItems = adapt.getCount();
 		ArrayList<String> invited = new ArrayList<String>();
-		
-		for(int i=0; i<numItems; i++)
-		{
-			if(inviteUsers.isItemChecked(i))
-				invited.add(adapt.getItem(i).toString());
-		}
 		
 		return invited;
 	}

@@ -38,16 +38,6 @@ public class Communicator extends AbstractComm{
 			return false;
 		}
 	}
-	public String[] getPhoneBook() {
-		String[] userList = new String[0];
-		
-		return userList;
-	}
-	
-	public String lookUp(String name)
-	{
-		return "";
-	}
 
 	@Override
 	public void initNumber(String myNumber) {

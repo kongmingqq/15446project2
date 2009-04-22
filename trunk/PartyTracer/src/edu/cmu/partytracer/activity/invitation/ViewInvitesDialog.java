@@ -70,8 +70,8 @@ public class ViewInvitesDialog extends Activity{
         	ib.setActive(inviteData.getBoolean(ACTIVE));
         	ib.setData(inviteData.getStringArray(DATA));
         	ib.setId(inviteData.getInt(IID));
-        	ib.setInviteList(inviteData.getIntArray(INVITE_LIST));
-        	ib.setSender(inviteData.getInt(SENDER));
+        	ib.setInviteList(inviteData.getStringArray(INVITE_LIST));
+        	ib.setSender(inviteData.getString(SENDER));
         	ib.setTimeout(inviteData.getFloat(TIMEOUT));
         	ib.setVoteData(inviteData.getStringArray(VOTE_DATA));
         		
