@@ -310,5 +310,12 @@ public class Invitation {
 	 */
 	public void activate() {
 		isActive = true;
+		
+		ArrayList<String> headers = new ArrayList<String>(options.keySet());
+		
+		for(int i=0; i<headers.size(); i++)
+		{
+			options.get(i).finalize();
+		}
 	}
 }
