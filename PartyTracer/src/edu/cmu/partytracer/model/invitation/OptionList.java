@@ -16,14 +16,14 @@ import java.util.HashMap;
  * argument.
  */
 public class OptionList {
-	private HashMap<String, ArrayList<Integer>> options;
+	private HashMap<String, ArrayList<String>> options;
 	
 	/**
 	 * construct a new, empty OptionList
 	 */
 	public OptionList()
 	{
-		options = new HashMap<String, ArrayList<Integer>>();
+		options = new HashMap<String, ArrayList<String>>();
 	}
 	
 	/**
@@ -33,9 +33,9 @@ public class OptionList {
 	 * @param user - phone number of the user who is voting
 	 * @param vote - the option that the user has voted for
 	 */
-	protected void addVote(int user, String vote)
+	protected void addVote(String user, String vote)
 	{
-		ArrayList<Integer> voters = options.get(vote);
+		ArrayList<String> voters = options.get(vote);
 		if(!voters.contains(user))
 		{
 			voters.add(user);
@@ -52,7 +52,7 @@ public class OptionList {
 	{
 		if(!options.containsKey(opt))
 		{
-			options.put(opt, new ArrayList<Integer>());
+			options.put(opt, new ArrayList<String>());
 		}
 	}
 	
@@ -73,14 +73,14 @@ public class OptionList {
 	 * @param option - the option to get the voters for
 	 * @return - a list of users who have voted for the option
 	 */
-	public int[] getVotersFor(String option)
+	public String[] getVotersFor(String option)
 	{
-		ArrayList<Integer> voteNumbers = options.get(option);
-		int[] voters = new int[voteNumbers.size()];
+		ArrayList<String> voteNumbers = options.get(option);
+		String[] voters = new String[voteNumbers.size()];
 		
 		for(int i=0; i<voters.length; i++)
 		{
-			voters[i] = voteNumbers.get(i).intValue();
+			voters[i] = voteNumbers.get(i);
 		}
 		
 		return voters;
@@ -89,17 +89,17 @@ public class OptionList {
 	/**
 	 * Retrieve a list of all the options that a particular user has voted for.
 	 * 
-	 * @param user - phone number of the user whose votes to retrieve
+	 * @param voterId - phone number of the user whose votes to retrieve
 	 * @return - an array containing the names of each of the options that the user has selected
 	 */
-	public String[] getVotesOf(int user) 
+	public String[] getVotesOf(String voterId) 
 	{
 		ArrayList<String> votes = new ArrayList<String>();
 		String[] optionList = (String[]) options.keySet().toArray();
 		
 		for(int i=0; i<optionList.length; i++)
 		{
-			if(options.get(optionList[i]).contains(user))
+			if(options.get(optionList[i]).contains(voterId))
 			{
 				votes.add(optionList[i]);
 			}
@@ -113,7 +113,7 @@ public class OptionList {
 	 * 
 	 * @param user - phone number of the user to remove
 	 */
-	protected void removeVotesOf(int user) 
+	protected void removeVotesOf(String user) 
 	{
 		String[] optionList = (String[]) options.keySet().toArray();
 		
@@ -128,7 +128,7 @@ public class OptionList {
 	 * @param user - phone number of the user who is voting
 	 * @param votes - a list of all the options that the user has voted for
 	 */
-	protected void addVotes(Integer user, String[] votes) 
+	protected void addVotes(String user, String[] votes) 
 	{
 		for(int i=0; i<votes.length; i++) {
 			addVote(user, votes[i]);

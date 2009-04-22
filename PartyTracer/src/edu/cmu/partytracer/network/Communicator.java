@@ -1,36 +1,40 @@
 package edu.cmu.partytracer.network;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Vector;
 
+import edu.cmu.partytracer.ptsocket.PTSocket;
+import edu.cmu.partytracer.ptsocket.UDPSocket;
+
 public class Communicator extends AbstractComm{
-	private Socket appSocket;
+	private PTSocket appSocket;
+	private String myNumber;
 	
 	public Communicator() {
-		DataThread serverListener = new DataThread(appSocket);
-		serverListener.start();
+		try 
+		{
+			appSocket = new UDPSocket("localhost", 15446);
+			DataThread serverListener = new DataThread(appSocket);
+			serverListener.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public int getMyNumber() {
-		return 0;
+	public String getMyNumber() {
+		return myNumber;
 	}
 
 	public boolean send(int identifier, Object obj) {
-		try {
-			OutputStream rawOut = appSocket.getOutputStream();
-			ObjectOutputStream objStream = new ObjectOutputStream(rawOut);
-			
+
+		try 
+		{			
 			Vector<Object> data = new Vector<Object>();
 			data.add(identifier);
 			data.add(obj);
-			
-			objStream.writeObject(data);
+		
+			appSocket.sendObject(data);
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return false;
 		}
 	}
@@ -40,8 +44,13 @@ public class Communicator extends AbstractComm{
 		return userList;
 	}
 	
-	public int lookUp(String name)
+	public String lookUp(String name)
 	{
-		return 0;
+		return "";
+	}
+
+	@Override
+	public void initNumber(String myNumber) {
+		this.myNumber = myNumber;
 	}
 }

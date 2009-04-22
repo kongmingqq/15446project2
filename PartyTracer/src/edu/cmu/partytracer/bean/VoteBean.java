@@ -12,11 +12,11 @@ public class VoteBean implements Serializable{
 		this.whichInvite = whichInvite;
 	}
 	
-	public int[] getVoters() {
+	public String[] getVoters() {
 		return voters;
 	}
 
-	public void setVoters(int[] voters) {
+	public void setVoters(String[] voters) {
 		this.voters = voters;
 	}
 	
@@ -29,7 +29,7 @@ public class VoteBean implements Serializable{
 	}
 	
 	private int whichInvite;
-	private int[] voters;
+	private String[] voters;
 	private String[] data;
 	
 	public VoteBean(){};
