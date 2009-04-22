@@ -8,9 +8,9 @@ import edu.cmu.partytracer.activity.invitation.CreationDialog;
 import edu.cmu.partytracer.network.ComWrapper;
 
 public class BundleParser {
-	public static int[] parseInvitedNumbers(ArrayList<String> invited)
+	public static String[] parseInvitedNumbers(ArrayList<String> invited)
 	{
-		int[] invitedNumbers = new int[invited.size()];
+		String[] invitedNumbers = new String[invited.size()];
 		
 		for(int i=0; i<invitedNumbers.length; i++)
 		{

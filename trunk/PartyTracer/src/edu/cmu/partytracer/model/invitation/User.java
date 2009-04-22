@@ -15,7 +15,7 @@ import edu.cmu.partytracer.network.ComWrapper;
  * of this user as well as a list of this user's invitations
  */
 public class User {
-	private int myNumber;
+	private String myNumber;
 	private ArrayList<Invitation> myInvites;
 	
 	public User()
@@ -35,7 +35,7 @@ public class User {
 	 * 
 	 * @return this user's phone number
 	 */
-	public int getNumber() {
+	public String getNumber() {
 		return myNumber;
 	}
 	

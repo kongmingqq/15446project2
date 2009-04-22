@@ -85,8 +85,22 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			
 			for(int i=0; i<options.getChildCount(); i++)
 			{
+				LinearLayout newOption = (LinearLayout) options.getChildAt(i);
+				LinearLayout catDetails = (LinearLayout) newOption.getChildAt(0);
+				EditText catName = (EditText) catDetails.getChildAt(1);
+
+				votingData.add(Invitation.categoryString);
+				votingData.add(catName.getText().toString());
 				
+				for(int j=1; j<newOption.getChildCount() - 1; j++)
+				{
+					LinearLayout optName = (LinearLayout) newOption.getChildAt(j);
+					EditText optValue = (EditText) optName.getChildAt(1);
+					votingData.add(optValue.getText().toString());
+				}
 			}
+			
+			votingData.add(Invitation.endString);
 			eventProps.putStringArrayListExtra(Invitation.voterString, new ArrayList<String>(votingData));
 			
 			setResult(RESULT_OK, eventProps);
@@ -129,8 +143,9 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			
 			optName.addView(catLabel);
 			optName.addView(catName);
+			int index = ((LinearLayout) v.getParent()).getChildCount() - 1;
 			
-			((ViewGroup) v.getParent()).addView(optName);
+			((ViewGroup) v.getParent()).addView(optName, index);
 			v.getParent().requestLayout();
 		}
 	}

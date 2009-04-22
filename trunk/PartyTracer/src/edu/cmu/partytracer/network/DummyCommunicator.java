@@ -2,8 +2,8 @@ package edu.cmu.partytracer.network;
 
 public class DummyCommunicator extends AbstractComm{
 
-	public int getMyNumber() {
-		return 0;
+	public String getMyNumber() {
+		return "";
 	}
 
 	public String[] getPhoneBook() {
@@ -16,14 +16,17 @@ public class DummyCommunicator extends AbstractComm{
 		return sampleUsers;
 	}
 
-	public int lookUp(String name) {
-		if(name == "User A") return 0;
-		else if(name == "User B") return 1;
-		else return 2;
+	public String lookUp(String name) {
+		if(name == "User A") return "0";
+		else if(name == "User B") return "1";
+		else return "2";
 	}
 
 	public boolean send(int identifier, Object obj) {
 		return true;
+	}
+
+	public void initNumber(String myNumber) {
 	}
 
 }

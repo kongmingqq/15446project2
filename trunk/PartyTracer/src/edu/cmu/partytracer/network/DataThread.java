@@ -1,19 +1,17 @@
 package edu.cmu.partytracer.network;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.OptionalDataException;
-import java.io.StreamCorruptedException;
-import java.net.Socket;
 import java.util.Vector;
+
+import edu.cmu.partytracer.ptsocket.PTSocket;
 
 public class DataThread extends Thread {
 
-	private Socket inputSocket;
+	private PTSocket inputSocket;
 	private boolean crashed;
 	
-	public DataThread(Socket s)
+	public DataThread(PTSocket s)
 	{
+		inputSocket = s;
 		crashed = false;
 	}
 	
@@ -21,28 +19,20 @@ public class DataThread extends Thread {
 		return crashed;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void run()
 	{
 		crashed = false;
-		
+					
 		try {
-			ObjectInputStream objStream = new ObjectInputStream(inputSocket.getInputStream());
 			Vector<Object> dataIn = new Vector<Object>();
 			
-			while((dataIn = (Vector<Object>) objStream.readObject()) != null)
+			while((dataIn = (Vector<Object>) inputSocket.receiveObject()) != null)
 			{
 				MessageHandler.forward(dataIn);
 			}
-		} catch (StreamCorruptedException e) {
+		} catch (Exception e) {
 			crashed = true;
-			return;
-		} catch (IOException e) {
-			crashed = true;
-			return;
-		}
-		catch (ClassNotFoundException e) {
-			crashed = true;
-			return;
 		}
 		
 	}

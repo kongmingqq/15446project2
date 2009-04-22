@@ -33,12 +33,12 @@ public class Invitation {
 	public static String endString = "End";
 	
 	private int iid;
-	private int creator;
+	private String creator;
 	private boolean isActive;
 	private String title;
 	private String description;
 	private HashMap<String, OptionList> options;
-	private ArrayList<Integer> invitedUsers;
+	private ArrayList<String> invitedUsers;
 	
 	/**
 	 * Creates a new invitation
@@ -47,7 +47,7 @@ public class Invitation {
 	 * @param text a short description of the invitation
 	 * @param creatingUser the phone number of the user who created this invitation
 	 */
-	public Invitation(int id, String name, String text, int creatingUser)
+	public Invitation(int id, String name, String text, String creatingUser)
 	{
 		iid = id;
 		creator = creatingUser;
@@ -55,7 +55,7 @@ public class Invitation {
 		description = text;
 		isActive = false;
 		options = new HashMap<String, OptionList>();
-		invitedUsers = new ArrayList<Integer>();
+		invitedUsers = new ArrayList<String>();
 		
 		invitedUsers.add(creator);
 	}
@@ -74,7 +74,7 @@ public class Invitation {
 	
 	protected void addVotes(VoteBean vb)
 	{
-		int[] voters = vb.getVoters();
+		String[] voters = vb.getVoters();
 		
 		for(int i=0; i<voters.length; i++)
 		{
@@ -84,12 +84,12 @@ public class Invitation {
 	
 	private void addVote(VoteBean vb, int index)
 	{
-		int voter = vb.getVoters()[index];
+		String voter = vb.getVoters()[index];
 		Vector<String> voteData = new Vector<String>(Arrays.asList(vb.getData()));
 		addVotesFromArray(voter, voteData);
 	}
 	
-	private void addVotesFromArray(int voter, Vector<String> voteData)
+	private void addVotesFromArray(String voter, Vector<String> voteData)
 	{
 		ArrayList<String> categories = new ArrayList<String>(options.keySet());
 		int voterIndex = voteData.indexOf(voterString + voter);
@@ -131,14 +131,14 @@ public class Invitation {
 		
 		for(int i=0; i<invitedUsers.size(); i++)
 		{
-			int voterNum = invitedUsers.get(i);
-			voteData.add(voterString + voterNum);
+			String voterId = invitedUsers.get(i);
+			voteData.add(voterString + voterId);
 			for(int j=0; j<categories.size(); j++)
 			{
 				OptionList catOptions = options.get(categories.get(i));
 				voteData.add(categoryString);
 				voteData.add(categories.get(j));
-				voteData.addAll(Arrays.asList(catOptions.getVotesOf(voterNum)));
+				voteData.addAll(Arrays.asList(catOptions.getVotesOf(voterId)));
 			}
 			voteData.add(endString);
 		}
@@ -156,13 +156,13 @@ public class Invitation {
 	public static Invitation fromInvitationBean(InvitationBean ib)
 	{
 		int id = ib.getId();
-		int creator = ib.getSender();
+		String creator = ib.getSender();
 		String[] details = ib.getData();
 		
 		Invitation invite = new Invitation(id, details[TITLE_INDEX], details[DESCRIPTION_INDEX], creator);
 		
-		int[] invited = ib.getInviteList();
-		invite.invitedUsers = new ArrayList<Integer>();
+		String[] invited = ib.getInviteList();
+		invite.invitedUsers = new ArrayList<String>();
 		Vector<String> voteData = new Vector<String>(Arrays.asList(ib.getVoteData()));
 		
 		for(int i=0; i<invited.length; i++) {
@@ -203,7 +203,7 @@ public class Invitation {
 		ib.setId(iid);
 		ib.setSender(creator);
 
-		int[] invited = new int[invitedUsers.size()];
+		String[] invited = new String[invitedUsers.size()];
 		for(int i=0; i<invited.length; i++) {
 			invited[i] = invitedUsers.get(i);
 		}
@@ -274,15 +274,8 @@ public class Invitation {
 	public HashMap<String, OptionList> getOptions() {
 		return options;
 	}
-	public int[] getInvitedUsers() {
-		int[] invites = new int[invitedUsers.size()];
-		Integer[] invObjs = (Integer[]) invitedUsers.toArray();
-		
-		for(int i=0; i<invObjs.length; i++)
-		{
-			invites[i] = invObjs[i].intValue();
-		}
-		
+	public String[] getInvitedUsers() {
+		String[] invites = (String[]) invitedUsers.toArray();
 		return invites;
 	}
 	
@@ -306,7 +299,7 @@ public class Invitation {
 	 * 
 	 * @param newUser - the phone number of the user to invite
 	 */
-	public void addInvite(int newUser) {
+	public void addInvite(String newUser) {
 		if(!invitedUsers.contains(newUser))
 		{
 			invitedUsers.add(newUser);

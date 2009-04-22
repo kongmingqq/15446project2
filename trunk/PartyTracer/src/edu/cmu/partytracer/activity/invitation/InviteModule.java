@@ -10,8 +10,10 @@ import edu.cmu.partytracer.model.invitation.BundleParser;
 import edu.cmu.partytracer.model.invitation.Invitation;
 import edu.cmu.partytracer.model.invitation.User;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 
@@ -25,6 +27,9 @@ public class InviteModule extends Activity implements View.OnClickListener{
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    	ComWrapper.getComm().initNumber(tm.getDeviceId());
+    	
     	thisUser = new User();
     	    	
         super.onCreate(savedInstanceState);
@@ -43,7 +48,6 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		if(v.getId() == R.id.create)
 		{
 			Intent create = new Intent(this, edu.cmu.partytracer.activity.invitation.CreationDialog.class);
-			create.putExtra("number", thisUser.getNumber());
 			
 			startActivityForResult(create, CREATE_INVITE);
 		}
@@ -94,8 +98,8 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		invBundle.putBoolean(ViewInvitesDialog.ACTIVE, ib.getActive());
 		invBundle.putStringArray(ViewInvitesDialog.DATA, ib.getData());
 		invBundle.putInt(ViewInvitesDialog.IID, ib.getId());
-		invBundle.putIntArray(ViewInvitesDialog.INVITE_LIST, ib.getInviteList());
-		invBundle.putInt(ViewInvitesDialog.SENDER, ib.getSender());
+		invBundle.putStringArray(ViewInvitesDialog.INVITE_LIST, ib.getInviteList());
+		invBundle.putString(ViewInvitesDialog.SENDER, ib.getSender());
 		invBundle.putFloat(ViewInvitesDialog.TIMEOUT, ib.getTimeout());
 		invBundle.putStringArray(ViewInvitesDialog.VOTE_DATA, ib.getVoteData());
 		
@@ -118,7 +122,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		ib.setId(0);
         		
         		ArrayList<String> invited = data.getStringArrayListExtra(CreationDialog.INVITED_LIST);
-        		int[] invitedNumbers = BundleParser.parseInvitedNumbers(invited);
+        		String[] invitedNumbers = BundleParser.parseInvitedNumbers(invited);
         		ib.setInviteList(invitedNumbers);
         		
         		ArrayList<String> voteOptions = data.getStringArrayListExtra(Invitation.voterString);
@@ -133,7 +137,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	        	VoteBean vb = new VoteBean();
 	        	
 	        	vb.setData(voteProps.getStringArray(ViewInvitesDialog.VOTE_DATA));
-	        	vb.setVoters(voteProps.getIntArray(ViewInvitesDialog.VOTER_LIST));
+	        	vb.setVoters(voteProps.getStringArray(ViewInvitesDialog.VOTER_LIST));
 	        	vb.setWhichInvite(voteProps.getInt(ViewInvitesDialog.INVITE));
 	        	
 	        	ComWrapper.getComm().send(1, vb);

@@ -3,21 +3,22 @@ package edu.cmu.partytracer.bean;
 import java.io.Serializable;
 
 public class InvitationBean implements Serializable{
-	private static final long serialVersionUID = -9192761827464932529L;
 
-	public int getSender() {
+	private static final long serialVersionUID = -5417217001662355679L;
+
+	public String getSender() {
 		return sender;
 	}
 
-	public void setSender(int sender) {
+	public void setSender(String sender) {
 		this.sender = sender;
 	}
 
-	public int[] getInviteList() {
+	public String[] getInviteList() {
 		return inviteList;
 	}
 
-	public void setInviteList(int[] inviteList) {
+	public void setInviteList(String[] inviteList) {
 		this.inviteList = inviteList;
 	}
 
@@ -69,8 +70,8 @@ public class InvitationBean implements Serializable{
 		this.options = options;
 	}
 	
-	private int sender;
-	private int[] inviteList;
+	private String sender;
+	private String[] inviteList;
 	private int id;
 	private float timeout;
 	private String[] data;
