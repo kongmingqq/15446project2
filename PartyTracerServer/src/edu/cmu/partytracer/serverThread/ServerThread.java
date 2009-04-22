@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.Vector;
 
-import edu.cmu.partytracer.dataProcessor.DataDispatcher;
+import edu.cmu.partytracer.dataProcessor.DataParser;
 
 
 
@@ -48,7 +48,7 @@ public class ServerThread extends Thread {
 				if (clientRequest != null) {
 					reader = new ObjectInputStream(clientRequest.getInputStream());
 					Vector<Object> input = (Vector<Object>)reader.readObject();
-					DataDispatcher.storeMsg(input);
+					DataParser.parseMsg(input);
 					try {
 						Thread.sleep(300);
 					} catch (InterruptedException e) {

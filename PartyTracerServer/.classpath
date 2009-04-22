@@ -8,5 +8,7 @@
 	<classpathentry kind="lib" path="pop3.jar"/>
 	<classpathentry kind="lib" path="smtp.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+	<classpathentry kind="lib" path="mysql-connector-java-5.1.5-bin.jar"/>
+	<classpathentry kind="lib" path="commons-pool.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

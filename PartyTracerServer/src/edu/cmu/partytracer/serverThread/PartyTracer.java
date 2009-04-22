@@ -1,5 +1,5 @@
 package edu.cmu.partytracer.serverThread;
-import edu.cmu.partytracer.dataProcessor.DataDispatcher;
+import edu.cmu.partytracer.model.database.Model;
 
 
 public class PartyTracer {
@@ -12,6 +12,8 @@ public class PartyTracer {
 			//set up port to listen
 			serverThread = new ServerThread(serverPortNumber);
 			System.out.println("Thread Start!");
+			Model model = new Model("com.mysql.jdbc.Driver", "jdbc:mysql:///partytracer");
+			model.getCreateTableDAO().createTables();
 			serverThread.start();
 	}
 
