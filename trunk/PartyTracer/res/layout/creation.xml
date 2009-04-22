@@ -36,10 +36,17 @@
 	        android:layout_below="@id/label2"/>
 			
 		<Button
-			android:id="@+id/addcategory"
+			android:id="@+id/addinvitedusers"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_below="@id/eventdescription"
+			android:text="Invite Users"/>		
+			
+		<Button
+			android:id="@+id/addcategory"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/addinvitedusers"
 			android:text="Add Category"/>
 			
 		<LinearLayout

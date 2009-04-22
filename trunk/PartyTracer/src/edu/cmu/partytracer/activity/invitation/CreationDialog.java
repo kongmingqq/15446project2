@@ -3,9 +3,6 @@ package edu.cmu.partytracer.activity.invitation;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import edu.cmu.partytracer.R;
-
-import edu.cmu.partytracer.model.invitation.Invitation;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,11 +12,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import edu.cmu.partytracer.R;
+import edu.cmu.partytracer.model.invitation.Invitation;
 
 public class CreationDialog extends Activity implements View.OnClickListener{
 
 	private LinearLayout options;
 	private Vector<String> votingData;
+	private ArrayList<String> invitedUsers;
 	
 	public static String EVENT_NAME = "name";
 	public static String EVENT_DESCRIPTION = "description";
@@ -36,19 +36,40 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		Button create = (Button) findViewById(R.id.createevent);
 		Button cancel = (Button) findViewById(R.id.cancel);
 		Button addCategory = (Button) findViewById(R.id.addcategory);
+		Button addInvites = (Button) findViewById(R.id.addinvitedusers);
 		
 		create.setOnClickListener(this);
 		cancel.setOnClickListener(this);
 		addCategory.setOnClickListener(this);
+		addInvites.setOnClickListener(this);
 		
 		options = (LinearLayout) findViewById(R.id.alloptions);
 	}
-
-	private ArrayList<String> getInvitedUsers()
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		invitedUsers = data.getStringArrayListExtra(ChooseInvitesDialog.INVITED_DATA);
+	}
+	
+	private void addVotingData()
 	{
-		ArrayList<String> invited = new ArrayList<String>();
+		for(int i=0; i<options.getChildCount(); i++)
+		{
+			LinearLayout newOption = (LinearLayout) options.getChildAt(i);
+			LinearLayout catDetails = (LinearLayout) newOption.getChildAt(0);
+			EditText catName = (EditText) catDetails.getChildAt(1);
+
+			votingData.add(Invitation.categoryString);
+			votingData.add(catName.getText().toString());
+			
+			for(int j=1; j<newOption.getChildCount() - 1; j++)
+			{
+				LinearLayout optName = (LinearLayout) newOption.getChildAt(j);
+				EditText optValue = (EditText) optName.getChildAt(1);
+				votingData.add(optValue.getText().toString());
+			}
+		}
 		
-		return invited;
+		votingData.add(Invitation.endString);
 	}
 	
 	public void onClick(View v) {
@@ -63,26 +84,9 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		
 			Intent eventProps = new Intent();
 			eventProps.putExtra(EVENT_DETAILS, eventDetails);
-			eventProps.putStringArrayListExtra(INVITED_LIST, getInvitedUsers());
+			eventProps.putStringArrayListExtra(INVITED_LIST, invitedUsers);
 			
-			for(int i=0; i<options.getChildCount(); i++)
-			{
-				LinearLayout newOption = (LinearLayout) options.getChildAt(i);
-				LinearLayout catDetails = (LinearLayout) newOption.getChildAt(0);
-				EditText catName = (EditText) catDetails.getChildAt(1);
-
-				votingData.add(Invitation.categoryString);
-				votingData.add(catName.getText().toString());
-				
-				for(int j=1; j<newOption.getChildCount() - 1; j++)
-				{
-					LinearLayout optName = (LinearLayout) newOption.getChildAt(j);
-					EditText optValue = (EditText) optName.getChildAt(1);
-					votingData.add(optValue.getText().toString());
-				}
-			}
-			
-			votingData.add(Invitation.endString);
+			addVotingData();
 			eventProps.putStringArrayListExtra(Invitation.voterString, new ArrayList<String>(votingData));
 			
 			setResult(RESULT_OK, eventProps);
@@ -114,6 +118,11 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		{
 			setResult(RESULT_CANCELED);
 			finish();
+		}
+		else if(v.getId() == R.id.addinvitedusers)
+		{
+			Intent selectInvited = new Intent(this, edu.cmu.partytracer.activity.invitation.ChooseInvitesDialog.class);
+			startActivityForResult(selectInvited, 0);
 		}
 		else
 		{

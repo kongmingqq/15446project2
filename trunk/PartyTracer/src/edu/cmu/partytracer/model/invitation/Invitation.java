@@ -67,12 +67,7 @@ public class Invitation {
 	 * 
 	 * @param vb - a bean representing the vote to add to this invitation
 	 */
-	public void addVote(VoteBean vb)
-	{
-		addVote(vb, 0);
-	}
-	
-	protected void addVotes(VoteBean vb)
+	public void addVotes(VoteBean vb)
 	{
 		String[] voters = vb.getVoters();
 		
@@ -82,6 +77,7 @@ public class Invitation {
 		}
 	}
 	
+	// adds the votes of voter index to this invitation
 	private void addVote(VoteBean vb, int index)
 	{
 		String voter = vb.getVoters()[index];
@@ -89,6 +85,8 @@ public class Invitation {
 		addVotesFromArray(voter, voteData);
 	}
 	
+	//given an array representing all the data from a vote bean, adds the votes of a specific voter to this
+	// invitation
 	private void addVotesFromArray(String voter, Vector<String> voteData)
 	{
 		ArrayList<String> categories = new ArrayList<String>(options.keySet());
@@ -124,6 +122,8 @@ public class Invitation {
 		return vb;
 	}
 	
+	//Creates an array of vote data that can be stored in a vote bean. The bean can then be sent to the server
+	// or another client
 	private String[] createVotingArray()
 	{
 		ArrayList<String> voteData = new ArrayList<String>();

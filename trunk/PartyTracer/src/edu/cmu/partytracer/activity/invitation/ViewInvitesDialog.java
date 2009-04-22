@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import edu.cmu.partytracer.bean.InvitationBean;
 
 import edu.cmu.partytracer.model.invitation.Invitation;
+import edu.cmu.partytracer.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ViewInvitesDialog extends Activity{
+public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 
 	public static String INVITE = "invite";
 	public static String ACTIVE = "active";
@@ -26,16 +28,31 @@ public class ViewInvitesDialog extends Activity{
 	public static String VOTING = "voting";
 	public static String VOTER_LIST = "voters";
 	
+	private LinearLayout eventList;
+	private boolean isActive;
+	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        boolean isActive = this.getIntent().getBooleanExtra("active", true);
+        setContentView(R.layout.viewinvites);
+        
+        isActive = this.getIntent().getBooleanExtra("active", true);
         String buttonText = "View Details";
         if(!isActive) buttonText = "Vote";
+       
+        //Create the list of invites that the user can view. 
+        eventList = (LinearLayout) findViewById(R.id.allinvites);
+        initializeEventList(buttonText);
         
+        Button done = (Button) findViewById(R.id.doneviewing);
+        done.setOnClickListener(this);
+	}
+
+	private void initializeEventList(String buttonText)
+	{
         Invitation[] myInvites = getInvitesFromIntent(this.getIntent());
         
-        LinearLayout eventList = new LinearLayout(this);
-        eventList.setOrientation(LinearLayout.VERTICAL);
+        // Each row in the eventList will contain a LinearLayout from the array "events."
+        //  That linearLayout will contain a button and the name of an event
         LinearLayout[] events = new LinearLayout[myInvites.length];
         TextView[] inviteNames = new TextView[myInvites.length];
         Button[] inviteButtons = new Button[myInvites.length];
@@ -53,11 +70,9 @@ public class ViewInvitesDialog extends Activity{
         	events[i].addView(inviteNames[i]);
         	events[i].addView(inviteButtons[i]);
         	eventList.addView(events[i]);
-        }
-        
-        setContentView(eventList);
+        }	
 	}
-
+	
 	private Invitation[] getInvitesFromIntent(Intent iData)
 	{
 		ArrayList<Invitation> inviteArray = new ArrayList<Invitation>();
@@ -80,5 +95,17 @@ public class ViewInvitesDialog extends Activity{
 
         Invitation[] myInvites = (Invitation[]) inviteArray.toArray();
         return myInvites;
+	}
+
+	public void onClick(View arg0) {
+		Intent voteIntent = new Intent();
+		
+		if(!isActive)
+		{
+			
+		}
+		
+		setResult(RESULT_OK, voteIntent);
+		finish();
 	}
 }
