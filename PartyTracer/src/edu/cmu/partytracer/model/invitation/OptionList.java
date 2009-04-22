@@ -86,6 +86,26 @@ public class OptionList {
 		return voters;
 	}
 
+	protected void finalize()
+	{
+		ArrayList<String> allOptions = new ArrayList<String>(options.keySet());
+		String decision = allOptions.get(0);
+		int maxvotes = getNumVotesFor(decision);
+		
+		for(int i=1; i<allOptions.size(); i++)
+		{
+			int votes = getNumVotesFor(allOptions.get(i));
+			if(votes > maxvotes)
+			{
+				maxvotes = votes;
+				decision = allOptions.get(i);
+			}
+		}
+		
+		options.clear();
+		addOption(decision);
+	}
+	
 	/**
 	 * Retrieve a list of all the options that a particular user has voted for.
 	 * 

@@ -156,15 +156,22 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	        else if(requestCode == VIEW_VOTES)
 	        {
 	        	//The user just voted on something
-	        	Bundle voteProps = data.getBundleExtra(ViewInvitesDialog.VOTING);
-	        	VoteBean vb = new VoteBean();
+	        	int item = 0;
+	        	String[] singleVoter = new String[1];
+	        	singleVoter[0] = thisUser.getNumber();
 	        	
-	        	//
-	        	vb.setData(voteProps.getStringArray(ViewInvitesDialog.VOTE_DATA));
-	        	vb.setVoters(voteProps.getStringArray(ViewInvitesDialog.VOTER_LIST));
-	        	vb.setWhichInvite(voteProps.getInt(ViewInvitesDialog.INVITE));
-	        	
-	        	ComWrapper.getComm().send(Protocol.TYPE_VoteBean, vb);
+	        	while(data.hasExtra(ViewInvitesDialog.VOTING + item))
+	        	{
+		        	Bundle voteProps = data.getBundleExtra(ViewInvitesDialog.VOTING + item);
+		        	VoteBean vb = new VoteBean();
+		        	
+		        	//Extract the information about what the user voted on and send it off
+		        	vb.setData(voteProps.getStringArray(ViewInvitesDialog.VOTE_DATA));
+		        	vb.setVoters(singleVoter);
+		        	vb.setWhichInvite(voteProps.getInt(ViewInvitesDialog.INVITE));
+		        	
+		        	ComWrapper.getComm().send(Protocol.TYPE_VoteBean, vb);
+	        	}
 	        }
         }
     }

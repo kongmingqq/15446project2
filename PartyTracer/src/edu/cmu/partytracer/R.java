@@ -28,10 +28,12 @@ public final class R {
         public static final int addinvitedusers=0x7f050004;
         public static final int allinvites=0x7f050013;
         public static final int alloptions=0x7f050006;
+        public static final int allvotingoptions=0x7f050015;
         public static final int cancel=0x7f050008;
         public static final int create=0x7f050009;
         public static final int createevent=0x7f050007;
         public static final int doneviewing=0x7f050014;
+        public static final int donevoting=0x7f050016;
         public static final int eventdescription=0x7f050003;
         public static final int eventname=0x7f050001;
         public static final int finishedinviting=0x7f05000d;
@@ -52,6 +54,7 @@ public final class R {
         public static final int main=0x7f030003;
         public static final int trace=0x7f030004;
         public static final int viewinvites=0x7f030005;
+        public static final int voting=0x7f030006;
     }
     public static final class string {
         public static final int app_name=0x7f040001;

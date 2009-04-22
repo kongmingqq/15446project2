@@ -26,10 +26,10 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 	public static String VOTE_DATA = "voteData";
 	
 	public static String VOTING = "voting";
-	public static String VOTER_LIST = "voters";
 	
 	private LinearLayout eventList;
 	private boolean isActive;
+	private Invitation[] myInvites;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +49,7 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 
 	private void initializeEventList(String buttonText)
 	{
-        Invitation[] myInvites = getInvitesFromIntent(this.getIntent());
+        myInvites = getInvitesFromIntent(this.getIntent());
         
         // Each row in the eventList will contain a LinearLayout from the array "events."
         //  That linearLayout will contain a button and the name of an event
@@ -70,16 +70,16 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
         	events[i].addView(inviteNames[i]);
         	events[i].addView(inviteButtons[i]);
         	eventList.addView(events[i]);
-        }	
+        }
 	}
 	
-	private Invitation[] getInvitesFromIntent(Intent iData)
+	public static Invitation[] getInvitesFromIntent(Intent iData)
 	{
 		ArrayList<Invitation> inviteArray = new ArrayList<Invitation>();
         int item = 0;
-        while(this.getIntent().hasExtra(INVITE + item))
+        while(iData.hasExtra(INVITE + item))
         {
-        	Bundle inviteData = this.getIntent().getBundleExtra(INVITE + item);
+        	Bundle inviteData = iData.getBundleExtra(INVITE + item);
         	InvitationBean ib = new InvitationBean();
         	
         	ib.setActive(inviteData.getBoolean(ACTIVE));
@@ -102,7 +102,15 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 		
 		if(!isActive)
 		{
-			
+			for(int i=0; i<myInvites.length; i++)
+			{
+				Bundle voteBundle = new Bundle();
+				
+				voteBundle.putInt(INVITE, myInvites[i].getId());
+				
+				
+				voteIntent.putExtra(VOTING + i, voteBundle);
+			}
 		}
 		
 		setResult(RESULT_OK, voteIntent);
