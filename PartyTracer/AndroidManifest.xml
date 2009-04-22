@@ -24,6 +24,9 @@
         <activity android:name=".activity.invitation.ViewInvitesDialog"
         		  android:enabled="true"
         		  android:label="@string/module_view" />
+        <activity android:name=".activity.invitation.ChooseInvitesDialog"
+        		  android:enabled="true"
+        		  android:label="@string/module_chooseinvites" />
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest> 
