@@ -9,7 +9,7 @@ import edu.cmu.partytracer.network.ComWrapper;
 import edu.cmu.partytracer.R;
 import edu.cmu.partytracer.model.invitation.BundleParser;
 import edu.cmu.partytracer.model.invitation.Invitation;
-import edu.cmu.partytracer.model.invitation.User;
+import edu.cmu.partytracer.model.invitation.UserSingleton;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +20,6 @@ import android.widget.Button;
 
 public class InviteModule extends Activity implements View.OnClickListener{
 	
-	private User thisUser;
-	
 	static int CREATE_INVITE = 1;
 	static int VIEW_VOTES = 2;
 	
@@ -31,8 +29,6 @@ public class InviteModule extends Activity implements View.OnClickListener{
     	//Get this user's phone number and store it in the singleton class so that other methods can access it
     	TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
     	ComWrapper.getComm().initNumber(tm.getDeviceId());
-    	
-    	thisUser = new User();
     	    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invite);
@@ -66,7 +62,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			
 			//Get a list of each of this user's active invites, and store each one in the intent used to
 			// launch the new activity
-			Invitation[] myInvites = thisUser.getMyInvites();
+			Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
 			int item = 0;
 			for(int i=0; i<myInvites.length; i++)
 			{
@@ -89,7 +85,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			
 			//Get a list of each of this user's voting invites, and store each one in the intent used to
 			// launch the new activity 
-			Invitation[] myInvites = thisUser.getMyInvites();
+			Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
 			int item = 0;
 			for(int i=0; i<myInvites.length; i++)
 			{
@@ -137,7 +133,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		String[] eventData = BundleParser.parseEventData(eventProps);
         		
         		//fill in all the data fields for the invitation bean
-        		ib.setSender(thisUser.getNumber());
+        		ib.setSender(UserSingleton.getUser().getNumber());
         		ib.setVoteData(voteData);
         		ib.setData(eventData);
         		ib.setId(0);
@@ -150,7 +146,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		ib.setOptions((String[]) voteOptions.toArray());
         		
         		//add the invitation to our user's database and send it off to the server
-        		thisUser.addInvite(Invitation.fromInvitationBean(ib));
+        		//UserSingleton.getUser().addInvite(Invitation.fromInvitationBean(ib));
         		ComWrapper.getComm().send(Protocol.TYPE_InvitationBean, ib);
         	}
 	        else if(requestCode == VIEW_VOTES)
@@ -158,7 +154,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	        	//The user just voted on something
 	        	int item = 0;
 	        	String[] singleVoter = new String[1];
-	        	singleVoter[0] = thisUser.getNumber();
+	        	singleVoter[0] = UserSingleton.getUser().getNumber();
 	        	
 	        	while(data.hasExtra(ViewInvitesDialog.VOTING + item))
 	        	{

@@ -65,5 +65,10 @@ public class User {
 			}
 		}
 	}
+	
+	public boolean isInvitedTo(Invitation invite)
+	{
+		return myInvites.contains(invite);
+	}
 }
 
