@@ -1,6 +1,7 @@
 package edu.cmu.partytracer.activity.invitation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.cmu.partytracer.bean.InvitationBean;
 
@@ -30,10 +31,13 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 	private LinearLayout eventList;
 	private boolean isActive;
 	private Invitation[] myInvites;
+	private HashMap<Integer, ArrayList<String>> voteResults;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewinvites);
+        
+        voteResults = new HashMap<Integer, ArrayList<String>>();
         
         isActive = this.getIntent().getBooleanExtra("active", true);
         String buttonText = "View Details";
@@ -66,6 +70,8 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
         	
         	inviteButtons[i] = new Button(this);
         	inviteButtons[i].setText(buttonText);
+        	inviteButtons[i].setId(i);
+        	inviteButtons[i].setOnClickListener(this);
         	
         	events[i].addView(inviteNames[i]);
         	events[i].addView(inviteButtons[i]);
@@ -97,23 +103,48 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
         return myInvites;
 	}
 
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		Bundle voteBundle = data.getBundleExtra(VOTING);
+		
+		int invId = voteBundle.getInt(INVITE);
+		ArrayList<String> votes = voteBundle.getStringArrayList(VOTE_DATA);
+		
+		voteResults.put(invId, votes);
+	}
+	
 	public void onClick(View arg0) {
-		Intent voteIntent = new Intent();
-		
-		if(!isActive)
+		if(arg0.getId() == R.id.doneviewing)
 		{
-			for(int i=0; i<myInvites.length; i++)
+			Intent voteIntent = new Intent();
+			
+			if(!isActive)
 			{
-				Bundle voteBundle = new Bundle();
+				ArrayList<Integer> inviteIds = new ArrayList<Integer>(voteResults.keySet());
 				
-				voteBundle.putInt(INVITE, myInvites[i].getId());
-				
-				
-				voteIntent.putExtra(VOTING + i, voteBundle);
+				for(int i=0; i<inviteIds.size(); i++)
+				{
+					Bundle voteBundle = new Bundle();
+					voteBundle.putInt(INVITE, inviteIds.get(i));
+					voteBundle.putStringArray(VOTE_DATA, (String[]) voteResults.get(inviteIds.get(i)).toArray());
+					
+					voteIntent.putExtra(VOTING + i, voteBundle);
+				}
 			}
+			
+			setResult(RESULT_OK, voteIntent);
+			finish();
 		}
-		
-		setResult(RESULT_OK, voteIntent);
-		finish();
+		else
+		{
+			Bundle invBundle = InviteModule.constructInviteBundle(myInvites[arg0.getId()].toInvitationBean());
+			Intent voteIntent = new Intent(this, edu.cmu.partytracer.activity.invitation.VotingDialog.class);
+			voteIntent.putExtra(INVITE + 0, invBundle);
+			
+			if(!isActive)
+				startActivityForResult(voteIntent, 0);
+			else
+				startActivity(voteIntent);
+		}
 	}
 }

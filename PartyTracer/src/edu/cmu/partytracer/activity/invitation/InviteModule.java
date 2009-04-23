@@ -107,7 +107,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	}
 	
 	//Bundles up the data in an invitation into a form that can be sent to the view invites dialog
-	private Bundle constructInviteBundle(InvitationBean ib)
+	public static Bundle constructInviteBundle(InvitationBean ib)
 	{
 		Bundle invBundle = new Bundle();
 		
