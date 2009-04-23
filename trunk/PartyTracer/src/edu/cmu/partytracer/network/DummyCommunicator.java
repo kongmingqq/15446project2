@@ -6,8 +6,7 @@ public class DummyCommunicator extends AbstractComm{
 		return "";
 	}
 
-	public boolean send(String identifier, Object obj) {
-		return true;
+	public void send(String identifier, Object obj) {
 	}
 
 	public void initNumber(String myNumber) {

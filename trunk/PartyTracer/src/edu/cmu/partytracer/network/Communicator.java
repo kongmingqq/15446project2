@@ -24,8 +24,8 @@ public class Communicator extends AbstractComm{
 		return myNumber;
 	}
 
-	public boolean send(String identifier, Object obj) {
-
+	private boolean send_once(String identifier, Object obj)
+	{
 		try 
 		{			
 			Vector<Object> data = new Vector<Object>();
@@ -36,6 +36,15 @@ public class Communicator extends AbstractComm{
 			return true;
 		} catch (Exception e) {
 			return false;
+		}
+	}
+	
+	public void send(String identifier, Object obj) {
+		boolean sent = false;
+		
+		while(!sent)
+		{
+			send_once(identifier, obj);
 		}
 	}
 
