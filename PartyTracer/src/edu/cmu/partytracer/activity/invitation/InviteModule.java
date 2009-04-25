@@ -40,10 +40,12 @@ public class InviteModule extends Activity implements View.OnClickListener{
         Button createInvite = (Button) findViewById(R.id.create);
         Button viewActive = (Button) findViewById(R.id.active);
         Button viewVotes = (Button) findViewById(R.id.vote);
+        Button request = (Button) findViewById(R.id.request);
         
         createInvite.setOnClickListener(this);
         viewActive.setOnClickListener(this);
         viewVotes.setOnClickListener(this);
+        request.setOnClickListener(this);
     }
     
     private void initPhoneNumber()
@@ -60,7 +62,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
     	{
     		TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
     		myNumber = tm.getDeviceId();
-    		ComWrapper.getComm().initNumber(tm.getDeviceId());
+    		ComWrapper.getComm().initNumber(tm.getLine1Number());
     	}
     	
     	Log.d(MAIN_TAG, "This user's number is " + myNumber);
@@ -76,6 +78,11 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			
 			Log.d(MAIN_TAG, "Entering Create Invite module");
 			startActivityForResult(create, CREATE_INVITE);
+		}
+		else if(v.getId() == R.id.request)
+		{
+			Intent subscribe = new Intent(this, edu.cmu.partytracer.activity.invitation.RequestDialog.class);
+			startActivity(subscribe);
 		}
 		else if(v.getId() == R.id.active)
 		{
@@ -193,6 +200,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         			vOpts[i] = voteOptions.get(i);
         		}
         		ib.setOptions(vOpts);
+        		ib.setTimeout(-1);
         		
         		//add the invitation to our user's database and send it off to the server
         		//UserSingleton.getUser().addInvite(Invitation.fromInvitationBean(ib));

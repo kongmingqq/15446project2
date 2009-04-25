@@ -102,7 +102,7 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
         	ib.setId(inviteData.getInt(IID));
         	ib.setInviteList(inviteData.getStringArray(INVITE_LIST));
         	ib.setSender(inviteData.getString(SENDER));
-        	ib.setTimeout(inviteData.getFloat(TIMEOUT));
+        	ib.setTimeout(inviteData.getLong(TIMEOUT));
         	ib.setVoteData(inviteData.getStringArray(VOTE_DATA));
         	ib.setOptions(inviteData.getStringArray(OPTIONS));
         		
