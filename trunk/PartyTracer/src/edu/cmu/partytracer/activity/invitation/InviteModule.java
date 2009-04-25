@@ -1,7 +1,9 @@
 package edu.cmu.partytracer.activity.invitation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import edu.cmu.partytracer.activity.invitation.testing.TestDataGenerator;
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.Protocol;
 import edu.cmu.partytracer.bean.VoteBean;
@@ -15,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -23,12 +26,13 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	static int CREATE_INVITE = 1;
 	static int VIEW_VOTES = 2;
 	
+	private static String MAIN_TAG = "Invite Module";
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	//Get this user's phone number and store it in the singleton class so that other methods can access it
-    	TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-    	ComWrapper.getComm().initNumber(tm.getDeviceId());
+    	initPhoneNumber();
     	    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invite);
@@ -42,6 +46,26 @@ public class InviteModule extends Activity implements View.OnClickListener{
         viewVotes.setOnClickListener(this);
     }
     
+    private void initPhoneNumber()
+    {
+    	Log.d(MAIN_TAG, "Getting and storing user phone number");
+    	String myNumber;
+    	
+    	if(TestDataGenerator.TEST_MODE_ON)
+    	{
+    		myNumber = TestDataGenerator.sampleID();
+    		ComWrapper.getComm().initNumber(myNumber);
+    	}
+    	else
+    	{
+    		TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    		myNumber = tm.getDeviceId();
+    		ComWrapper.getComm().initNumber(tm.getDeviceId());
+    	}
+    	
+    	Log.d(MAIN_TAG, "This user's number is " + myNumber);
+    }
+    
 	public void onClick(View v) {
 		//There are three buttons that the user can click from this screen, and each one launches a new activity
 		
@@ -49,6 +73,8 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		{
 			//The first one is simple to launch: create a new invitation
 			Intent create = new Intent(this, edu.cmu.partytracer.activity.invitation.CreationDialog.class);
+			
+			Log.d(MAIN_TAG, "Entering Create Invite module");
 			startActivityForResult(create, CREATE_INVITE);
 		}
 		else if(v.getId() == R.id.active)
@@ -82,6 +108,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			//This launches a dialog to vote on any voting invites the user might have
 			Intent viewVotes = new Intent(this, edu.cmu.partytracer.activity.invitation.ViewInvitesDialog.class);
 			viewVotes.putExtra("active", false);
+			Log.d(MAIN_TAG, "View Voting invites clicked");
 			
 			//Get a list of each of this user's voting invites, and store each one in the intent used to
 			// launch the new activity 
@@ -91,6 +118,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			{
 				if(!myInvites[i].isActive())
 				{
+					Log.d(MAIN_TAG, "Putting item number " + item);
 					InvitationBean ib = myInvites[i].toInvitationBean();
 					viewVotes.putExtra(ViewInvitesDialog.INVITE + item, constructInviteBundle(ib));
 					item++;
@@ -114,6 +142,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		invBundle.putString(ViewInvitesDialog.SENDER, ib.getSender());
 		invBundle.putFloat(ViewInvitesDialog.TIMEOUT, ib.getTimeout());
 		invBundle.putStringArray(ViewInvitesDialog.VOTE_DATA, ib.getVoteData());
+		invBundle.putStringArray(ViewInvitesDialog.OPTIONS, ib.getOptions());
 		
 		return invBundle;
 	}
@@ -123,6 +152,8 @@ public class InviteModule extends Activity implements View.OnClickListener{
         {
         	if (requestCode == CREATE_INVITE) 
         	{
+        		Log.d(MAIN_TAG, "Returned from creation module");
+        		
         		//The user just created a new invitation, so take the information from the CreateInvites
         		// activity and create an invitation object from it
         		InvitationBean ib = new InvitationBean();
@@ -132,6 +163,12 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		String[] voteData = new String[0];
         		String[] eventData = BundleParser.parseEventData(eventProps);
         		
+        		Log.d(MAIN_TAG, "Event Properties:");
+        		for(int i=0; i<eventData.length; i++)
+        		{
+        			Log.d(MAIN_TAG, eventData[i]);
+        		}
+        		
         		//fill in all the data fields for the invitation bean
         		ib.setSender(UserSingleton.getUser().getNumber());
         		ib.setVoteData(voteData);
@@ -139,11 +176,23 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		ib.setId(0);
         		
         		ArrayList<String> invited = data.getStringArrayListExtra(CreationDialog.INVITED_LIST);
-        		String[] invitedNumbers = (String[]) invited.toArray();
+        		String[] invitedNumbers = new String[invited.size()];
+        		
+        		for(int i=0; i<invited.size(); i++)
+        		{
+        			Log.d(MAIN_TAG, "User " + invited.get(i) + " was invited");
+        			invitedNumbers[i] = invited.get(i);
+        		}
+        		
         		ib.setInviteList(invitedNumbers);
         		
         		ArrayList<String> voteOptions = data.getStringArrayListExtra(Invitation.voterString);
-        		ib.setOptions((String[]) voteOptions.toArray());
+        		String[] vOpts = new String[voteOptions.size()];
+        		for(int i=0; i<voteOptions.size(); i++)
+        		{
+        			vOpts[i] = voteOptions.get(i);
+        		}
+        		ib.setOptions(vOpts);
         		
         		//add the invitation to our user's database and send it off to the server
         		//UserSingleton.getUser().addInvite(Invitation.fromInvitationBean(ib));
@@ -162,11 +211,26 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		        	VoteBean vb = new VoteBean();
 		        	
 		        	//Extract the information about what the user voted on and send it off
-		        	vb.setData(voteProps.getStringArray(ViewInvitesDialog.VOTE_DATA));
+		        	ArrayList<String> voteData = new ArrayList<String>();
+		        	voteData.add(Invitation.voterString + UserSingleton.getUser().getNumber());
+		        	voteData.addAll(Arrays.asList(voteProps.getStringArray(ViewInvitesDialog.VOTE_DATA)));
+		        	
+		        	String[] votingArray = new String[voteData.size()];
+		        	
+		        	Log.d(MAIN_TAG, "The vote array that we got back");
+		        	for(int i=0; i<votingArray.length; i++)
+		        	{
+		        		votingArray[i] = voteData.get(i);
+		        		Log.d(MAIN_TAG, votingArray[i]);
+		        	}
+		        	
+		        	vb.setData(votingArray);
 		        	vb.setVoters(singleVoter);
 		        	vb.setWhichInvite(voteProps.getInt(ViewInvitesDialog.INVITE));
 		        	
+		        	UserSingleton.getUser().addVote(vb);
 		        	ComWrapper.getComm().send(Protocol.TYPE_VoteBean, vb);
+		        	item++;
 	        	}
 	        }
         }

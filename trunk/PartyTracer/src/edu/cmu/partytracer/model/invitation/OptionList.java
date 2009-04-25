@@ -2,6 +2,7 @@ package edu.cmu.partytracer.model.invitation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * 
@@ -106,6 +107,18 @@ public class OptionList {
 		addOption(decision);
 	}
 	
+	private static String[] getArrayFromSet(Set<String> set)
+	{
+		ArrayList<String> sList = new ArrayList<String>(set);
+		String[] sArray = new String[sList.size()];
+		
+		for(int i=0; i<sList.size(); i++)
+		{
+			sArray[i] = sList.get(i);
+		}
+		return sArray;
+	}
+	
 	/**
 	 * Retrieve a list of all the options that a particular user has voted for.
 	 * 
@@ -115,7 +128,7 @@ public class OptionList {
 	public String[] getVotesOf(String voterId) 
 	{
 		ArrayList<String> votes = new ArrayList<String>();
-		String[] optionList = (String[]) options.keySet().toArray();
+		String[] optionList = getArrayFromSet(options.keySet());
 		
 		for(int i=0; i<optionList.length; i++)
 		{
@@ -125,7 +138,14 @@ public class OptionList {
 			}
 		}
 		
-		return (String[]) votes.toArray();
+		String[] vArray = new String[votes.size()];
+		
+		for(int i=0; i<vArray.length; i++)
+		{
+			vArray[i] = votes.get(i);
+		}
+		
+		return vArray;
 	}
 
 	/**
@@ -135,7 +155,7 @@ public class OptionList {
 	 */
 	protected void removeVotesOf(String user) 
 	{
-		String[] optionList = (String[]) options.keySet().toArray();
+		String[] optionList = getArrayFromSet(options.keySet());
 		
 		for(int i=0; i<optionList.length; i++) {
 			options.get(optionList[i]).remove(user);
@@ -161,6 +181,6 @@ public class OptionList {
 	 */
 	public String[] getAllOptions()
 	{
-		return (String[]) options.keySet().toArray();
+		return getArrayFromSet(options.keySet());
 	}
 }

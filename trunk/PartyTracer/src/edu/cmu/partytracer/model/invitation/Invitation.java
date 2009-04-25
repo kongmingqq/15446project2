@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
+import android.util.Log;
+
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.VoteBean;
 
@@ -29,8 +31,9 @@ public class Invitation {
 	public static int NUM_DATA_ITEMS = 2;
 	
 	public static String categoryString = "Category";
-	public static String voterString = "Voter";
+	public static String voterString = "Voter ";
 	public static String endString = "End";
+	private static String INVITE_TAG = "Invitation Class";
 	
 	private int iid;
 	private String creator;
@@ -70,6 +73,7 @@ public class Invitation {
 	public void addVotes(VoteBean vb)
 	{
 		String[] voters = vb.getVoters();
+		Log.d(INVITE_TAG, "Adding a vote bean");
 		
 		for(int i=0; i<voters.length; i++)
 		{
@@ -81,6 +85,14 @@ public class Invitation {
 	private void addVote(VoteBean vb, int index)
 	{
 		String voter = vb.getVoters()[index];
+		Log.d(INVITE_TAG, "Processing votes of user " + voter);
+		Log.d(INVITE_TAG, "Voting array is:");
+		
+		for(int i=0; i<vb.getData().length; i++)
+		{
+			Log.d(INVITE_TAG, vb.getData()[i]);
+		}
+		
 		Vector<String> voteData = new Vector<String>(Arrays.asList(vb.getData()));
 		addVotesFromArray(voter, voteData);
 	}
@@ -89,20 +101,28 @@ public class Invitation {
 	// invitation
 	private void addVotesFromArray(String voter, Vector<String> voteData)
 	{
+		Log.d(INVITE_TAG, "Adding votes from user " + voter);
 		ArrayList<String> categories = new ArrayList<String>(options.keySet());
 		int voterIndex = voteData.indexOf(voterString + voter);
 		
-		for(int i=0; i<categories.size(); i++)
+		if(voterIndex >= 0)
 		{
-			int catIndex = voteData.indexOf(categories.get(i), voterIndex);
-			int catEnd = Math.min(voteData.indexOf(categoryString, catIndex), voteData.indexOf(endString, catIndex));
-			options.get(categories.get(i)).removeVotesOf(voter);
-			
-			for(int j=catIndex+1; j<catEnd; j++)
+			for(int i=0; i<categories.size(); i++)
 			{
-				options.get(categories.get(i)).addVote(voter, voteData.get(j));
+				Log.d(INVITE_TAG, "Looking at category " + categories.get(i));
+				int catIndex = voteData.indexOf(categories.get(i), voterIndex);
+				int catEnd = Math.min(voteData.indexOf(categoryString, catIndex), voteData.indexOf(endString, catIndex));
+				options.get(categories.get(i)).removeVotesOf(voter);
+				
+				for(int j=catIndex+1; j<catEnd; j++)
+				{
+					Log.d(INVITE_TAG, "User voted for " + voteData.get(j));
+					options.get(categories.get(i)).addVote(voter, voteData.get(j));
+				}
 			}
-		}		
+		}
+		else
+			Log.d(INVITE_TAG, "User " + voter + " has not voted yet");
 	}
 	
 	/**
@@ -126,6 +146,7 @@ public class Invitation {
 	// or another client
 	private String[] createVotingArray()
 	{
+		Log.d(INVITE_TAG, "Writing out voting data");
 		ArrayList<String> voteData = new ArrayList<String>();
 		ArrayList<String> categories = new ArrayList<String>(options.keySet());
 		
@@ -133,17 +154,27 @@ public class Invitation {
 		{
 			String voterId = invitedUsers.get(i);
 			voteData.add(voterString + voterId);
+			Log.d(INVITE_TAG, "adding " + voterString + voterId);
+			
 			for(int j=0; j<categories.size(); j++)
 			{
 				OptionList catOptions = options.get(categories.get(i));
 				voteData.add(categoryString);
 				voteData.add(categories.get(j));
+				
+				Log.d(INVITE_TAG, "adding category " + categories.get(j));
 				voteData.addAll(Arrays.asList(catOptions.getVotesOf(voterId)));
 			}
 			voteData.add(endString);
 		}
 		
-		return (String[]) voteData.toArray();
+		String[] votesAsArray = new String[voteData.size()];
+		for(int i=0; i<votesAsArray.length; i++)
+		{
+			votesAsArray[i] = voteData.get(i);
+		}
+		
+		return votesAsArray;
 	}
 	
 	/**
@@ -155,37 +186,62 @@ public class Invitation {
 	 */
 	public static Invitation fromInvitationBean(InvitationBean ib)
 	{
+		Log.d(INVITE_TAG, "Creating new Invitation from a bean");
+		Log.d(INVITE_TAG, "ID is " + ib.getId());
+		Log.d(INVITE_TAG, "Sender is " + ib.getSender());
+		
 		int id = ib.getId();
 		String creator = ib.getSender();
 		String[] details = ib.getData();
 		
+
+		Log.d(INVITE_TAG, "title is " + details[TITLE_INDEX]);
+		Log.d(INVITE_TAG, "description is " + details[DESCRIPTION_INDEX]);
 		Invitation invite = new Invitation(id, details[TITLE_INDEX], details[DESCRIPTION_INDEX], creator);
 		
 		String[] invited = ib.getInviteList();
 		invite.invitedUsers = new ArrayList<String>();
-		Vector<String> voteData = new Vector<String>(Arrays.asList(ib.getVoteData()));
 		
 		for(int i=0; i<invited.length; i++) {
+			Log.d(INVITE_TAG, "User " + invited[i] + " is invited");
 			invite.invitedUsers.add(invited[i]);
-			invite.addVotesFromArray(invited[i], voteData);
 		}
 		
 		String[] catList = ib.getOptions();
-		int i=1;
-		String catName;
-		while(i < catList.length);
+		int mode = 0;
+		String catName = "";
+		
+		Log.d(INVITE_TAG, "Scanning category list");
+		Log.d(INVITE_TAG, catList.length + " items to scan");
+		
+		for(int i=0; i<catList.length; i++)
 		{
-			catName = catList[i];
-			i++;
+			Log.d(INVITE_TAG, "Next entry: " + catList[i]);
+			Log.d(INVITE_TAG, "Mode is " + mode);
 			
-			while(!(catList[i].equals(categoryString) || catList[i].equals(endString)))
+			if(mode == 0)
 			{
-				invite.addOption(catName, catList[i]);
-				i++;
+				mode = 1;
+			}
+			else if(mode == 1)
+			{
+				catName = catList[i];
+				mode = 2;
+			}
+			else if(mode == 2)
+			{
+				if(!((catList[i].equals(categoryString)) || (catList[i].equals(endString))))
+				{
+					Log.d(INVITE_TAG, "Adding option " + catList[i] + " to " + catName);
+					invite.addOption(catName, catList[i]);
+				}
+				else
+					mode = 1;
 			}
 		}
 		
 		invite.isActive = ib.getActive();
+		Log.d(INVITE_TAG, "Done constructing invite");
 		
 		return invite;
 	}
@@ -199,12 +255,17 @@ public class Invitation {
 	public InvitationBean toInvitationBean()
 	{
 		InvitationBean ib = new InvitationBean();
+		Log.d(INVITE_TAG, "Constructing invitation bean");
 
 		ib.setId(iid);
 		ib.setSender(creator);
 
+		Log.d(INVITE_TAG, "Id is " + iid);
+		Log.d(INVITE_TAG, "sender is " + creator);
+		
 		String[] invited = new String[invitedUsers.size()];
 		for(int i=0; i<invited.length; i++) {
+			Log.d(INVITE_TAG, "User " + invitedUsers.get(i) + " is invited");
 			invited[i] = invitedUsers.get(i);
 		}
 		
@@ -214,24 +275,40 @@ public class Invitation {
 		data[TITLE_INDEX] = title;
 		data[DESCRIPTION_INDEX] = description;
 		
+		Log.d(INVITE_TAG, "Title is " + title);
+		Log.d(INVITE_TAG, "Description is " + description);
+		
 		ib.setData(data);
 		ib.setActive(isActive);
-		ib.setVoteData(createVotingArray());
+		ib.setVoteData(new String[0]);
 		
 		ArrayList<String> categories = new ArrayList<String>();
 		ArrayList<String> headers = new ArrayList<String>(options.keySet());
+		Log.d(INVITE_TAG, "Making category array");
 		for(int i=0; i<headers.size(); i++)
 		{
 			categories.add(categoryString);
 			categories.add(headers.get(i));
+			
+			Log.d(INVITE_TAG, "Entered category " + headers.get(i));
+			
 			String[] optList = options.get(headers.get(i)).getAllOptions();
 			for(int j=0; j<optList.length; j++)
 			{
 				categories.add(optList[j]);
+				Log.d(INVITE_TAG, "Entered option " + optList[j]);
 			}
 		}
+		categories.add(endString);
 		
-		ib.setOptions((String[]) categories.toArray());
+		String[] catArray = new String[categories.size()];
+		for(int i=0; i<catArray.length; i++)
+		{
+			catArray[i] = categories.get(i);
+			Log.d(INVITE_TAG, catArray[i]);
+		}
+		
+		ib.setOptions(catArray);
 		
 		return ib;
 	}
@@ -275,7 +352,11 @@ public class Invitation {
 		return options;
 	}
 	public String[] getInvitedUsers() {
-		String[] invites = (String[]) invitedUsers.toArray();
+		String[] invites = new String[invitedUsers.size()];
+		for(int i=0; i<invites.length; i++)
+		{
+			invites[i] = invitedUsers.get(i);
+		}
 		return invites;
 	}
 	
@@ -317,5 +398,10 @@ public class Invitation {
 		{
 			options.get(i).finalize();
 		}
+	}
+	
+	public void assignId(int id)
+	{
+		this.iid = id;
 	}
 }

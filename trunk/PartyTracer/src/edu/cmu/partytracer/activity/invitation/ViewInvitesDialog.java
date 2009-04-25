@@ -10,6 +10,7 @@ import edu.cmu.partytracer.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 
 	public static String INVITE = "invite";
+	
 	public static String ACTIVE = "active";
 	public static String DATA = "data";
 	public static String IID = "id";
@@ -25,6 +27,7 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 	public static String SENDER = "sender";
 	public static String TIMEOUT = "timeout";
 	public static String VOTE_DATA = "voteData";
+	public static String OPTIONS = "options";
 	
 	public static String VOTING = "voting";
 	
@@ -32,11 +35,13 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 	private boolean isActive;
 	private Invitation[] myInvites;
 	private HashMap<Integer, ArrayList<String>> voteResults;
+	private static String VIEW_TAG = "View Invites Dialog";
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewinvites);
         
+        Log.d(VIEW_TAG, "Entering view dialog");
         voteResults = new HashMap<Integer, ArrayList<String>>();
         
         isActive = this.getIntent().getBooleanExtra("active", true);
@@ -76,6 +81,8 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
         	events[i].addView(inviteNames[i]);
         	events[i].addView(inviteButtons[i]);
         	eventList.addView(events[i]);
+        	
+        	voteResults.put(myInvites[i].getId(), new ArrayList<String>());
         }
 	}
 	
@@ -83,8 +90,10 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 	{
 		ArrayList<Invitation> inviteArray = new ArrayList<Invitation>();
         int item = 0;
+        
         while(iData.hasExtra(INVITE + item))
         {
+            Log.d(VIEW_TAG, "Getting invite " + item);
         	Bundle inviteData = iData.getBundleExtra(INVITE + item);
         	InvitationBean ib = new InvitationBean();
         	
@@ -95,11 +104,19 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
         	ib.setSender(inviteData.getString(SENDER));
         	ib.setTimeout(inviteData.getFloat(TIMEOUT));
         	ib.setVoteData(inviteData.getStringArray(VOTE_DATA));
+        	ib.setOptions(inviteData.getStringArray(OPTIONS));
         		
         	inviteArray.add(Invitation.fromInvitationBean(ib));
+        	item++;
         }
 
-        Invitation[] myInvites = (Invitation[]) inviteArray.toArray();
+        Invitation[] myInvites = new Invitation[inviteArray.size()];
+        
+        for(int i=0; i<myInvites.length; i++)
+        {
+        	myInvites[i] = inviteArray.get(i);
+        }
+        
         return myInvites;
 	}
 
@@ -126,7 +143,17 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
 				{
 					Bundle voteBundle = new Bundle();
 					voteBundle.putInt(INVITE, inviteIds.get(i));
-					voteBundle.putStringArray(VOTE_DATA, (String[]) voteResults.get(inviteIds.get(i)).toArray());
+					
+					String[] voteArray = new String[voteResults.get(inviteIds.get(i)).size()];
+					Log.d(VIEW_TAG, "Votes for invite " + inviteIds.get(i));
+					
+					for(int j=0; j<voteArray.length; j++)
+					{
+						voteArray[j] = voteResults.get(inviteIds.get(i)).get(j);
+						Log.d(VIEW_TAG, voteArray[j]);
+					}
+					
+					voteBundle.putStringArray(VOTE_DATA, voteArray);
 					
 					voteIntent.putExtra(VOTING + i, voteBundle);
 				}
