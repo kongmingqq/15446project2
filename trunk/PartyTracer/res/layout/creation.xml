@@ -72,18 +72,32 @@
 			android:orientation="vertical"
 			android:layout_below="@id/addcategory"/>
 			
+		<TextView
+			android:id="@+id/timeoutlabel"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:layout_below="@id/alloptions"
+			android:text="Timeout Value" />
+			
+		<EditText 
+			android:id="@+id/timeoutentry"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/alloptions"
+			android:layout_toRightOf="@id/timeoutlabel" />
+			
 	    <Button
 	    	android:id="@+id/createevent"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_below="@id/alloptions"
+	        android:layout_below="@id/timeoutentry"
 	        android:text="Create" />
 	
 	    <Button
 	    	android:id="@+id/cancel"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_below="@id/alloptions"
+	        android:layout_below="@id/timeoutentry"
 	        android:layout_toRightOf="@id/createevent"
 	        android:text="Cancel" />
 	</RelativeLayout>

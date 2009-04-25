@@ -50,7 +50,7 @@ public class ChooseInvitesDialog extends Activity implements View.OnClickListene
 		}
 		else
 		{
-			String[] cols = new String[] {People.NAME, People.PRIMARY_PHONE_ID};
+			String[] cols = new String[] {People.NAME, People.NUMBER};
 			contacts = getContentResolver().query(People.CONTENT_URI, cols, null, null, People.NAME + " ASC");
 		}
 		

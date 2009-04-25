@@ -61,8 +61,8 @@ public class InviteModule extends Activity implements View.OnClickListener{
     	else
     	{
     		TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-    		myNumber = tm.getDeviceId();
-    		ComWrapper.getComm().initNumber(tm.getLine1Number());
+    		myNumber = tm.getLine1Number();
+    		ComWrapper.getComm().initNumber(myNumber);
     	}
     	
     	Log.d(MAIN_TAG, "This user's number is " + myNumber);
@@ -169,6 +169,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		Bundle eventProps = data.getBundleExtra(CreationDialog.EVENT_DETAILS);
         		String[] voteData = new String[0];
         		String[] eventData = BundleParser.parseEventData(eventProps);
+        		long timeout = eventProps.getLong(CreationDialog.TIMEOUT, -1L);
         		
         		Log.d(MAIN_TAG, "Event Properties:");
         		for(int i=0; i<eventData.length; i++)
@@ -200,7 +201,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         			vOpts[i] = voteOptions.get(i);
         		}
         		ib.setOptions(vOpts);
-        		ib.setTimeout(-1);
+        		ib.setTimeout(timeout);
         		
         		//add the invitation to our user's database and send it off to the server
         		//UserSingleton.getUser().addInvite(Invitation.fromInvitationBean(ib));
