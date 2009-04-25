@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class InvitationBean implements Serializable{
 
-	private static final long serialVersionUID = -5417217001662355679L;
+	private static final long serialVersionUID = 3711636959640384703L;
 
 	public String getSender() {
 		return sender;

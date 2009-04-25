@@ -29,6 +29,7 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 	public static String EVENT_DETAILS = "details";
 	public static String INVITED_LIST = "invited";
 	public static String VOTING_DETAILS = "voting";
+	public static String TIMEOUT = "timeout";
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +103,7 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		{
 			Log.d(CREATE_TAG, "Creating invitation");
 			
+			EditText timeoutVal = (EditText)findViewById(R.id.timeoutentry);
 			String eventName = ((EditText)findViewById(R.id.eventname)).getText().toString();
 			String eventData = ((EditText)findViewById(R.id.eventdescription)).getText().toString();
 		
@@ -111,7 +113,15 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			Bundle eventDetails = new Bundle();
 			eventDetails.putString(EVENT_NAME, eventName);
 			eventDetails.putString(EVENT_DESCRIPTION, eventData);
-		
+			
+			try
+			{
+				eventDetails.putLong(TIMEOUT, Long.valueOf(timeoutVal.getText().toString()));
+			}
+			catch(NumberFormatException e)
+			{
+				eventDetails.putLong(TIMEOUT, -1L);
+			}
 			Intent eventProps = new Intent();
 			eventProps.putExtra(EVENT_DETAILS, eventDetails);
 			eventProps.putStringArrayListExtra(INVITED_LIST, invitedUsers);
