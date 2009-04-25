@@ -12,20 +12,37 @@ public class InvitationDAO {
 		this.connPool = connPool;
 	}
 
-	public boolean storeInvitationData(InvitationBean invitationBean) {
+	public String storeInvitationData(InvitationBean invitationBean) {
 		try {
 			Connection con = connPool.getConnection();
-			String prepareString = "INSERT INTO PARTYTRACER(PARTY_ID,PARTY_SENDER, PARTY_TIMEOUT) VALUES(?,?,?)";
-			PreparedStatement pstmt = con.prepareStatement(prepareString);
-			pstmt.setString(1, System.currentTimeMillis()+"");
+			String partyID = System.currentTimeMillis() + "";
+			PreparedStatement pstmt = con.prepareStatement("INSERT INTO PARTYTRACER(PARTY_ID,PARTY_SENDER, PARTY_TIMEOUT) VALUES(?,?,?)");
+			pstmt.setString(1, partyID);
 			pstmt.setString(2, invitationBean.getSender());
-			pstmt.setString(3, invitationBean.getTimeout()+"");
-			pstmt.execute();
+			pstmt.setString(3, invitationBean.getTimeout() + "");
+			pstmt.addBatch();
+
+//			for (String eachOption : invitationBean.getOptions()) {
+//				pstmt = con.prepareStatement("INSERT INTO OPTIONLST(OPTION_CONTENT, PARTY_ID) VALUES(?,?)");
+//				pstmt.setString(1, eachOption);
+//				pstmt.setString(2, partyID);
+//				pstmt.addBatch();
+//			}
+//
+//			for (String eachPerson : invitationBean.getInviteList()){
+//				pstmt = con.prepareStatement("INSERT INTO INVITATIONLIST(INVITE_PERSON, PARTY_ID) VALUES(?,?)");
+//				pstmt.setString(1, eachPerson);
+//				pstmt.setString(2, partyID);
+//				pstmt.addBatch();
+//			}
+			
+			pstmt.executeBatch();
 			pstmt.close();
 			connPool.freeConnection(con);
-			return true;
+			return partyID;
 		} catch (Exception e) {
-			return false;
+			System.out.println("Store invitation information error: " + e.getMessage());
+			return null;
 		}
 	}
 

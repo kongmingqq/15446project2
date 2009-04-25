@@ -48,7 +48,7 @@ public class ServerThread extends Thread {
 				if (clientRequest != null) {
 					reader = new ObjectInputStream(clientRequest.getInputStream());
 					Vector<Object> input = (Vector<Object>)reader.readObject();
-					DataParser.parseMsg(input);
+					DataParser.parseMsg(input, clientIPAddress);
 					try {
 						Thread.sleep(300);
 					} catch (InterruptedException e) {
