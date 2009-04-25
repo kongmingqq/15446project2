@@ -15,12 +15,14 @@ public class MessageSender {
 		Vector<Object> myVector = new Vector<Object>();
 		InvitationBean myBean = new InvitationBean();
 		myBean.setTimeout((float)20.00);
-		myBean.setId(192);
-		myVector.add("Invitiation ID 100009");
+		myBean.setSender("Xiaojian Huang");
+		String[] mailList = {"4129994538", "1221321312"};
+		myBean.setInviteList(mailList);
+		myVector.add("INIT");
 		myVector.add(myBean);
 		while (true) {
 			try {
-				Socket mySocket = new Socket("localhost", 10004);
+				Socket mySocket = new Socket("localhost", 15446);
 				ObjectOutputStream out = new ObjectOutputStream(mySocket
 						.getOutputStream());
 				out.writeObject(myVector);

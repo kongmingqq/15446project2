@@ -3,7 +3,7 @@ import edu.cmu.partytracer.model.database.Model;
 
 
 public class PartyTracer {
-	public static final int serverPortNumber=10004;
+	public static final int serverPortNumber=15446;
 	/**
 	 * @param args
 	 */
@@ -12,8 +12,7 @@ public class PartyTracer {
 			//set up port to listen
 			serverThread = new ServerThread(serverPortNumber);
 			System.out.println("Thread Start!");
-			Model model = new Model("com.mysql.jdbc.Driver", "jdbc:mysql:///partytracer");
-			model.getCreateTableDAO().createTables();
+			ServerSingleton.getInstance().model.getCreateTableDAO().createTables();
 			serverThread.start();
 	}
 
