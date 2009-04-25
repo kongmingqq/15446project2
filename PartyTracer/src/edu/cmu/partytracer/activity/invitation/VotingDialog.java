@@ -9,6 +9,7 @@ import edu.cmu.partytracer.model.invitation.OptionList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,6 +23,7 @@ public class VotingDialog extends Activity implements View.OnClickListener,
 	private Invitation thisInvite;
 	private LinearLayout categories;
 	private HashMap<String, ArrayList<String>> votes;
+	private static String VOTE_TAG = "Voting Dialog";
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,11 +82,14 @@ public class VotingDialog extends Activity implements View.OnClickListener,
 	{
 		ArrayList<String> votingArray = new ArrayList<String>();
 		ArrayList<String> headers = new ArrayList<String>(votes.keySet());
+		Log.d(VOTE_TAG, "Writing vote array");
 		
 		for(int i=0; i<headers.size(); i++)
 		{
 			votingArray.add(Invitation.categoryString);
 			votingArray.add(headers.get(i));
+			Log.d(VOTE_TAG, "Writing category " + headers.get(i));
+			
 			votingArray.addAll(votes.get(headers.get(i)));
 		}
 		
@@ -114,8 +119,14 @@ public class VotingDialog extends Activity implements View.OnClickListener,
 		String category = ((TextView)((LinearLayout)buttonView.getParent()).getChildAt(0)).getText().toString();
 		
 		if(isChecked)
+		{
+			Log.d(VOTE_TAG, "Adding vote for " + optionName + " to category " + category);
 			votes.get(category).add(optionName);
+		}
 		else
+		{
+			Log.d(VOTE_TAG, "Removing vote for " + optionName + " from category " + category);
 			votes.get(category).remove(optionName);
+		}
 	}
 }

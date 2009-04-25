@@ -2,6 +2,8 @@ package edu.cmu.partytracer.model.invitation;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import edu.cmu.partytracer.bean.VoteBean;
 
 import edu.cmu.partytracer.network.ComWrapper;
@@ -17,6 +19,7 @@ import edu.cmu.partytracer.network.ComWrapper;
 public class User {
 	private String myNumber;
 	private ArrayList<Invitation> myInvites;
+	private static String USER_TAG = "User Class";
 	
 	public User()
 	{
@@ -29,7 +32,14 @@ public class User {
 	 * @return a list of all the invitations that this user has
 	 */
 	public Invitation[] getMyInvites() {
-		return (Invitation[]) myInvites.toArray();
+		Invitation[] invitesAsArray = new Invitation[myInvites.size()];
+		
+		for(int i=0; i<invitesAsArray.length; i++)
+		{
+			invitesAsArray[i] = myInvites.get(i);
+		}
+		
+		return invitesAsArray;
 	}
 	/**
 	 * 
@@ -44,6 +54,7 @@ public class User {
 	 * @param invite -- the invitation to add
 	 */
 	public void addInvite(Invitation invite) {
+		Log.d(USER_TAG, "Adding a new invitation");
 		myInvites.add(invite);
 	}
 	
@@ -55,6 +66,7 @@ public class User {
 	public void addVote(VoteBean vb)
 	{
 		int invId = vb.getWhichInvite();
+		Log.d(USER_TAG, "Received a vote for invitation " + invId);
 		
 		for(int i=0; i<myInvites.size(); i++)
 		{
