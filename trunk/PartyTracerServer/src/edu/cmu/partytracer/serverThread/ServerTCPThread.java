@@ -14,7 +14,7 @@ import edu.cmu.partytracer.dataProcessor.DataParser;
  * Main Thread, receiving the message from the Android nodes
  * 
  */
-public class ServerThread extends Thread {
+public class ServerTCPThread extends Thread {
 	Socket clientRequest;
 	ServerSocket serverSocket;
 
@@ -24,7 +24,7 @@ public class ServerThread extends Thread {
 	 * @param s
 	 *            port number
 	 */
-	public ServerThread(int s) {
+	public ServerTCPThread(int s) {
 		ServerSocket rServer = null;
 		try {
 			rServer = new ServerSocket(s);
