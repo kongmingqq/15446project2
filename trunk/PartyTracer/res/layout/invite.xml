@@ -10,19 +10,27 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="10dip"
         android:text="Create Invite" />
+        
+    <Button
+    	android:id="@+id/request"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_below="@id/create"
+    	android:text="Subscribe to Invitation" />
 
     <Button
     	android:id="@+id/active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/create"
+        android:layout_below="@id/request"
         android:text="View Active Invites" />
 
     <Button
     	android:id="@+id/vote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/active"
+        android:layout_below="@id/request"
+        android:layout_toRightOf="@id/active"
         android:text="View Voting Invites" />
 
 </RelativeLayout>
