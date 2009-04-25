@@ -78,7 +78,19 @@ public class InvitationBean implements Serializable{
 	private String[] voteData;
 	private boolean active;
 	private String[] options;
+	private long partyTime;
 	
-	public InvitationBean(){};
+	public long getPartyTime() {
+		return partyTime;
+	}
+
+	public void setPartyTime(long partyTime) {
+		this.partyTime = partyTime;
+	}
+
+	public InvitationBean(){
+		this.timeout = 2*60;
+		this.partyTime = 5*60*60;
+	}
 }
 

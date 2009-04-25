@@ -2,7 +2,6 @@ package edu.cmu.partytracer.serverThread;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import edu.cmu.partytracer.bean.InvitationBean;
@@ -12,16 +11,15 @@ import edu.cmu.partytracer.model.database.Model;
 import edu.cmu.partytracer.serverThread.ServerUDPThread.ServerCacheQueue;
 
 public class ServerSingleton {
-	HashMap<String, String> curStatus;
-	Model model;
-	HashMap<String, HashMap<String, Integer>> voteMap;
-	HashMap<String, InvitationBean> invitationMap;
-	HashMap<String, Long> startTimeMap;
-	HashMap<String, ArrayList<String>> clientAddressMap;
-	HashMap<String, ServerCacheQueue> locationQueueMap;
-	HashMap<String, Object[]> locationCacheMap;
+	public HashMap<String, String> curStatus;
+	public Model model;
+	public HashMap<String, HashMap<String, Integer>> voteMap;
+	public HashMap<String, InvitationBean> invitationMap;
+	public HashMap<String, ArrayList<String>> clientAddressMap;
+	public HashMap<String, ServerCacheQueue> locationQueueMap;
+	public HashMap<String, Object[]> locationCacheMap;
 	public static final int clientPort = 64451;
-	public static final int serverPortNumber=15446;
+	public static final int serverPortNumber = 15446;
 	public static final int serverUDPPort = 8889;
 	public static final int clientUDPPort = 9999;
 
@@ -33,7 +31,6 @@ public class ServerSingleton {
 		;
 		voteMap = new HashMap<String, HashMap<String, Integer>>();
 		invitationMap = new HashMap<String, InvitationBean>();
-		startTimeMap = new HashMap<String, Long>();
 		clientAddressMap = new HashMap<String, ArrayList<String>>();
 		locationQueueMap = new HashMap<String, ServerCacheQueue>();
 		locationCacheMap = new HashMap<String, Object[]>();
@@ -86,14 +83,6 @@ public class ServerSingleton {
 		this.voteMap.put(partyID, curVoteMap);
 	}
 
-	public void setPartyStartTime(String partyID, long startTime) {
-		this.startTimeMap.put(partyID, startTime);
-	}
-
-	public long getPartyStartTime(String partyID) {
-		return this.startTimeMap.get(partyID);
-	}
-
 	public float getTimeOut(String partyID) {
 		return this.invitationMap.get(partyID).getTimeout();
 	}
@@ -120,7 +109,7 @@ public class ServerSingleton {
 
 	@SuppressWarnings("unchecked")
 	public Object[] getLocationCache(String partyID) {
-		return (Object[])locationCacheMap.get(partyID);
+		return (Object[]) locationCacheMap.get(partyID);
 	}
 
 	public void setLocationCache(String partyID, List<Location> locationCache) {
