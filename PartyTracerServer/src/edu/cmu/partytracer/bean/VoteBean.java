@@ -27,7 +27,20 @@ public class VoteBean {
 	private int whichInvite;
 	private int[] voters;
 	private String[] data;
-	
+	private String partyID;
+	private String myVote;
+	public String getMyVote() {
+		return myVote;
+	}
+	public void setMyVote(String myVote) {
+		this.myVote = myVote;
+	}
+	public String getPartyID() {
+		return partyID;
+	}
+	public void setPartyID(String partyID) {
+		this.partyID = partyID;
+	}
 	public VoteBean(){};
 }
 

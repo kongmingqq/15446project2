@@ -48,7 +48,7 @@ public class CreateTableDAO {
 			ResultSet rsJob = dbm.getTables(null, null, "OPTIONLIST", null);
 			if (!rsJob.next()) {
 				Statement stmt = con.createStatement();
-				String Query = "CREATE TABLE OPTIONLIST (" + "OPTION_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY," + "OPTION_CONTENT VARCHAR(500)," + "PARTY_ID VARCHAR(500),"  
+				String Query = "CREATE TABLE OPTIONLIST (" + "OPTION_ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY," + "OPTION_CONTENT VARCHAR(500)," + "PARTY_ID VARCHAR(500)," + "VOTE_CNT INT(10)," 
 						 + "FOREIGN KEY (PARTY_ID) REFERENCES PARTYTRACER(PARTY_ID) ON DELETE SET NULL)";
 				stmt.execute(Query);
 				stmt.close();

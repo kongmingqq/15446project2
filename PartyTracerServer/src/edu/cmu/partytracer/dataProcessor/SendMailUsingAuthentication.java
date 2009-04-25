@@ -41,8 +41,7 @@ public class SendMailUsingAuthentication {
 	private static final String SMTP_AUTH_PWD = "test15446";
 	private static final String SMTP_PORT_NUBER = "587";
 
-	public void postMail(String recipients[], String subject, String message,
-			String from) throws MessagingException {
+	public void postMail(String recipients[], String subject, String message, String from) throws MessagingException {
 		boolean debug = false;
 
 		// Set the host smtp address

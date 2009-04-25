@@ -6,23 +6,16 @@ import java.util.Vector;
 
 import edu.cmu.partytracer.bean.InvitationBean;
 
-public class MessageSender {
+public class SendReq {
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// send init
+		//send req
 		try {
 			Vector<Object> myVector = new Vector<Object>();
-			InvitationBean myBean = new InvitationBean();
-			myBean.setTimeout(999999);
-			myBean.setSender("Sender_xiaojian");
-			String[] inviteList = { "4123332345", "4129994538" };
-			myBean.setInviteList(inviteList);
-			String[] options = { "OptionCMU", "optionHBH" };
-			myBean.setOptions(options);
-			myVector.add("INIT");
-			myVector.add(myBean);
+			myVector.add("REQ");
+			myVector.add("1240682470281");
 			Socket mySocket = new Socket("localhost", 15446);
 			ObjectOutputStream out = new ObjectOutputStream(mySocket.getOutputStream());
 			out.writeObject(myVector);
@@ -33,5 +26,4 @@ public class MessageSender {
 			System.out.println("Error" + e.getMessage());
 		}
 	}
-
 }

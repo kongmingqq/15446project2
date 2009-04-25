@@ -1,19 +1,22 @@
 package edu.cmu.partytracer.serverThread;
-import edu.cmu.partytracer.model.database.Model;
 
 
 public class PartyTracer {
-	public static final int serverPortNumber=15446;
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-			Thread serverThread = null;
-			//set up port to listen
-			serverThread = new ServerThread(serverPortNumber);
-			System.out.println("Thread Start!");
+			Thread serverTCPThread = null;
+			ServerUDPThread.srThread serverUDPThread = null;
 			ServerSingleton.getInstance().model.getCreateTableDAO().createTables();
-			serverThread.start();
+			//set up port to listen
+			serverTCPThread = new ServerTCPThread(ServerSingleton.serverPortNumber);
+			System.out.println("TCP Thread Start!");
+			serverTCPThread.start();
+			serverUDPThread = new ServerUDPThread.srThread();
+			System.out.println("UDP Thread Start!");
+			serverUDPThread.start();
+			
 	}
 
 }
