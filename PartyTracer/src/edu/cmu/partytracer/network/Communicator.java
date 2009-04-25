@@ -48,7 +48,6 @@ public class Communicator extends AbstractComm{
 		}
 	}
 
-	@Override
 	public void initNumber(String myNumber) {
 		this.myNumber = myNumber;
 	}

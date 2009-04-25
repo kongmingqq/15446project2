@@ -8,4 +8,5 @@
     <string name="module_view">View Invitations</string>
     <string name="module_chooseinvites">Select Users To Invite</string>
     <string name="module_vote">Vote On This Invitation</string>
+    <string name="module_request">Subscribe To Invitation</string>
 </resources>

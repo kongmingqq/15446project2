@@ -30,11 +30,11 @@ public class InvitationBean implements Serializable{
 		this.id = id;
 	}
 
-	public float getTimeout() {
+	public long getTimeout() {
 		return timeout;
 	}
 
-	public void setTimeout(float timeout) {
+	public void setTimeout(long timeout) {
 		this.timeout = timeout;
 	}
 
@@ -73,7 +73,7 @@ public class InvitationBean implements Serializable{
 	private String sender;
 	private String[] inviteList;
 	private int id;
-	private float timeout;
+	private long timeout;
 	private String[] data;
 	private String[] voteData;
 	private boolean active;
