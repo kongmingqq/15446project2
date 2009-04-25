@@ -3,7 +3,7 @@ package edu.cmu.partytracer.dataProcessor;
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.LocationBean;
 import edu.cmu.partytracer.bean.VoteBean;
-import edu.cmu.partytracer.controller.PartyTimer;
+import edu.cmu.partytracer.controller.VoteTimer;
 import edu.cmu.partytracer.serverThread.ServerSingleton;
 
 public class DataDispatcher {
@@ -11,7 +11,8 @@ public class DataDispatcher {
 		String partyID = ServerSingleton.getInstance().getModel().getInvitationDAO().storeInvitationData(invitationBean);
 		ServerSingleton.getInstance().setCurStatus(partyID, "GET_FIRST_INVITATION");
 		ServerSingleton.getInstance().setInvitationBean(partyID, invitationBean);
-		new PartyTimer(invitationBean.getTimeout(), partyID);
+		new VoteTimer(invitationBean.getTimeout(), partyID);
+		new VoteTimer(invitationBean.getPartyTime(), partyID);
 		try {
 			System.out.println("Insert invitation bean successful!");
 			SendMailUsingAuthentication smtpMailSender = new SendMailUsingAuthentication();
@@ -39,7 +40,9 @@ public class DataDispatcher {
 	}
 	public static void storeLocationMsg(LocationBean loc, String clientIPAddress) {
 		ServerSingleton.getInstance().addToLocationQueue(loc.getPartyID(), loc);
-		ClientCommunicator.sendAggregatedLocation(loc.getPartyID(), clientIPAddress, loc);
+		if (loc.isSleepMode()){
+			ClientCommunicator.sendAggregatedLocation(loc.getPartyID(), clientIPAddress, loc);
+		}
 	}
 
 }
