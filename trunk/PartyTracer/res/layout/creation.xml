@@ -43,16 +43,32 @@
 			android:text="Invite Users"/>		
 			
 		<Button
+			android:id="@+id/scrollleft"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/addinvitedusers"
+			android:text="left"/>
+			
+		<Button
 			android:id="@+id/addcategory"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_below="@id/addinvitedusers"
+			android:layout_toRightOf="@id/scrollleft"
 			android:text="Add Category"/>
+			
+		<Button
+			android:id="@+id/scrollright"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/addinvitedusers"
+			android:layout_toRightOf="@id/addcategory"
+			android:text="right"/>
 			
 		<LinearLayout
 			android:id="@+id/alloptions"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:orientation="vertical"
 			android:layout_below="@id/addcategory"/>
 			

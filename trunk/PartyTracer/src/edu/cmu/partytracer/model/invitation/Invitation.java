@@ -111,7 +111,11 @@ public class Invitation {
 			{
 				Log.d(INVITE_TAG, "Looking at category " + categories.get(i));
 				int catIndex = voteData.indexOf(categories.get(i), voterIndex);
-				int catEnd = Math.min(voteData.indexOf(categoryString, catIndex), voteData.indexOf(endString, catIndex));
+				int catEnd = voteData.indexOf(categoryString, catIndex);
+				
+				if(catEnd == -1)
+					catEnd = voteData.indexOf(endString, catIndex);
+				
 				options.get(categories.get(i)).removeVotesOf(voter);
 				
 				for(int j=catIndex+1; j<catEnd; j++)

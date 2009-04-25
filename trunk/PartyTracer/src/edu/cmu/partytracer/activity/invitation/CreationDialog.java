@@ -22,6 +22,7 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 	private Vector<String> votingData;
 	private ArrayList<String> invitedUsers;
 	private static String CREATE_TAG = "Create Invites Screen";
+	private static float DEFAULT_TEXT_SIZE = 10.0f;
 	
 	public static String EVENT_NAME = "name";
 	public static String EVENT_DESCRIPTION = "description";
@@ -42,11 +43,18 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 		Button cancel = (Button) findViewById(R.id.cancel);
 		Button addCategory = (Button) findViewById(R.id.addcategory);
 		Button addInvites = (Button) findViewById(R.id.addinvitedusers);
+		Button scrollLeft = (Button) findViewById(R.id.scrollleft);
+		Button scrollRight = (Button) findViewById(R.id.scrollright);
+		
+		scrollLeft.setText("<");
+		scrollRight.setText(">");
 		
 		create.setOnClickListener(this);
 		cancel.setOnClickListener(this);
 		addCategory.setOnClickListener(this);
 		addInvites.setOnClickListener(this);
+		scrollLeft.setOnClickListener(this);
+		scrollRight.setOnClickListener(this);
 		
 		options = (LinearLayout) findViewById(R.id.alloptions);
 	}
@@ -129,7 +137,9 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			
 			TextView catLabel = new TextView(this);
 			catLabel.setText("Category Name");
+			catLabel.setTextSize(DEFAULT_TEXT_SIZE);
 			EditText catName = new EditText(this);
+			catName.setTextSize(DEFAULT_TEXT_SIZE);
 			
 			catDetails.addView(catLabel);
 			catDetails.addView(catName);
@@ -137,9 +147,13 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			Button addOptionButton = new Button(this);
 			addOptionButton.setText("Add Option");
 			addOptionButton.setOnClickListener(this);
+			addOptionButton.setTextSize(DEFAULT_TEXT_SIZE);
 			
 			newOption.addView(catDetails);
 			newOption.addView(addOptionButton);
+			newOption.setHorizontalScrollBarEnabled(true);
+			
+			newOption.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 			
 			options.addView(newOption);
 			options.requestLayout();
@@ -156,6 +170,19 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			Intent selectInvited = new Intent(this, edu.cmu.partytracer.activity.invitation.ChooseInvitesDialog.class);
 			startActivityForResult(selectInvited, 0);
 		}
+		else if(v.getId() == R.id.scrollleft)
+		{
+			if(options.getScrollX() > 0)
+			{
+				options.scrollBy(-5, 0);
+				options.requestLayout();
+			}
+		}
+		else if(v.getId() == R.id.scrollright)
+		{
+			options.scrollBy(5, 0);
+			options.requestLayout();
+		}
 		else
 		{
 			Log.d(CREATE_TAG, "Add Option clicked");
@@ -167,6 +194,9 @@ public class CreationDialog extends Activity implements View.OnClickListener{
 			TextView catLabel = new TextView(this);
 			catLabel.setText("Option Name");
 			EditText catName = new EditText(this);
+			
+			catLabel.setTextSize(DEFAULT_TEXT_SIZE);
+			catName.setTextSize(DEFAULT_TEXT_SIZE);
 			
 			optName.addView(catLabel);
 			optName.addView(catName);

@@ -25,7 +25,7 @@ public class ChooseInvitesDialog extends Activity implements View.OnClickListene
 	
 	private ArrayList<String> invitedUserNumbers;
 	private static String CHOOSE_INVITES_TAG = "Choose Invited Users";
-	private ListAdapter mAdapter;
+	private Cursor contacts;
 	private LinearLayout contactList;
 
 	/** Called when the activity is first created. */
@@ -51,13 +51,8 @@ public class ChooseInvitesDialog extends Activity implements View.OnClickListene
 		}
 		else
 		{
-//			Cursor contacts = getContentResolver().query(People.CONTENT_URI, null, null, null, null);
-//			startManagingCursor(contacts);
-//			
-//			String[] columns = new String[] {People.NAME};
-//			int[] names = new int[] {R.id.rowentry};
-//	
-//			mAdapter = new SimpleCursorAdapter(this, R.id.list, contacts, columns, names);
+			String[] cols = new String[] {People.NAME, People.PRIMARY_PHONE_ID};
+			contacts = getContentResolver().query(People.CONTENT_URI, cols, null, null, People.NAME + " ASC");
 		}
 		
 		invitedUserNumbers = new ArrayList<String>();
@@ -68,16 +63,28 @@ public class ChooseInvitesDialog extends Activity implements View.OnClickListene
 	}
 
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		String phoneNum;
+		String phoneNum = "";
+		String selectedName = ((TextView) v).getText().toString();
 		
 		if(TestDataGenerator.TEST_MODE_ON)
 		{
-			phoneNum = TestDataGenerator.lookUpContact(((TextView) v).getText().toString());
+			phoneNum = TestDataGenerator.lookUpContact(selectedName);
 		}
 		else
 		{
-			Cursor contactInfo = (Cursor) mAdapter.getItem(position);
-			phoneNum = contactInfo.getString(contactInfo.getColumnIndexOrThrow(People.PRIMARY_PHONE_ID));
+			contacts.moveToFirst();
+			int nameColumn = contacts.getColumnIndex(People.NAME);
+			int numColumn = contacts.getColumnIndex(People.PRIMARY_PHONE_ID);
+			
+			do
+			{
+				String name = contacts.getString(nameColumn);
+				if(name.equals(selectedName))
+				{
+					phoneNum = contacts.getString(numColumn);
+					break;
+				}
+			} while(contacts.moveToNext());
 		}
 		
 		Log.d(CHOOSE_INVITES_TAG, "Selected user " + phoneNum);
