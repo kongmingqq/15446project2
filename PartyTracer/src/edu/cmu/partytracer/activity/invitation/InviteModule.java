@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import edu.cmu.partytracer.activity.invitation.testing.TestDataGenerator;
+import edu.cmu.partytracer.activity.trace.TraceSendThread;
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.Protocol;
 import edu.cmu.partytracer.bean.VoteBean;
 import edu.cmu.partytracer.network.AlertThread;
 import edu.cmu.partytracer.network.ComWrapper;
+import edu.cmu.partytracer.Application;
 import edu.cmu.partytracer.R;
 import edu.cmu.partytracer.model.invitation.BundleParser;
 import edu.cmu.partytracer.model.invitation.Invitation;
@@ -114,6 +116,20 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		else if(v.getId() == R.id.exit)
 		{
 			//Start a trace thread here
+			Application.TRACE_SEND_THREAD = new TraceSendThread();
+			Application.MY_PHONE_ID = UserSingleton.getUser().getNumber();
+			Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
+			
+			for(int i=0; i<myInvites.length; i++)
+			{
+				if(myInvites[i].isActive())
+				{
+					Application.CURRENT_PARTY_ID = Integer.toString(myInvites[i].getId());
+					break;
+				}
+			}
+			
+			Application.TRACE_SEND_THREAD.start();
 			finish();
 		}
 		else if(v.getId() == R.id.active)
@@ -215,6 +231,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		ib.setData(eventData);
         		ib.setId("0");
         		
+        		//Create and set the list of users who are invited to this event
         		ArrayList<String> invited = data.getStringArrayListExtra(CreationDialog.INVITED_LIST);
         		String[] invitedNumbers = new String[invited.size()];
         		
@@ -226,6 +243,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		
         		ib.setInviteList(invitedNumbers);
         		
+        		//Finally, get the array of strings which represents the available voting options
         		ArrayList<String> voteOptions = data.getStringArrayListExtra(Invitation.voterString);
         		String[] vOpts = new String[voteOptions.size()];
         		for(int i=0; i<voteOptions.size(); i++)
