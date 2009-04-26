@@ -104,7 +104,11 @@ public class Map extends MapActivity {
         mc.setZoom(13);
         mc.setCenter(destinationPoint);
         
-        Thread trt = new TraceReceiveThread();
+        //Temporary for test
+        Thread tst = new TraceSendThread();
+        tst.start();
+        
+        Thread trt = new TraceReceiveThread(this);
         trt.start();
         Application.TRACE_RECEIVE_THREAD = trt;
     	Application.TRACE_SLEEP_MODE = false;
@@ -146,20 +150,15 @@ public class Map extends MapActivity {
 	    	//do sth
 	        return true;
 	    case 2:
+	    	/*
 	    	//terminate bean sent to server
 	    	sendTerminationBean();
 	    	//start terminate thread to listen to server terminate bean
 	    	Thread trt = new TerminateReceiveThread();
 	    	trt.start();
 	    	Application.CURRENT_PARTY_ID = null; //once stop, cannot enter
-	    	
-	    	//message
-			Intent i = new Intent(this, Message.class);
-			i.putExtra("Message", "You request has been sent");
-			startActivity(i);
-			
-			//stop
-			finish();    	
+	    	*/
+	    	terminate("You have quit the party tracing");
 	        return true;
 	    case 3:
 	    	//do sth
@@ -168,7 +167,21 @@ public class Map extends MapActivity {
 	    return false;
 	}
 	
-	
+	public void terminate(String message) {
+    	//message
+		Intent i = new Intent(this, Message.class);
+		i.putExtra("Message", message);
+		startActivity(i);
+
+    	if(Application.TRACE_SEND_THREAD!=null) {
+	    	Application.TRACE_SEND_THREAD.interrupt();
+	    	Application.TRACE_SEND_THREAD = null;
+    	}
+    	Application.CURRENT_PARTY_ID = null;
+		//stop
+		finish();    
+	}
+	/*
 	public void sendTerminationBean() {
 		PTSocket pts = null;
 		
@@ -189,7 +202,7 @@ public class Map extends MapActivity {
 			}
 		}
 	}
-	
+	*/
 	
 	
 	public class MapItemizedOverlay extends ItemizedOverlay {
