@@ -10,9 +10,9 @@ public class PartyTracer {
 			serverTCPThread = new ServerTCPThread(ServerSingleton.serverPortNumber);
 			System.out.println("TCP Thread Start!");
 			serverTCPThread.start();
-//			serverUDPThread = new ServerUDPThread.srThread();
-//			System.out.println("UDP Thread Start!");
-//			serverUDPThread.start();
+			serverUDPThread = new ServerUDPThread.srThread();
+			System.out.println("UDP Thread Start!");
+			serverUDPThread.start();
 	}
 
 }

@@ -98,7 +98,7 @@ public class ClientCommunicator {
 	 * @param loc
 	 */
 	public static void sendAggregatedLocation(String partyID, String clientIPAddress,  LocationBean loc) {
-		if (ServerSingleton.getInstance().getLocationCache(partyID)==null || Integer.valueOf(ServerSingleton.getInstance().getLocationCache(partyID)[0].toString())-System.currentTimeMillis()>5000){
+		if (ServerSingleton.getInstance().getLocationCache(partyID)==null || Long.valueOf(ServerSingleton.getInstance().getLocationCache(partyID)[0].toString())-System.currentTimeMillis()>5000){
 			ServerCacheQueue serverCacheQueue= ServerSingleton.getInstance().getLocationQueue(partyID);
 			ServerSingleton.getInstance().setLocationCache(partyID, serverCacheQueue.dequeueLocationBatch(serverCacheQueue.size()/2));
 		}

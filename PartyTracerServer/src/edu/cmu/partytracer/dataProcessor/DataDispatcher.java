@@ -53,7 +53,7 @@ public class DataDispatcher {
 	 */
 	public static void storeLocationMsg(LocationBean loc, String clientIPAddress) {
 		ServerSingleton.getInstance().addToLocationQueue(loc.getPartyID(), loc);
-		if (loc.isSleepMode()){
+		if (!loc.isSleepMode()){
 			ClientCommunicator.sendAggregatedLocation(loc.getPartyID(), clientIPAddress, loc);
 		}
 	}
