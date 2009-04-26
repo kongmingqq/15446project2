@@ -35,4 +35,5 @@
         		  android:label="@string/module_request" />
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
-</manifest> 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+</manifest>

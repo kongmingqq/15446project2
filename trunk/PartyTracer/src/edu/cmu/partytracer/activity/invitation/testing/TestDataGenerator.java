@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class TestDataGenerator {
 
-	public static boolean TEST_MODE_ON = true;
+	public static boolean TEST_MODE_ON = false;
 	private static volatile HashMap<String, String> phoneNumbers;
 	private static volatile Random r;
 	
@@ -24,10 +24,10 @@ public class TestDataGenerator {
 		if(phoneNumbers == null)
 		{
 			phoneNumbers = new HashMap<String, String>();
-			phoneNumbers.put("User A", "410-304-2118");
-			phoneNumbers.put("User B", "300-800-2009");
-			phoneNumbers.put("User C", "664-101-3042");
-			phoneNumbers.put("User D", "118-300-8002");
+			phoneNumbers.put("User A", "15852084274");
+			phoneNumbers.put("User B", "16666666666");
+			phoneNumbers.put("User C", "17777777777");
+			phoneNumbers.put("User D", "18888888888");
 		}
 		
 		return phoneNumbers.get(contact);

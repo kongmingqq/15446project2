@@ -99,7 +99,7 @@ public class ViewInvitesDialog extends Activity implements View.OnClickListener{
         	
         	ib.setActive(inviteData.getBoolean(ACTIVE));
         	ib.setData(inviteData.getStringArray(DATA));
-        	ib.setId(inviteData.getInt(IID));
+        	ib.setId(Integer.toString(inviteData.getInt(IID)));
         	ib.setInviteList(inviteData.getStringArray(INVITE_LIST));
         	ib.setSender(inviteData.getString(SENDER));
         	ib.setTimeout(inviteData.getLong(TIMEOUT));

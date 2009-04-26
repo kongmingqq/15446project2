@@ -36,8 +36,8 @@ public class ChooseInvitesDialog extends Activity implements View.OnClickListene
 		Log.d(CHOOSE_INVITES_TAG, "Entered Choose Invites Dialog");
 		
 		contactList = (LinearLayout) findViewById(R.id.allinvitableusers);
-		if(TestDataGenerator.TEST_MODE_ON)
-		{
+//		if(TestDataGenerator.TEST_MODE_ON)
+//		{
 			String[] contacts = TestDataGenerator.samplePhoneBook();
 			
 			for(int i=0; i<contacts.length; i++)
@@ -47,12 +47,12 @@ public class ChooseInvitesDialog extends Activity implements View.OnClickListene
 				entry.setOnCheckedChangeListener(this);
 				contactList.addView(entry);
 			}
-		}
-		else
-		{
-			String[] cols = new String[] {People.NAME, People.NUMBER};
-			contacts = getContentResolver().query(People.CONTENT_URI, cols, null, null, People.NAME + " ASC");
-		}
+//		}
+//		else
+//		{
+//			String[] cols = new String[] {People.NAME, People.NUMBER};
+//			contacts = getContentResolver().query(People.CONTENT_URI, cols, null, null, People.NAME + " ASC");
+//		}
 		
 		invitedUserNumbers = new ArrayList<String>();
 		
@@ -65,26 +65,26 @@ public class ChooseInvitesDialog extends Activity implements View.OnClickListene
 		String phoneNum = "";
 		String selectedName = ((TextView) v).getText().toString();
 		
-		if(TestDataGenerator.TEST_MODE_ON)
-		{
+//		if(TestDataGenerator.TEST_MODE_ON)
+//		{
 			phoneNum = TestDataGenerator.lookUpContact(selectedName);
-		}
-		else
-		{
-			contacts.moveToFirst();
-			int nameColumn = contacts.getColumnIndex(People.NAME);
-			int numColumn = contacts.getColumnIndex(People.PRIMARY_PHONE_ID);
-			
-			do
-			{
-				String name = contacts.getString(nameColumn);
-				if(name.equals(selectedName))
-				{
-					phoneNum = contacts.getString(numColumn);
-					break;
-				}
-			} while(contacts.moveToNext());
-		}
+//		}
+//		else
+//		{
+//			contacts.moveToFirst();
+//			int nameColumn = contacts.getColumnIndex(People.NAME);
+//			int numColumn = contacts.getColumnIndex(People.PRIMARY_PHONE_ID);
+//			
+//			do
+//			{
+//				String name = contacts.getString(nameColumn);
+//				if(name.equals(selectedName))
+//				{
+//					phoneNum = contacts.getString(numColumn);
+//					break;
+//				}
+//			} while(contacts.moveToNext());
+//		}
 		
 		Log.d(CHOOSE_INVITES_TAG, "Selected user " + phoneNum);
 		
