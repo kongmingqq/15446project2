@@ -15,6 +15,7 @@ import com.google.android.maps.OverlayItem;
 import edu.cmu.partytracer.Application;
 import edu.cmu.partytracer.Message;
 import edu.cmu.partytracer.R;
+import edu.cmu.partytracer.activity.invitation.testing.TestDataGenerator;
 import edu.cmu.partytracer.bean.AggLocationBean;
 import edu.cmu.partytracer.bean.BeanVector;
 import edu.cmu.partytracer.bean.Location;
@@ -73,24 +74,31 @@ public class Map extends MapActivity {
         marker_destination = this.getResources().getDrawable(R.drawable.marker_destination);
         marker_me = this.getResources().getDrawable(R.drawable.marker_me);
         Drawable info_waiting = this.getResources().getDrawable(R.drawable.info_waiting);
-        
-        
-        //TODO read destination from invitation
-        
-        GeoPoint destinationPoint = new GeoPoint(40444314,-79942961);
+
+        Location d = Application.CURRENT_PARTY_DESTINATION;
+        GeoPoint destinationPoint = new GeoPoint(d.getLatitude(),d.getLongitude());
         OverlayItem destination = new OverlayItem(destinationPoint, "Destination", "party info here");
         destinationOverlay = new MapItemizedOverlay(marker_destination);
         destinationOverlay.addOverlay(destination);
         mapOverlays.add(destinationOverlay);
         
-        GeoPoint myPoint = new GeoPoint(40444314,-79942961);
-        OverlayItem me = new OverlayItem(myPoint, "Destination", "Party info here");
+        GeoPoint myPoint = new GeoPoint(40442334,-79945971);
+        OverlayItem me = new OverlayItem(myPoint, "Me", "Myself");
+        MapItemizedOverlay myLocOverlay = new MapItemizedOverlay(marker_me);
+        myLocOverlay.addOverlay(me);
+        myLocOverlay.setMarker(0, marker_me);
+        mapOverlays.add(myLocOverlay);
+        
+        //TODO my location info and my location update thread
+        //myLocationOverlay = new MyLocationOverlay(this, mapView);
+        //mapOverlays.add(myLocationOverlay);
+        
+        OverlayItem info = new OverlayItem(destinationPoint, "Destination", d.getId());
         itemizedOverlay = new MapItemizedOverlay(marker_unknown);
-        itemizedOverlay.addOverlay(me);
+        itemizedOverlay.addOverlay(info);
         itemizedOverlay.setMarker(0, info_waiting);
         mapOverlays.add(itemizedOverlay);
         
-        //TODO my location info and my location update thread
         
         MapController mc = mapView.getController();
         mc.setZoom(13);
@@ -216,7 +224,7 @@ public class Map extends MapActivity {
 				OverlayItem current = mOverlays.get(index);
 				//bad for concurrent control
 				//mapView.getController().animateTo(current.getPoint());
-				Toast.makeText(getBaseContext(), current.getTitle()+"\nabc: xxxx\ndef: ook\nghi: "+index, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getBaseContext(), current.getTitle()+"\n"+TestDataGenerator.lookUpContact(current.getTitle()), Toast.LENGTH_SHORT).show();
 			}
 			return true;
 		}
@@ -249,7 +257,7 @@ public class Map extends MapActivity {
 	
 //*
 	public class ProcessThread extends Thread{
-		int TIME_GRAIN = 1000;
+		int TIME_GRAIN = 1250;
 		int EPOCH = Protocol.EPOCH;
 		
 	
@@ -362,10 +370,12 @@ public class Map extends MapActivity {
 						
 						//synchronized(itemizedOverlay) {
 							synchronized(mapView) {
+								synchronized(mapOverlays) {
 							mapOverlays.remove(itemizedOverlay);
 							itemizedOverlay = newItemizedOverlay;
 							mapOverlays.add(itemizedOverlay);
 							mapView.postInvalidate();
+								}
 							}
 						//}
 						
