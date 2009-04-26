@@ -9,38 +9,30 @@ import android.util.Log;
 public class DataThread extends Thread {
 
 	private Socket inputSocket;
-	private boolean crashed;
 	
 	public DataThread(Socket s)
 	{
 		inputSocket = s;
-		crashed = false;
-	}
-	
-	public boolean isCrashed() {
-		return crashed;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void run()
-	{
-		crashed = false;
-					
+	{		
 		try {
 			Vector<Object> dataIn = new Vector<Object>();
 			ObjectInputStream objStream = new ObjectInputStream(inputSocket.getInputStream());
 			
-			while(true)
+			while((dataIn = (Vector<Object>) objStream.readObject()) != null)
 			{
 				Log.d("Data Thread", "Checking for incoming messages");
 				Thread.sleep(1000);
 				
-				dataIn = (Vector<Object>) objStream.readObject();
-				if(dataIn != null)
-					MessageHandler.forward(dataIn);
+				MessageHandler.forward(dataIn);
 			}
+			
+			inputSocket.close();
 		} catch (Exception e) {
-			crashed = true;
+			e.printStackTrace();
 		}
 		
 	}
