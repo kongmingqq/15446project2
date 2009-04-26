@@ -65,7 +65,7 @@ public class User {
 	 */
 	public void addVote(VoteBean vb)
 	{
-		int invId = vb.getWhichInvite();
+		int invId = Integer.valueOf(vb.getWhichInvite());
 		Log.d(USER_TAG, "Received a vote for invitation " + invId);
 		
 		for(int i=0; i<myInvites.size(); i++)
