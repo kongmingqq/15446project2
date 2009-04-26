@@ -17,7 +17,7 @@ public class MessageSender {
 			InvitationBean myBean = new InvitationBean();
 			myBean.setTimeout(999999);
 			myBean.setSender("Sender_xiaojian");
-			String[] inviteList = { "4123332345", "4129994538" };
+			String[] inviteList = { "4125892943", "4129994538", "5852084274"};
 			myBean.setInviteList(inviteList);
 			String[] options = { "OptionCMU", "optionHBH" };
 			myBean.setOptions(options);

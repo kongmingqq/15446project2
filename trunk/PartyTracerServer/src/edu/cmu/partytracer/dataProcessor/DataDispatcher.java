@@ -4,6 +4,7 @@ import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.LocationBean;
 import edu.cmu.partytracer.bean.VoteBean;
 import edu.cmu.partytracer.controller.VoteTimer;
+import edu.cmu.partytracer.model.invitation.Invitation;
 import edu.cmu.partytracer.serverThread.ServerSingleton;
 
 public class DataDispatcher {
@@ -30,14 +31,26 @@ public class DataDispatcher {
 	 * @param voteBean
 	 */
 	public static void storeVoteMsg(VoteBean voteBean, String clientIPAddress) {
-		String partyID = voteBean.getPartyID();
-		String voteOption = voteBean.getMyVote();
-		ServerSingleton.getInstance().increaseVote(voteBean.getPartyID(), voteOption);
-		ServerSingleton.getInstance().saveClientAddress(voteBean.getPartyID(), clientIPAddress);
-		if (ServerSingleton.getInstance().getInvitationBean(partyID).getInviteList().length+1 == ServerSingleton.getInstance().getClientList(partyID).size()){
-			ClientCommunicator.sendVoteResult(partyID);
+//		String partyID = voteBean.getPartyID();
+//		String voteOption = voteBean.getMyVote();
+//		ServerSingleton.getInstance().increaseVote(voteBean.getPartyID(), voteOption);
+//		ServerSingleton.getInstance().saveClientAddress(voteBean.getPartyID(), clientIPAddress);
+//		if (ServerSingleton.getInstance().getInvitationBean(partyID).getInviteList().length+1 == ServerSingleton.getInstance().getClientList(partyID).size()){
+//			ClientCommunicator.sendVoteResult(partyID);
+//		}
+		Invitation curVote = ServerSingleton.getInstance().voteProcessMap.get(voteBean.getPartyId());
+		curVote.addVotes(voteBean);
+		ServerSingleton.getInstance().voteProcessMap.put(voteBean.getPartyId(), curVote);
+		if (ServerSingleton.getInstance().voteProcessMap.get(voteBean.getPartyId()).numVotedUsers() == ServerSingleton.getInstance().getClientList(voteBean.getPartyId()).size()){
+			ClientCommunicator.sendVoteResult(voteBean.getPartyId());
 		}
 	}
+	
+	/**
+	 * Store the location information in the queue, and send to the clients who are not in sleep mode
+	 * @param loc
+	 * @param clientIPAddress
+	 */
 	public static void storeLocationMsg(LocationBean loc, String clientIPAddress) {
 		ServerSingleton.getInstance().addToLocationQueue(loc.getPartyID(), loc);
 		if (loc.isSleepMode()){

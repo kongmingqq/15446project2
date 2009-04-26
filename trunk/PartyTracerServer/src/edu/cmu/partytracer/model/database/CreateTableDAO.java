@@ -19,7 +19,7 @@ public class CreateTableDAO {
 	 */
 	public boolean createTables() {
 		try {
-
+			
 			Connection con = connPool.getConnection();
 			DatabaseMetaData dbm = con.getMetaData();
 			// check whether the table echo_case exist or not
@@ -27,7 +27,6 @@ public class CreateTableDAO {
 			// if table echo_case does not exist, then create the table
 			// echo_case
 			if (!rsCase.next()) {
-
 				Statement stmt = con.createStatement();
 				String Query = "CREATE TABLE PARTYTRACER(" + "PARTY_ID VARCHAR(500) PRIMARY KEY, PARTY_SENDER VARCHAR(500), PARTY_TIMEOUT VARCHAR(500), PARTY_RESULT VARCHAR(500))";
 				stmt.execute(Query);
