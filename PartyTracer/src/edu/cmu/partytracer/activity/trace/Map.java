@@ -12,6 +12,7 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+import edu.cmu.partytracer.Application;
 import edu.cmu.partytracer.R;
 import edu.cmu.partytracer.bean.AggLocationBean;
 import edu.cmu.partytracer.bean.Protocol;
@@ -33,7 +34,7 @@ import android.widget.ZoomControls;
 
 public class Map extends MapActivity {
 	//TODO this belongs to system
-	static volatile CacheQueue cache = new CacheQueue();
+	static CacheQueue CACHE = Application.TRACE_CACHE;
 	LinearLayout linearLayout;
 	MapView mapView;
 	ZoomControls mapZoom;
@@ -163,14 +164,12 @@ public class Map extends MapActivity {
 		}
 		
 		@Override
-		public boolean onTap(int index) {
-			synchronized(itemizedOverlay) {
-				synchronized(mapView) {
+		public synchronized boolean onTap(int index) {
+			synchronized(mapView) {
 				OverlayItem current = mOverlays.get(index);
 				//bad for concurrent control
 				//mapView.getController().animateTo(current.getPoint());
 				Toast.makeText(getBaseContext(), current.getTitle()+"\nabc: xxxx\ndef: ook\nghi: "+index, Toast.LENGTH_SHORT).show();
-				}
 			}
 			return true;
 		}
@@ -234,7 +233,7 @@ public class Map extends MapActivity {
 					break;
 				}
 				i++;
-				AggLocationBean alb = cache.dequeue();
+				AggLocationBean alb = CACHE.dequeue();
 				if(alb != null) {
 					retryAttemp = 0; 
 					if(curMap==null) {
@@ -277,55 +276,51 @@ public class Map extends MapActivity {
 				if(curMap!=null) {
 					int countTo = EPOCH/TIME_GRAIN;
 					//epoch/1000ms loop to animate	
+					
 					for(int count=0;count<countTo;count++) {
-						synchronized(itemizedOverlay) {
-							synchronized(mapOverlays) {
-								synchronized(mapView) {
-									mapOverlays.remove(itemizedOverlay);
-								}
+						//itemizedOverlay.clear();
+						//itemizedOverlay = new MapItemizedOverlay(marker_unknown);
+						MapItemizedOverlay newItemizedOverlay = new MapItemizedOverlay(marker_unknown);
+						//for every user
+						for(String id:preMap.getIdSet()) {
+							LocationWithMove preLoc = preMap.getLocationById(id);
+							LocationWithMove curLoc = curMap.getLocationById(id);
+							if(curLoc != null && count==0) {
+								int preLat = preLoc.getLatitude();
+								int preLng = preLoc.getLongitude();
+								int curLat = curLoc.getLatitude();
+								int curLng = curLoc.getLongitude();
+						        Log.e("!!!!!", "preLat "+preLat+" curLat "+curLat);
+								int latMove = (curLat-preLat)/countTo;
+								int lngMove = (curLng-preLng)/countTo;
+								preLoc.setLatMove(latMove);
+								preLoc.setLngMove(lngMove);
+						        Log.v("!!!!!", id+" LATMove: "+latMove+" LNGMove: "+lngMove);
 							}
-							itemizedOverlay.clear();
-							//itemizedOverlay = new MapItemizedOverlay(marker_unknown);
+							//else if doesnt exist for curLoc, default 0 move applies
 							
-							//for every user
-							for(String id:preMap.getIdSet()) {
-								LocationWithMove preLoc = preMap.getLocationById(id);
-								LocationWithMove curLoc = curMap.getLocationById(id);
-								if(curLoc != null && count==0) {
-									int preLat = preLoc.getLatitude();
-									int preLng = preLoc.getLongitude();
-									int curLat = curLoc.getLatitude();
-									int curLng = curLoc.getLongitude();
-							        Log.e("!!!!!", "preLat "+preLat+" curLat "+curLat);
-									int latMove = (curLat-preLat)/countTo;
-									int lngMove = (curLng-preLng)/countTo;
-									preLoc.setLatMove(latMove);
-									preLoc.setLngMove(lngMove);
-							        Log.v("!!!!!", id+" LATMove: "+latMove+" LNGMove: "+lngMove);
-								}
-								//else if doesnt exist for curLoc, default 0 move applies
-								
-						        GeoPoint point = new GeoPoint(preLoc.getLatitude()+preLoc.getLatMove()*(count+1),preLoc.getLongitude()+preLoc.getLngMove()*(count+1));
-						        OverlayItem overlayitem = new OverlayItem(point, preLoc.getId(), "");
-	
-								//synchronized(itemizedOverlay) {
-							        itemizedOverlay.addOverlay(overlayitem);
-							        if(preLoc.getLatMove()!=0||preLoc.getLngMove()!=0) {
-							        	//overlayitem.setMarker(marker);
-							        	itemizedOverlay.setMarker(itemizedOverlay.size()-1, marker);
-							        }
-								//}
-						        //Log.v("!!!!!", "Overlay Item ID: "+id);
-							}
-					        //Log.v("!!!!!", "Overlay Item size: "+itemizedOverlay.size());
-						
-							synchronized(mapOverlays) {
-								synchronized(mapView) {
-									mapOverlays.add(itemizedOverlay);
-									mapView.postInvalidate();
-								}
-							}
+					        GeoPoint point = new GeoPoint(preLoc.getLatitude()+preLoc.getLatMove()*(count+1),preLoc.getLongitude()+preLoc.getLngMove()*(count+1));
+					        OverlayItem overlayitem = new OverlayItem(point, preLoc.getId(), "");
+
+							//synchronized(itemizedOverlay) {
+						        newItemizedOverlay.addOverlay(overlayitem);
+						        if(preLoc.getLatMove()!=0||preLoc.getLngMove()!=0) {
+						        	//overlayitem.setMarker(marker);
+						        	newItemizedOverlay.setMarker(newItemizedOverlay.size()-1, marker);
+						        }
+							//}
+					        //Log.v("!!!!!", "Overlay Item ID: "+id);
 						}
+				        //Log.v("!!!!!", "Overlay Item size: "+itemizedOverlay.size());
+						
+						//synchronized(itemizedOverlay) {
+							synchronized(mapView) {
+							mapOverlays.remove(itemizedOverlay);
+							itemizedOverlay = newItemizedOverlay;
+							mapOverlays.add(itemizedOverlay);
+							mapView.postInvalidate();
+							}
+						//}
 						
 				        //TODO some code to adjust scale
 				        try {

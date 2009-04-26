@@ -11,11 +11,11 @@ import java.util.List;
 public class AggLocationBean extends Bean implements Serializable {
 	private static final long serialVersionUID = 8229402698712080479L;
 	private List<Location> locations;
-	private int invitationId;
+	private String partyId;
 	
-	public AggLocationBean(int id, List<Location> d) {
+	public AggLocationBean(String id, List<Location> d) {
 		super();
-		invitationId = id;
+		partyId = id;
 		locations = d;
 	}
 
@@ -23,7 +23,7 @@ public class AggLocationBean extends Bean implements Serializable {
 		return locations;
 	}
 	
-	public int getInvitationId() {
-		return invitationId;
+	public String getPartyId() {
+		return partyId;
 	}
 }
