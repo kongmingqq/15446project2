@@ -2,6 +2,7 @@
 <resources>
     <string name="hello">Hello World, PartyTracer</string>
     <string name="app_name">Party Tracer</string>
+    <string name="app_message">Message</string>
     <string name="module_trace">Map Location</string>
     <string name="module_invite">Invitation Module</string>
     <string name="module_create">Create Invite</string>

@@ -54,9 +54,13 @@ public class TraceReceiveThread extends Thread {
 			} catch (BeanVectorException e) {
 				e.printStackTrace();
 			}
-			if(bv!=null&&bv.getType().equals(Protocol.TYPE_AggLocationBean)) {
-				CACHE.enqueue((AggLocationBean)(bv.getBean()));
-				System.out.println(">>>>>>>>Client received agglocation and cached");
+			if(bv!=null) {
+				if(bv.getType().equals(Protocol.TYPE_AggLocationBean)) {
+					CACHE.enqueue((AggLocationBean)(bv.getBean()));
+					System.out.println(">>>>>>>>Client received agglocation and cached");
+				} else if(bv.getType().equals(Protocol.TYPE_TerminationBean)) {
+					//TODO termination, need access MAP activity to finish it?
+				}
 			}
 		}
 		if(cr!=null) {

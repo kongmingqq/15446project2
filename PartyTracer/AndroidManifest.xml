@@ -15,6 +15,9 @@
         <activity android:name=".activity.trace.Map"
         		  android:enabled="true"
         		  android:label="@string/module_trace" />
+        <activity android:name=".Message"
+        		  android:enabled="true"
+        		  android:label="@string/app_message" />
 		<activity android:name=".activity.invitation.InviteModule"
 				  android:enabled="true"
                   android:label="@string/module_invite" />

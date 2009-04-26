@@ -13,14 +13,22 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import edu.cmu.partytracer.Application;
+import edu.cmu.partytracer.Message;
 import edu.cmu.partytracer.R;
 import edu.cmu.partytracer.bean.AggLocationBean;
+import edu.cmu.partytracer.bean.BeanVector;
+import edu.cmu.partytracer.bean.Location;
+import edu.cmu.partytracer.bean.LocationBean;
 import edu.cmu.partytracer.bean.Protocol;
+import edu.cmu.partytracer.bean.TerminationBean;
 import edu.cmu.partytracer.model.trace.CacheQueue;
 import edu.cmu.partytracer.model.trace.LocationMap;
 import edu.cmu.partytracer.model.trace.LocationWithMove;
+import edu.cmu.partytracer.ptsocket.PTSocket;
+import edu.cmu.partytracer.ptsocket.UDPSocket;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -88,8 +96,11 @@ public class Map extends MapActivity {
         mc.setZoom(13);
         mc.setCenter(destinationPoint);
         
-        tempTest.test();       
-        
+        Thread trt = new TraceReceiveThread();
+        trt.start();
+        Application.TRACE_RECEIVE_THREAD = trt;
+    	Application.TRACE_SLEEP_MODE = false;
+    	
         //Thread t = new MapProcessThread(mapView, mapOverlays, marker, itemizedOverlay);
         t = new ProcessThread();
 		t.start();
@@ -98,7 +109,11 @@ public class Map extends MapActivity {
     
     public void onStop() {
     	t.interrupt();
-    	tempTest.stop();
+    	if(Application.TRACE_RECEIVE_THREAD!=null) {
+	    	Application.TRACE_RECEIVE_THREAD.interrupt();
+	    	Application.TRACE_RECEIVE_THREAD = null;
+    	}
+    	Application.TRACE_SLEEP_MODE = true;
     	super.onStop();
     }
         
@@ -123,7 +138,20 @@ public class Map extends MapActivity {
 	    	//do sth
 	        return true;
 	    case 2:
-	    	//do sth
+	    	//terminate bean sent to server
+	    	sendTerminationBean();
+	    	//start terminate thread to listen to server terminate bean
+	    	Thread trt = new TerminateReceiveThread();
+	    	trt.start();
+	    	Application.CURRENT_PARTY_ID = null; //once stop, cannot enter
+	    	
+	    	//message
+			Intent i = new Intent(this, Message.class);
+			i.putExtra("Message", "You request has been sent");
+			startActivity(i);
+			
+			//stop
+			finish();    	
 	        return true;
 	    case 3:
 	    	//do sth
@@ -133,7 +161,26 @@ public class Map extends MapActivity {
 	}
 	
 	
-	
+	public void sendTerminationBean() {
+		PTSocket pts = null;
+		
+		try {
+			pts = new UDPSocket(Application.SERVER_IP, Protocol.SERVER_TRACE_RECEIVE_PORT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(pts!=null) {
+			//TODO how to deal with multiple parties??
+			TerminationBean tb = new TerminationBean(Application.MY_PHONE_ID,Application.CURRENT_PARTY_ID);
+			try {
+				pts.sendObject(BeanVector.wrapBean(tb));
+				Log.v("####","Termination bean got sent");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	
 	
