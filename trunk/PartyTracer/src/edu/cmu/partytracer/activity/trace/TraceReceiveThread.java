@@ -17,6 +17,10 @@ public class TraceReceiveThread extends Thread {
 	static int EPOCH = Protocol.EPOCH;
 	static CacheQueue CACHE = Application.TRACE_CACHE;
 	static int PORT = Protocol.CLIENT_TRACE_RECEIVE_PORT;
+	Map mapActivity;
+	public TraceReceiveThread(Map mapActivity) {
+		this.mapActivity = mapActivity;
+	}
 	
 	public void run() {
 		PTSocket cr = null;
@@ -58,6 +62,15 @@ public class TraceReceiveThread extends Thread {
 					System.out.println(">>>>>>>>Client received agglocation and cached");
 				} else if(bv.getType().equals(Protocol.TYPE_TerminationBean)) {
 					//TODO termination, need access MAP activity to finish it?
+					if(mapActivity!=null) {
+						mapActivity.terminate("The server has terminated the party tracing");
+					} else {
+				    	if(Application.TRACE_SEND_THREAD!=null) {
+					    	Application.TRACE_SEND_THREAD.interrupt();
+					    	Application.TRACE_SEND_THREAD = null;
+				    	}
+				    	Application.CURRENT_PARTY_ID = null;
+					}
 				}
 			}
 		}
