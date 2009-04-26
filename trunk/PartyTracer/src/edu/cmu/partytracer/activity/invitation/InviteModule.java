@@ -267,7 +267,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		        	
 		        	vb.setData(votingArray);
 		        	vb.setVoters(singleVoter);
-		        	vb.setWhichInvite(voteProps.getInt(ViewInvitesDialog.INVITE));
+		        	vb.setWhichInvite(Integer.toString(voteProps.getInt(ViewInvitesDialog.INVITE)));
 		        	
 		        	ComWrapper.getComm().send(Protocol.TYPE_VoteBean, vb);
 		        	item++;

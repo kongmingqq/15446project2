@@ -5,10 +5,10 @@ import java.io.Serializable;
 public class VoteBean implements Serializable{
 	private static final long serialVersionUID = -1946436334567959551L;
 
-	public int getWhichInvite() {
+	public String getWhichInvite() {
 		return whichInvite;
 	}
-	public void setWhichInvite(int whichInvite) {
+	public void setWhichInvite(String whichInvite) {
 		this.whichInvite = whichInvite;
 	}
 	
@@ -28,7 +28,7 @@ public class VoteBean implements Serializable{
 		this.data = data;
 	}
 	
-	private int whichInvite;
+	private String whichInvite;
 	private String[] voters;
 	private String[] data;
 	
