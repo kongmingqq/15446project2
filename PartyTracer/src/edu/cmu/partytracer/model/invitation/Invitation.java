@@ -116,8 +116,6 @@ public class Invitation {
 				if(catEnd == -1)
 					catEnd = voteData.indexOf(endString, catIndex);
 				
-				options.get(categories.get(i)).removeVotesOf(voter);
-				
 				for(int j=catIndex+1; j<catEnd; j++)
 				{
 					Log.d(INVITE_TAG, "User voted for " + voteData.get(j));
@@ -194,7 +192,7 @@ public class Invitation {
 		Log.d(INVITE_TAG, "ID is " + ib.getId());
 		Log.d(INVITE_TAG, "Sender is " + ib.getSender());
 		
-		int id = ib.getId();
+		int id = Integer.valueOf(ib.getId());
 		String creator = ib.getSender();
 		String[] details = ib.getData();
 		
@@ -261,7 +259,7 @@ public class Invitation {
 		InvitationBean ib = new InvitationBean();
 		Log.d(INVITE_TAG, "Constructing invitation bean");
 
-		ib.setId(iid);
+		ib.setId(Integer.toString(iid));
 		ib.setSender(creator);
 
 		Log.d(INVITE_TAG, "Id is " + iid);

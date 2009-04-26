@@ -5,11 +5,17 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content">
 	    
+	    <TextView
+	    	android:id="@+id/eventdescription"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"/>
+	    
 		<LinearLayout
 			android:id="@+id/allvotingoptions"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
-			android:orientation="vertical"/>
+			android:orientation="vertical"
+			android:layout_below="@id/eventdescription"/>
 			
 		<Button
 			android:id="@+id/donevoting"

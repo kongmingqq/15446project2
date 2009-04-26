@@ -32,5 +32,18 @@
         android:layout_below="@id/request"
         android:layout_toRightOf="@id/active"
         android:text="View Voting Invites" />
-
+        
+	<LinearLayout
+		android:id="@+id/allalerts"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_below="@id/active"/>
+		
+	<Button
+		android:id="@+id/exit"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/allalerts"
+		android:text="Exit module"/>
 </RelativeLayout>

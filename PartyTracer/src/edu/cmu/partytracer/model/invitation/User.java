@@ -78,9 +78,29 @@ public class User {
 		}
 	}
 	
+	public String getNameOf(int inviteId)
+	{
+		for(int i=0; i<myInvites.size(); i++)
+		{
+			if(myInvites.get(i).getId() == inviteId)
+				return myInvites.get(i).getTitle();
+		}
+		
+		return "";
+	}
+	
 	public boolean isInvitedTo(Invitation invite)
 	{
 		return myInvites.contains(invite);
+	}
+	
+	public void activateEvent(int invId)
+	{
+		for(int i=0; i<myInvites.size(); i++)
+		{
+			if(myInvites.get(i).getId() == invId)
+				myInvites.get(i).activate();
+		}
 	}
 }
 

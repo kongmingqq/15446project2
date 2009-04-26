@@ -7,6 +7,7 @@ import edu.cmu.partytracer.activity.invitation.testing.TestDataGenerator;
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.Protocol;
 import edu.cmu.partytracer.bean.VoteBean;
+import edu.cmu.partytracer.network.AlertThread;
 import edu.cmu.partytracer.network.ComWrapper;
 import edu.cmu.partytracer.R;
 import edu.cmu.partytracer.model.invitation.BundleParser;
@@ -20,6 +21,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class InviteModule extends Activity implements View.OnClickListener{
 	
@@ -27,25 +30,49 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	static int VIEW_VOTES = 2;
 	
 	private static String MAIN_TAG = "Invite Module";
+	private LinearLayout alertList;
+	private static int DEFAULT_TIMEOUT = 120;
 	
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	//Get this user's phone number and store it in the singleton class so that other methods can access it
-    	initPhoneNumber();
-    	    	
+    public void onCreate(Bundle savedInstanceState) {   	    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invite);
-        
-        Button createInvite = (Button) findViewById(R.id.create);
+
+        Log.d(MAIN_TAG, "Connecting to server");
+    	ComWrapper.initInstance();
+    	Log.d(MAIN_TAG, "Success");
+    	initPhoneNumber();    	//Get this user's phone number and store it in the singleton class so that other methods can access it
+
+    	Button createInvite = (Button) findViewById(R.id.create);
         Button viewActive = (Button) findViewById(R.id.active);
         Button viewVotes = (Button) findViewById(R.id.vote);
         Button request = (Button) findViewById(R.id.request);
+        Button exit = (Button) findViewById(R.id.exit);
         
         createInvite.setOnClickListener(this);
         viewActive.setOnClickListener(this);
         viewVotes.setOnClickListener(this);
         request.setOnClickListener(this);
+        exit.setOnClickListener(this);
+        
+        alertList = (LinearLayout) findViewById(R.id.allalerts);
+        //AlertThread at = new AlertThread(this);
+        //at.start();
+    }
+    
+    public void checkAlerts()
+    {
+    	ArrayList<String> allAlerts = ComWrapper.getComm().getAlerts();
+    	for(int i=0; i<allAlerts.size(); i++)
+    	{
+    		TextView alert = new TextView(this);
+    		alert.setText(allAlerts.get(i));
+    		alertList.addView(alert);
+    	}
+    	
+    	if(allAlerts.size() > 0)
+    		alertList.requestLayout();
     }
     
     private void initPhoneNumber()
@@ -83,6 +110,11 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		{
 			Intent subscribe = new Intent(this, edu.cmu.partytracer.activity.invitation.RequestDialog.class);
 			startActivity(subscribe);
+		}
+		else if(v.getId() == R.id.exit)
+		{
+			//Start a trace thread here
+			finish();
 		}
 		else if(v.getId() == R.id.active)
 		{
@@ -144,7 +176,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		
 		invBundle.putBoolean(ViewInvitesDialog.ACTIVE, ib.getActive());
 		invBundle.putStringArray(ViewInvitesDialog.DATA, ib.getData());
-		invBundle.putInt(ViewInvitesDialog.IID, ib.getId());
+		invBundle.putInt(ViewInvitesDialog.IID, Integer.valueOf(ib.getId()));
 		invBundle.putStringArray(ViewInvitesDialog.INVITE_LIST, ib.getInviteList());
 		invBundle.putString(ViewInvitesDialog.SENDER, ib.getSender());
 		invBundle.putFloat(ViewInvitesDialog.TIMEOUT, ib.getTimeout());
@@ -169,7 +201,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		Bundle eventProps = data.getBundleExtra(CreationDialog.EVENT_DETAILS);
         		String[] voteData = new String[0];
         		String[] eventData = BundleParser.parseEventData(eventProps);
-        		long timeout = eventProps.getLong(CreationDialog.TIMEOUT, -1L);
+        		long timeout = eventProps.getLong(CreationDialog.TIMEOUT, DEFAULT_TIMEOUT);
         		
         		Log.d(MAIN_TAG, "Event Properties:");
         		for(int i=0; i<eventData.length; i++)
@@ -181,7 +213,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		ib.setSender(UserSingleton.getUser().getNumber());
         		ib.setVoteData(voteData);
         		ib.setData(eventData);
-        		ib.setId(0);
+        		ib.setId("0");
         		
         		ArrayList<String> invited = data.getStringArrayListExtra(CreationDialog.INVITED_LIST);
         		String[] invitedNumbers = new String[invited.size()];
@@ -237,7 +269,6 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		        	vb.setVoters(singleVoter);
 		        	vb.setWhichInvite(voteProps.getInt(ViewInvitesDialog.INVITE));
 		        	
-		        	UserSingleton.getUser().addVote(vb);
 		        	ComWrapper.getComm().send(Protocol.TYPE_VoteBean, vb);
 		        	item++;
 	        	}

@@ -30,6 +30,10 @@ public class MessageHandler {
 			Log.d(HANDLER_TAG, "Processing Vote Bean");
 			VoteBean vb = (VoteBean) data.get(1);
 			UserSingleton.getUser().addVote(vb);
+			UserSingleton.getUser().activateEvent(vb.getWhichInvite());
+			
+			String inviteName = UserSingleton.getUser().getNameOf(vb.getWhichInvite());
+			ComWrapper.getComm().addAlert("Event " + inviteName + " has finished voting");
 		}
 	}
 }

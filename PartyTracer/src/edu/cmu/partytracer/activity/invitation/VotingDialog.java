@@ -33,6 +33,9 @@ public class VotingDialog extends Activity implements View.OnClickListener,
         Invitation[] inviteList = ViewInvitesDialog.getInvitesFromIntent(this.getIntent());
         thisInvite = inviteList[0];
         
+        TextView description = (TextView) findViewById(R.id.eventdescription);
+        description.setText(thisInvite.getDescription());
+        
         Button done = (Button) findViewById(R.id.donevoting);
         done.setOnClickListener(this);
         
