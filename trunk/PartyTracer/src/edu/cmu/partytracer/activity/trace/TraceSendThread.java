@@ -32,9 +32,11 @@ public class TraceSendThread extends Thread {
 				Log.v("####","TraceSendThread ends");
 				break;
 			}
-			LocationBean lb = new LocationBean(new Location(MYPHONEID,40444334,-79942971),false, PARTY_ID);
+			//TODO how to deal with multiple parties??
+			LocationBean lb = new LocationBean(new Location(MYPHONEID,40444334,-79942971),Application.TRACE_SLEEP_MODE, PARTY_ID);
 			try {
 				cs.sendObject(BeanVector.wrapBean(lb));
+				Log.v("####","Location bean got sent");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

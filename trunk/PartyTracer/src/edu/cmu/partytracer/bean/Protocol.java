@@ -10,6 +10,7 @@ public final class Protocol {
 	//Bean type names
 	public static final String TYPE_LocationBean = "TRACE:LOC";
 	public static final String TYPE_AggLocationBean = "TRACE:AGGLOC";
+	public static final String TYPE_TerminationBean = "TERM";
 	public static final String TYPE_InvitationBean = "MODEL:INVITATION";
 	public static final String TYPE_VoteBean = "MODEL:VOTE";
 	public static final String TYPE_Request = "MODEL:REQUEST";
@@ -17,5 +18,9 @@ public final class Protocol {
 	
 	//protocol port numbers
 	public static final int CLIENT_TRACE_RECEIVE_PORT = 9999;
+	public static final int CLIENT_TERMINATE_RECEIVE_PORT = 10000;
 	public static final int SERVER_TRACE_RECEIVE_PORT = 8889;
+	
+	//timeout configuration 
+	public static final int TERMINATION_TIMEOUT = 120000; //20 minutes
 }

@@ -24,6 +24,12 @@ public class PartyTracer extends Activity implements View.OnClickListener{
 	public void onClick(View v) {
 		if(v.getId() == R.id.module_trace)
 		{
+	    	if(Application.CURRENT_PARTY_ID == null) {
+				Intent i = new Intent(this, Message.class);
+				i.putExtra("Message", "There is no party live now");
+				startActivity(i);
+				return;
+	    	}
 			Intent i = new Intent(this, Map.class);
 			startActivity(i);
 		}
