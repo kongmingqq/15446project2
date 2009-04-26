@@ -63,7 +63,7 @@ public class TraceReceiveThread extends Thread {
 				} else if(bv.getType().equals(Protocol.TYPE_TerminationBean)) {
 					//TODO termination, need access MAP activity to finish it?
 					if(mapActivity!=null) {
-						mapActivity.terminate("The server has terminated the party tracing");
+						mapActivity.terminate("The server has terminated the party tracing",false);
 					} else {
 				    	if(Application.TRACE_SEND_THREAD!=null) {
 					    	Application.TRACE_SEND_THREAD.interrupt();

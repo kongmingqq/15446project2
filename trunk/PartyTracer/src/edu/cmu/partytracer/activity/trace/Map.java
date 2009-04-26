@@ -1,6 +1,7 @@
 package edu.cmu.partytracer.activity.trace;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.android.maps.GeoPoint;
@@ -45,7 +46,7 @@ public class Map extends MapActivity {
 	//TODO this belongs to system
 	static CacheQueue CACHE = Application.TRACE_CACHE;
 	LinearLayout linearLayout;
-	MapView mapView;
+	volatile MapView mapView;
 	ZoomControls mapZoom;
 	
 	volatile List<Overlay> mapOverlays;
@@ -53,6 +54,9 @@ public class Map extends MapActivity {
 	volatile MapItemizedOverlay itemizedOverlay;
 	volatile MapItemizedOverlay destinationOverlay;
 	MyLocationOverlay myLocationOverlay;
+
+	static LocationMap curMap = null;
+	static LocationMap preMap = null;
 	
 	ProcessThread t;
     /** Called when the activity is first created. */
@@ -103,14 +107,18 @@ public class Map extends MapActivity {
         MapController mc = mapView.getController();
         mc.setZoom(13);
         mc.setCenter(destinationPoint);
-        
-        //Temporary for test
-        Thread tst = new TraceSendThread();
-        tst.start();
-        
-        Thread trt = new TraceReceiveThread(this);
-        trt.start();
-        Application.TRACE_RECEIVE_THREAD = trt;
+
+        if(Application.TRACE_SEND_THREAD==null) {
+            Thread tst = new TraceSendThread();
+            tst.start();
+            Application.TRACE_SEND_THREAD = tst;
+        }
+
+        if(Application.TRACE_RECEIVE_THREAD==null) {
+	        Thread trt = new TraceReceiveThread(this);
+	        trt.start();
+	        Application.TRACE_RECEIVE_THREAD = trt;
+        }
     	Application.TRACE_SLEEP_MODE = false;
     	
         //Thread t = new MapProcessThread(mapView, mapOverlays, marker, itemizedOverlay);
@@ -138,7 +146,7 @@ public class Map extends MapActivity {
 	/* Creates the menu items */
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    menu.add(0, 1, 0, "Zoom Fit").setIcon(R.drawable.menu_zoom);
-	    menu.add(0, 2, 0, "Stop").setIcon(R.drawable.menu_stop);
+	    menu.add(0, 2, 0, "Quit Party").setIcon(R.drawable.menu_stop);
 	    menu.add(0, 3, 0, "Settings").setIcon(R.drawable.menu_settings);
 	    return true;
 	}
@@ -148,6 +156,7 @@ public class Map extends MapActivity {
 	    switch (item.getItemId()) {
 	    case 1:
 	    	//do sth
+	    	zoomFit();
 	        return true;
 	    case 2:
 	    	/*
@@ -158,7 +167,7 @@ public class Map extends MapActivity {
 	    	trt.start();
 	    	Application.CURRENT_PARTY_ID = null; //once stop, cannot enter
 	    	*/
-	    	terminate("You have quit the party tracing");
+	    	terminate("You have quit the party tracing",false);
 	        return true;
 	    case 3:
 	    	//do sth
@@ -167,7 +176,36 @@ public class Map extends MapActivity {
 	    return false;
 	}
 	
-	public void terminate(String message) {
+	public void zoomFit() {
+		if(preMap!=null) {
+			int zoomLevel = mapView.getZoomLevel();
+			int latSpan = mapView.getLatitudeSpan();
+			int lngSpan = mapView.getLongitudeSpan();
+			int latSpanTo = preMap.getLatitudeSpan();
+			int lngSpanTo = preMap.getLongitudeSpan();
+			System.out.println("latSpanTo "+latSpanTo+" lapSpan "+latSpan+" lngSpanTo "+lngSpanTo+" lngSpan "+lngSpan);
+		
+			while(!(latSpanTo<=latSpan && lngSpanTo<=lngSpan 
+					 && (latSpanTo>=latSpan/2 || lngSpanTo>=lngSpan/2))) {
+					
+				if(latSpanTo>latSpan || lngSpanTo>lngSpan) {
+					zoomLevel--;
+					latSpan *= 2;
+					lngSpan *= 2;
+				} else if(latSpanTo<=latSpan/2 && lngSpanTo<=lngSpan/2) {
+					zoomLevel++;
+					latSpan /= 2;
+					lngSpan /= 2;
+				}
+			}
+
+	        MapController mc = mapView.getController();
+	        mc.setZoom(zoomLevel);
+	        mc.setCenter(preMap.getCenterPoint());
+		}
+	}
+	
+	public void terminate(String message, boolean currentPartyStillLive) {
     	//message
 		Intent i = new Intent(this, Message.class);
 		i.putExtra("Message", message);
@@ -177,7 +215,9 @@ public class Map extends MapActivity {
 	    	Application.TRACE_SEND_THREAD.interrupt();
 	    	Application.TRACE_SEND_THREAD = null;
     	}
-    	Application.CURRENT_PARTY_ID = null;
+    	if(!currentPartyStillLive) {
+    		Application.CURRENT_PARTY_ID = null;
+    	}
 		//stop
 		finish();    
 	}
@@ -223,6 +263,14 @@ public class Map extends MapActivity {
 		
 		public synchronized void addOverlay(OverlayItem overlay) {
 			mOverlays.add(overlay);
+			populate();
+		}
+
+		public synchronized void addOverlayWithoutPopulate(OverlayItem overlay) {
+			mOverlays.add(overlay);
+		}
+		
+		public synchronized void commitPopulate() {
 			populate();
 		}
 		
@@ -286,8 +334,6 @@ public class Map extends MapActivity {
 			//epoch loop
 			//dequeue and 2 maps
 			int i = 0;
-			LocationMap curMap = null;
-			LocationMap preMap = null;
 			int retryAttemp = 0;
 			//TODO end mark by system class, to end this thread
 			while(true) {
@@ -295,8 +341,9 @@ public class Map extends MapActivity {
 					Log.v("####","thread ends ProcessThread ");
 					break;
 				}
-				if(i>5 && retryAttemp > 10) {
-					
+				//TODO update hardcoded values
+				if((i>5 && retryAttemp > 10) || retryAttemp>30) {
+					terminate("Cannot get location info from server, quit",true);
 					Log.v("!!!!!!!","Leaving thread! ");
 					break;
 				}
@@ -340,67 +387,65 @@ public class Map extends MapActivity {
 					i--;
 					continue;
 				}
-				
+
 				if(curMap!=null) {
-					int countTo = EPOCH/TIME_GRAIN;
+					long now = (new Date()).getTime();
+					long future = now+EPOCH;
+					//int countTo = EPOCH/TIME_GRAIN;
 					//epoch/1000ms loop to animate	
 					
-					for(int count=0;count<countTo;count++) {
-						//itemizedOverlay.clear();
-						//itemizedOverlay = new MapItemizedOverlay(marker_unknown);
+					while(now<future) {
+						long timeDifference = future-now;
 						MapItemizedOverlay newItemizedOverlay = new MapItemizedOverlay(marker_unknown);
 						//for every user
+								
+						synchronized(newItemizedOverlay) {
 						for(String id:preMap.getIdSet()) {
 							LocationWithMove preLoc = preMap.getLocationById(id);
 							LocationWithMove curLoc = curMap.getLocationById(id);
-							if(curLoc != null && count==0) {
-								int preLat = preLoc.getLatitude();
-								int preLng = preLoc.getLongitude();
-								int curLat = curLoc.getLatitude();
-								int curLng = curLoc.getLongitude();
-						        Log.e("!!!!!", "preLat "+preLat+" curLat "+curLat);
-								int latMove = (curLat-preLat)/countTo;
-								int lngMove = (curLng-preLng)/countTo;
-								preLoc.setLatMove(latMove);
-								preLoc.setLngMove(lngMove);
-						        Log.v("!!!!!", id+" LATMove: "+latMove+" LNGMove: "+lngMove);
+							if(curLoc != null && timeDifference==EPOCH) { //the first time
+								preLoc.setLatMove((int)(curLoc.getLatitude()-preLoc.getLatitude()));
+								preLoc.setLngMove((int)(curLoc.getLongitude()-preLoc.getLongitude()));
 							}
 							//else if doesnt exist for curLoc, default 0 move applies
 							
-					        GeoPoint point = new GeoPoint(preLoc.getLatitude()+preLoc.getLatMove()*(count+1),preLoc.getLongitude()+preLoc.getLngMove()*(count+1));
+							double factor = 1-(double)timeDifference/EPOCH;
+					        GeoPoint point = new GeoPoint((int)(preLoc.getLatitude()+preLoc.getLatMove()*factor),
+					        							  (int)(preLoc.getLongitude()+preLoc.getLngMove()*factor));
 					        OverlayItem overlayitem = new OverlayItem(point, preLoc.getId(), "");
 
-							//synchronized(itemizedOverlay) {
-						        newItemizedOverlay.addOverlay(overlayitem);
-						        if(preLoc.getLatMove()!=0||preLoc.getLngMove()!=0) {
-						        	//overlayitem.setMarker(marker);
-						        	newItemizedOverlay.setMarker(newItemizedOverlay.size()-1, marker);
-						        }
-							//}
-					        //Log.v("!!!!!", "Overlay Item ID: "+id);
+					        newItemizedOverlay.addOverlayWithoutPopulate(overlayitem);
+					        if(preLoc.getLatMove()!=0||preLoc.getLngMove()!=0) {
+					        	//overlayitem.setMarker(marker);
+					        	newItemizedOverlay.setMarker(newItemizedOverlay.size()-1, marker);
+					        }
 						}
-				        //Log.v("!!!!!", "Overlay Item size: "+itemizedOverlay.size());
-						
-						//synchronized(itemizedOverlay) {
-							synchronized(mapView) {
-								synchronized(mapOverlays) {
-							mapOverlays.remove(itemizedOverlay);
-							itemizedOverlay = newItemizedOverlay;
-							mapOverlays.add(itemizedOverlay);
-							mapView.postInvalidate();
+						newItemizedOverlay.commitPopulate();
+						}
+
+						synchronized(mapView) {
+							synchronized(mapOverlays) {
+								synchronized(itemizedOverlay) {
+									mapOverlays.remove(itemizedOverlay);
+									itemizedOverlay = newItemizedOverlay;
+									mapOverlays.add(itemizedOverlay);
+									mapView.postInvalidate();
+							        //TODO some code to adjust scale
 								}
 							}
-						//}
+						}
 						
-				        //TODO some code to adjust scale
 				        try {
 							sleep(TIME_GRAIN);
 						} catch (InterruptedException e) {
 							interrupt();
 						}
+						
+						now = (new Date()).getTime();
 					}
 				}
-			}		
+			}
+					
 		}
 	}//*/
 }
