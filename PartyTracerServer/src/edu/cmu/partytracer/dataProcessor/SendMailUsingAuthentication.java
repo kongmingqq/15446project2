@@ -34,6 +34,9 @@ import javax.mail.internet.MimeMessage;
  Qwest: 10digitphonenumber@qwestmp.com
  */
 
+/**
+ * Send the SMS message through gateway
+ */
 public class SendMailUsingAuthentication {
 
 	private static final String SMTP_HOST_NAME = "smtp.gmail.com";

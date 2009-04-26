@@ -208,13 +208,12 @@ public class ServerUDPThread {
 
 		public void run() {
 			int step = 3 * STEP;
-			int port = 8888;
 
 			int i = 0;
 			DatagramSocket s = null;
 			try {
-				s = new DatagramSocket(port);
-				s.setSoTimeout(EPOCH * 3);
+				s = new DatagramSocket(Protocol.SERVER_TRACE_RECEIVE_PORT);
+//				s.setSoTimeout(EPOCH * 3);
 			} catch (SocketException e1) {
 				e1.printStackTrace();
 			}
@@ -233,8 +232,11 @@ public class ServerUDPThread {
 					if (bv.getType().equals(Protocol.TYPE_LocationBean)) {
 						sCache.enqueue((LocationBean) (bv.getBean()));
 						Location loc = ((LocationBean) (bv.getBean())).getLocation();
-						System.out.print("Server receiving LocationBean:");
-						System.out.println(loc);
+//						if(ServerSingleton.getInstance().getCurStatus(loc.getId())==null || !ServerSingleton.getInstance().getCurStatus(loc.getId()).equals("VOTE_RESULT_SENT")){
+//							continue;
+//						}
+						System.out.println("Server receiving LocationBean:" + loc);
+						System.out.println("IP Address is: " + s.getInetAddress().getHostAddress());
 						DataDispatcher.storeLocationMsg((LocationBean) bv.getBean(), s.getInetAddress().getHostAddress());
 					}
 				} catch (SocketException e) {

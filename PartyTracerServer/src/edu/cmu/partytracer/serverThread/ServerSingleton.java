@@ -8,17 +8,31 @@ import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.Location;
 import edu.cmu.partytracer.bean.LocationBean;
 import edu.cmu.partytracer.model.database.Model;
+import edu.cmu.partytracer.model.invitation.Invitation;
 import edu.cmu.partytracer.serverThread.ServerUDPThread.ServerCacheQueue;
 
+/**
+ * Singleton class for storing all the information in the memeory.
+ * @author Xiaojian Huang
+ *
+ */
 public class ServerSingleton {
+	//current status for each party
 	public HashMap<String, String> curStatus;
+	//model which is used to connect to the database
 	public Model model;
-	public HashMap<String, HashMap<String, Integer>> voteMap;
+//	public HashMap<String, HashMap<String, Integer>> voteMap;
+	//use for storing all the InvitationBean
 	public HashMap<String, InvitationBean> invitationMap;
+	//Map used to all the client IP for each party
 	public HashMap<String, ArrayList<String>> clientAddressMap;
+	//location queue for each party
 	public HashMap<String, ServerCacheQueue> locationQueueMap;
+	//use to cache the location information which would be sent to the client 
 	public HashMap<String, Object[]> locationCacheMap;
-	public static final int clientPort = 64451;
+	//use to process the vote and get the result
+	public HashMap<String, Invitation> voteProcessMap;
+	public static final int clientPort = 1544;
 	public static final int serverPortNumber = 15446;
 	public static final int serverUDPPort = 8889;
 	public static final int clientUDPPort = 9999;
@@ -28,12 +42,12 @@ public class ServerSingleton {
 	private ServerSingleton() {
 		curStatus = new HashMap<String, String>();
 		model = new Model("com.mysql.jdbc.Driver", "jdbc:mysql:///partytracer");
-		;
-		voteMap = new HashMap<String, HashMap<String, Integer>>();
+//		voteMap = new HashMap<String, HashMap<String, Integer>>();
 		invitationMap = new HashMap<String, InvitationBean>();
 		clientAddressMap = new HashMap<String, ArrayList<String>>();
 		locationQueueMap = new HashMap<String, ServerCacheQueue>();
 		locationCacheMap = new HashMap<String, Object[]>();
+		voteProcessMap = new HashMap<String, Invitation>();
 	}
 
 	public static synchronized ServerSingleton getInstance() {
@@ -59,16 +73,16 @@ public class ServerSingleton {
 		this.model = model;
 	}
 
-	public HashMap<String, Integer> getVoteMap(String partyID) {
-		return voteMap.get(partyID);
-	}
-
-	public void increaseVote(String partyID, String option) {
-		HashMap<String, Integer> curVoteMap = this.voteMap.get(partyID);
-		int curVoteNum = curVoteMap.get(option);
-		curVoteMap.put(option, curVoteNum + 1);
-		this.voteMap.put(partyID, curVoteMap);
-	}
+//	public HashMap<String, Integer> getVoteMap(String partyID) {
+//		return voteMap.get(partyID);
+//	}
+//
+//	public void increaseVote(String partyID, String option) {
+//		HashMap<String, Integer> curVoteMap = this.voteMap.get(partyID);
+//		int curVoteNum = curVoteMap.get(option);
+//		curVoteMap.put(option, curVoteNum + 1);
+//		this.voteMap.put(partyID, curVoteMap);
+//	}
 
 	public InvitationBean getInvitationBean(String partyID) {
 		return invitationMap.get(partyID);
@@ -80,7 +94,7 @@ public class ServerSingleton {
 		for (String option : invitationBean.getOptions()) {
 			curVoteMap.put(option, 0);
 		}
-		this.voteMap.put(partyID, curVoteMap);
+//		this.voteMap.put(partyID, curVoteMap);
 	}
 
 	public float getTimeOut(String partyID) {

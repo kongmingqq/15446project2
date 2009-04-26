@@ -1,18 +1,22 @@
 package edu.cmu.partytracer.bean;
 
-public class VoteBean {
-	public int getWhichInvite() {
-		return whichInvite;
+import java.io.Serializable;
+
+public class VoteBean implements Serializable{
+	private static final long serialVersionUID = -7114161707040937518L;
+
+	public String getPartyId() {
+		return partyId;
 	}
-	public void setWhichInvite(int whichInvite) {
-		this.whichInvite = whichInvite;
+	public void setPartyId(String partyId) {
+		this.partyId = partyId;
 	}
 	
-	public int[] getVoters() {
+	public String[] getVoters() {
 		return voters;
 	}
 
-	public void setVoters(int[] voters) {
+	public void setVoters(String[] voters) {
 		this.voters = voters;
 	}
 	
@@ -24,23 +28,10 @@ public class VoteBean {
 		this.data = data;
 	}
 	
-	private int whichInvite;
-	private int[] voters;
+	private String partyId;
+	private String[] voters;
 	private String[] data;
-	private String partyID;
-	private String myVote;
-	public String getMyVote() {
-		return myVote;
-	}
-	public void setMyVote(String myVote) {
-		this.myVote = myVote;
-	}
-	public String getPartyID() {
-		return partyID;
-	}
-	public void setPartyID(String partyID) {
-		this.partyID = partyID;
-	}
+	
 	public VoteBean(){};
 }
 

@@ -9,6 +9,11 @@ import java.net.UnknownHostException;
 import edu.cmu.partytracer.serverThread.ServerSingleton;
 import edu.cmu.partytracer.serverThread.Util;
 
+/**
+ * Terminate the party and clean the memory
+ * @author Xiaojian Huang
+ *
+ */
 public class TerminateParty {
 	public static void terminatePary(String partyID) {
 		DatagramSocket s;
@@ -33,11 +38,11 @@ public class TerminateParty {
 			e.printStackTrace();
 		}
 		ServerSingleton.getInstance().curStatus.remove(partyID);
-		ServerSingleton.getInstance().voteMap.remove(partyID);
+//		ServerSingleton.getInstance().voteMap.remove(partyID);
 		ServerSingleton.getInstance().clientAddressMap.remove(partyID);
 		ServerSingleton.getInstance().invitationMap.remove(partyID);
 		ServerSingleton.getInstance().locationCacheMap.remove(partyID);
 		ServerSingleton.getInstance().locationQueueMap.remove(partyID);
-
+		ServerSingleton.getInstance().voteProcessMap.remove(partyID);
 	}
 }

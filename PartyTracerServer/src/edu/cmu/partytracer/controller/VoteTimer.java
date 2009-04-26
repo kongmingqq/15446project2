@@ -6,6 +6,11 @@ import java.util.TimerTask;
 import edu.cmu.partytracer.dataProcessor.ClientCommunicator;
 import edu.cmu.partytracer.serverThread.ServerSingleton;
 
+/**
+ * Timer for the voting stage
+ * @author Xiaojian Huang
+ *
+ */
 public class VoteTimer {
 	Timer timer;
 	String partyID;

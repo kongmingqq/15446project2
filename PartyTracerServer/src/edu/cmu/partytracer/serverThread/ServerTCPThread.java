@@ -48,6 +48,7 @@ public class ServerTCPThread extends Thread {
 				if (clientRequest != null) {
 					reader = new ObjectInputStream(clientRequest.getInputStream());
 					Vector<Object> input = (Vector<Object>)reader.readObject();
+					System.out.println("input class"+input.getClass());
 					DataParser.parseMsg(input, clientIPAddress);
 					try {
 						Thread.sleep(300);
