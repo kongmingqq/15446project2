@@ -24,9 +24,7 @@ public class TraceReceiveThread extends Thread {
 			cr = new UDPSocket(PORT);
 			//TODO set timeout for PTSocket interface
 			((UDPSocket)cr).setTimeout(EPOCH*10);
-		} catch (SocketException e) {
-			e.printStackTrace();
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println(">>>>>>>>");
@@ -73,6 +71,5 @@ public class TraceReceiveThread extends Thread {
 			}
 		}
 		System.out.print("Leaving");
-        
 	}
 }

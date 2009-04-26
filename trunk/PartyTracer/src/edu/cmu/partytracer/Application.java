@@ -1,5 +1,6 @@
 package edu.cmu.partytracer;
 
+import edu.cmu.partytracer.bean.Location;
 import edu.cmu.partytracer.model.trace.CacheQueue;
 
 /**
@@ -15,6 +16,7 @@ public final class Application {
 	public static volatile CacheQueue TRACE_CACHE = new CacheQueue();
 	public static volatile boolean TRACE_SLEEP_MODE = true;
 
-	public static volatile String CURRENT_PARTY_ID = null;
+	public static volatile String CURRENT_PARTY_ID = "0"; //Temporary
+	public static volatile Location CURRENT_PARTY_DESTINATION = new Location("CMU", 40444314,-79942961);
 	public static volatile String MY_PHONE_ID = null;
 }

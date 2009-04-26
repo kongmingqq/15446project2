@@ -33,6 +33,7 @@ public class TraceSendThread extends Thread {
 				break;
 			}
 			//TODO how to deal with multiple parties??
+			//TODO get real my location
 			LocationBean lb = new LocationBean(new Location(MYPHONEID,40444334,-79942971),Application.TRACE_SLEEP_MODE, PARTY_ID);
 			try {
 				cs.sendObject(BeanVector.wrapBean(lb));

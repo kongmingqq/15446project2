@@ -3,6 +3,7 @@ package edu.cmu.partytracer.model.trace;
 import java.util.HashMap;
 import java.util.Set;
 
+import edu.cmu.partytracer.Application;
 import edu.cmu.partytracer.bean.AggLocationBean;
 import edu.cmu.partytracer.bean.Location;
 /**
@@ -17,6 +18,7 @@ public class LocationMap implements Cloneable {
 	public LocationMap(AggLocationBean alb) {
 		map = new HashMap<String,LocationWithMove>();
 		for(Location l:alb.getLocations()) {
+			if(l.getId()==Application.MY_PHONE_ID) continue; //me is different
 			LocationWithMove lwm = new LocationWithMove(l.getId(),l.getLatitude(),l.getLongitude());
 			map.put(l.getId(), lwm);
 		}
