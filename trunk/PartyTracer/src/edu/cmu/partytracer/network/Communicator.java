@@ -4,6 +4,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Vector;
 
+import edu.cmu.partytracer.Application;
+
 import android.util.Log;
 
 public class Communicator extends AbstractComm{
@@ -16,7 +18,7 @@ public class Communicator extends AbstractComm{
 		{
 			Log.d("Communicator", "Creating TCP Socket");
 			//appSocket = new TCPSocket("128.237.254.154", 15446);
-			inputSocket = new Socket("128.237.254.154", 15446);
+			inputSocket = new Socket(Application.SERVER_IP, 15446);
 			Log.d("Communicator", "Finished creating TCP Socket");
 			DataThread serverListener = new DataThread(inputSocket);
 			serverListener.start();

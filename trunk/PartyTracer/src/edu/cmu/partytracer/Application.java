@@ -8,7 +8,7 @@ import edu.cmu.partytracer.model.trace.CacheQueue;
  *
  */
 public final class Application {
-	public static volatile String SERVER_IP = null;
+	public static volatile String SERVER_IP = "128.237.254.154";
 	
 	public static volatile Thread TRACE_RECEIVE_THREAD = null;
 	public static volatile Thread TRACE_SEND_THREAD = null;
