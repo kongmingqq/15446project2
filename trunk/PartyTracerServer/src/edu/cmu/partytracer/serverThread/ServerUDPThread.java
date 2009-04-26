@@ -236,8 +236,8 @@ public class ServerUDPThread {
 //							continue;
 //						}
 						System.out.println("Server receiving LocationBean:" + loc);
-						System.out.println("IP Address is: " + s.getInetAddress().getHostAddress());
-						DataDispatcher.storeLocationMsg((LocationBean) bv.getBean(), s.getInetAddress().getHostAddress());
+						System.out.println("IP Address is: " + p.getAddress().getHostAddress());
+						DataDispatcher.storeLocationMsg((LocationBean) bv.getBean(), p.getAddress().getHostAddress());
 					}
 				} catch (SocketException e) {
 					e.printStackTrace();

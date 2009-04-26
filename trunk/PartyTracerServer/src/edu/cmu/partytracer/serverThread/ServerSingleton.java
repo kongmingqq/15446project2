@@ -113,6 +113,9 @@ public class ServerSingleton {
 
 	public void addToLocationQueue(String partyID, LocationBean lb) {
 		ServerCacheQueue locationQueue = this.locationQueueMap.get(partyID);
+		if (locationQueue == null){
+			locationQueue = new ServerCacheQueue();
+		}
 		locationQueue.enqueue(lb);
 		this.locationQueueMap.put(partyID, locationQueue);
 	}
