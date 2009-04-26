@@ -31,15 +31,13 @@ public class Communicator extends AbstractComm{
 		return myNumber;
 	}
 
-	private boolean send_once(String identifier, Object obj)
+	public boolean send(String identifier, Object obj)
 	{
 		try 
 		{			
 			Vector<Object> data = new Vector<Object>();
 			data.add(identifier);
 			data.add(obj);
-//		
-//			appSocket.sendObject(data);
 
 			outputSocket = new Socket("128.237.254.154", 15446);
 			ObjectOutputStream objStream = new ObjectOutputStream(outputSocket.getOutputStream());
@@ -48,12 +46,9 @@ public class Communicator extends AbstractComm{
 			
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	public void send(String identifier, Object obj) {
-		send_once(identifier, obj);
 	}
 
 	public void initNumber(String myNumber) {

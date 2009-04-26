@@ -42,6 +42,7 @@ public class Invitation {
 	private String description;
 	private HashMap<String, OptionList> options;
 	private ArrayList<String> invitedUsers;
+	private ArrayList<String> votedUsers;
 	
 	/**
 	 * Creates a new invitation
@@ -59,6 +60,7 @@ public class Invitation {
 		isActive = false;
 		options = new HashMap<String, OptionList>();
 		invitedUsers = new ArrayList<String>();
+		votedUsers = new ArrayList<String>();
 		
 		invitedUsers.add(creator);
 	}
@@ -85,6 +87,10 @@ public class Invitation {
 	private void addVote(VoteBean vb, int index)
 	{
 		String voter = vb.getVoters()[index];
+		
+		if(!votedUsers.contains(voter))
+			votedUsers.add(voter);
+		
 		Log.d(INVITE_TAG, "Processing votes of user " + voter);
 		Log.d(INVITE_TAG, "Voting array is:");
 		
@@ -405,5 +411,10 @@ public class Invitation {
 	public void assignId(int id)
 	{
 		this.iid = id;
+	}
+	
+	public int numVotedUsers()
+	{
+		return votedUsers.size();
 	}
 }
