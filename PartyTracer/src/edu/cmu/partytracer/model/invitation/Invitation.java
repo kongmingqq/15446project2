@@ -137,7 +137,7 @@ public class Invitation {
 	public VoteBean getVotingInfo()
 	{
 		VoteBean vb = new VoteBean();
-		vb.setWhichInvite(Integer.toString(iid));
+		vb.setPartyId(Integer.toString(iid));
 		vb.setVoters(getInvitedUsers());
 		vb.setData(createVotingArray());
 		
