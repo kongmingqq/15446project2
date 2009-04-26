@@ -28,7 +28,7 @@ public class MapProcessThread extends Thread{
 	List<Overlay> mapOverlays;
 	Drawable marker;
 	MapItemizedOverlay itemizedOverlay;
-	CacheQueue cache = Map.cache;
+	CacheQueue cache = Map.CACHE;
 	//TODO cache is from system
 	
 	public MapProcessThread(MapView mv, List<Overlay> lo, Drawable d, MapItemizedOverlay mio) {

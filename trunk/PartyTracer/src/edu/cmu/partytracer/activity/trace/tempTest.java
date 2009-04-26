@@ -26,10 +26,11 @@ public class tempTest {
     static int STEP = 20;
     static int EPOCH = Protocol.EPOCH;
     static ServerCacheQueue sCache = new ServerCacheQueue();
-    static CacheQueue cache = Map.cache;
+    static CacheQueue cache = Map.CACHE;
 	static Set<Thread> threads = new HashSet<Thread>();
 	
     public static void test() {
+    	/*
 		Thread sr = new srThread();
 		sr.start();
 		Thread ss = new ssThread();
@@ -46,7 +47,7 @@ public class tempTest {
 		threads.add(ct1);
 		threads.add(ct2);
 		threads.add(ct3);
-		
+		*/
         Thread t1 = new ReceiveLocation();
 		t1.start();
 		threads.add(t1);
@@ -189,7 +190,7 @@ public class tempTest {
 				DatagramSocket s;
 				try {
 					s = new DatagramSocket(port);
-					LocationBean lb = new LocationBean(new Location(id,curlat,curlng),false);
+					LocationBean lb = new LocationBean(new Location(id,curlat,curlng),false, Integer.toString(0));
 			
 					byte[] bs = Util.objToBytes(BeanVector.wrapBean(lb));
 					InetAddress ip = InetAddress.getByName(addr);
@@ -255,7 +256,7 @@ public class tempTest {
 					try {
 						s = new DatagramSocket(port);
 						//TODO split large list into smaller ones and send separately
-						Bean bp = new AggLocationBean(0, locs);
+						Bean bp = new AggLocationBean(Integer.toString(0), locs);
 						byte[] bs = Util.objToBytes(BeanVector.wrapBean(bp));
 						InetAddress ip = InetAddress.getByName(addr);
 						DatagramPacket p = new DatagramPacket(bs,bs.length,ip,desPort);
