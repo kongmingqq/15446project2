@@ -8,7 +8,6 @@ import edu.cmu.partytracer.activity.trace.TraceSendThread;
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.Protocol;
 import edu.cmu.partytracer.bean.VoteBean;
-import edu.cmu.partytracer.network.AlertThread;
 import edu.cmu.partytracer.network.ComWrapper;
 import edu.cmu.partytracer.Application;
 import edu.cmu.partytracer.R;
@@ -59,8 +58,6 @@ public class InviteModule extends Activity implements View.OnClickListener{
         exit.setOnClickListener(this);
         
         alertList = (LinearLayout) findViewById(R.id.allalerts);
-        //AlertThread at = new AlertThread(this);
-        //at.start();
     }
     
     public void checkAlerts()
@@ -129,6 +126,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 				}
 			}
 			
+			Log.d(MAIN_TAG, "Party ID is " + Application.CURRENT_PARTY_ID);
 			Application.TRACE_SEND_THREAD.start();
 			finish();
 		}

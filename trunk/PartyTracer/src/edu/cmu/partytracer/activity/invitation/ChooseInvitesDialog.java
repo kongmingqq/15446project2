@@ -6,9 +6,7 @@ import edu.cmu.partytracer.R;
 import edu.cmu.partytracer.activity.invitation.testing.TestDataGenerator;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.Contacts.People;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +22,6 @@ public class ChooseInvitesDialog extends Activity implements View.OnClickListene
 	
 	private ArrayList<String> invitedUserNumbers;
 	private static String CHOOSE_INVITES_TAG = "Choose Invited Users";
-	private Cursor contacts;
 	private LinearLayout contactList;
 
 	/** Called when the activity is first created. */
