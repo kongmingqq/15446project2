@@ -27,12 +27,14 @@ import android.widget.TextView;
 
 public class InviteModule extends Activity implements View.OnClickListener{
 	
-	static int CREATE_INVITE = 1;
-	static int VIEW_VOTES = 2;
+	private static int CREATE_INVITE = 1;
+	private static int VIEW_VOTES = 2;
+	private static int SET_CURRENT = 3;
 	
 	private static String MAIN_TAG = "Invite Module";
 	private LinearLayout alertList;
 	private static int DEFAULT_TIMEOUT = 120;
+	private String currentInvite;
 	
     /** Called when the activity is first created. */
     @Override
@@ -40,6 +42,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invite);
 
+        currentInvite = null;
         Log.d(MAIN_TAG, "Connecting to server");
     	ComWrapper.initInstance();
     	Log.d(MAIN_TAG, "Success");
@@ -50,12 +53,14 @@ public class InviteModule extends Activity implements View.OnClickListener{
         Button viewVotes = (Button) findViewById(R.id.vote);
         Button request = (Button) findViewById(R.id.request);
         Button exit = (Button) findViewById(R.id.exit);
+        Button set = (Button) findViewById(R.id.setcurrent);
         
         createInvite.setOnClickListener(this);
         viewActive.setOnClickListener(this);
         viewVotes.setOnClickListener(this);
         request.setOnClickListener(this);
         exit.setOnClickListener(this);
+        set.setOnClickListener(this);
         
         alertList = (LinearLayout) findViewById(R.id.allalerts);
     }
@@ -117,14 +122,19 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			Application.MY_PHONE_ID = UserSingleton.getUser().getNumber();
 			Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
 			
-			for(int i=0; i<myInvites.length; i++)
+			if(currentInvite == null)
 			{
-				if(myInvites[i].isActive())
+				for(int i=0; i<myInvites.length; i++)
 				{
-					Application.CURRENT_PARTY_ID = Integer.toString(myInvites[i].getId());
-					break;
+					if(myInvites[i].isActive())
+					{
+						Application.CURRENT_PARTY_ID = Integer.toString(myInvites[i].getId());
+						break;
+					}
 				}
 			}
+			else
+				Application.CURRENT_PARTY_ID = currentInvite;
 			
 			Log.d(MAIN_TAG, "Party ID is " + Application.CURRENT_PARTY_ID);
 			Application.TRACE_SEND_THREAD.start();
@@ -180,6 +190,25 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			
 			//We'll need to return some data representing the votes that the user chose
 			startActivityForResult(viewVotes, VIEW_VOTES);
+		}
+		else if(v.getId() == R.id.setcurrent)
+		{
+			Intent setCurrent = new Intent(this, edu.cmu.partytracer.activity.invitation.SetCurrentInviteDialog.class);
+			
+			//Just like in the "view active" button, get a list of each of this user's active invites, 
+			// and store each one in the intent
+			Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
+			int item = 0;
+			for(int i=0; i<myInvites.length; i++)
+			{
+				if(myInvites[i].isActive())
+				{
+					setCurrent.putExtra(ViewInvitesDialog.INVITE + item, myInvites[i].getTitle());
+					item++;
+				}
+			}
+			
+			startActivityForResult(setCurrent, SET_CURRENT);
 		}
 	}
 	
@@ -289,6 +318,10 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		        	ComWrapper.getComm().send(Protocol.TYPE_VoteBean, vb);
 		        	item++;
 	        	}
+	        }
+	        else if(requestCode == SET_CURRENT)
+	        {
+	        	currentInvite = data.getStringExtra(ViewInvitesDialog.IID);
 	        }
         }
     }
