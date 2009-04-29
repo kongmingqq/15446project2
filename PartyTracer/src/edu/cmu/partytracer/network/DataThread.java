@@ -1,6 +1,8 @@
 package edu.cmu.partytracer.network;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
@@ -8,29 +10,44 @@ import android.util.Log;
 
 public class DataThread extends Thread {
 
-	private Socket inputSocket;
+	private ServerSocket inputSocket;
 	
-	public DataThread(Socket s)
+	public DataThread(int port)
 	{
-		inputSocket = s;
+		try {
+			inputSocket = new ServerSocket(port);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void run()
 	{		
 		try {
 			Vector<Object> dataIn = new Vector<Object>();
-			ObjectInputStream objStream = new ObjectInputStream(inputSocket.getInputStream());
+			Log.d("Data Thread", "Entering run function");
 			
-			while((dataIn = (Vector<Object>) objStream.readObject()) != null)
+			while(true)
 			{
 				Log.d("Data Thread", "Checking for incoming messages");
-				Thread.sleep(1000);
+				Socket s = inputSocket.accept();
+				ObjectInputStream objStream = new ObjectInputStream(s.getInputStream());
+				Object next = objStream.readObject();
 				
-				MessageHandler.forward(dataIn);
+				if(next instanceof Vector)
+				{
+					dataIn = (Vector<Object>) objStream.readObject();
+					Log.d("Data Thread", "Received a message");
+					MessageHandler.forward(dataIn);
+				}
+				else
+				{
+					Log.d("Data Thread", "Received a non-vector message");
+					Log.d("Data Thread", next.toString());
+				}
+				Thread.sleep(1000);
 			}
 			
-			inputSocket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

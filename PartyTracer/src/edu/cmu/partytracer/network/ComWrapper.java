@@ -8,10 +8,13 @@ public class ComWrapper {
 	
 	public static void initInstance()
 	{
-		if(TestDataGenerator.TEST_MODE_ON)
-			communication = new DummyCommunicator();
-		else
-			communication = new Communicator();
+		if(communication == null)
+		{
+			if(TestDataGenerator.TEST_MODE_ON)
+				communication = new DummyCommunicator();
+			else
+				communication = new Communicator();
+		}
 	}
 	public static AbstractComm getComm()
 	{

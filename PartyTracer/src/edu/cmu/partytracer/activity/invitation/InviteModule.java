@@ -255,6 +255,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		
         		//add the invitation to our user's database and send it off to the server
         		//UserSingleton.getUser().addInvite(Invitation.fromInvitationBean(ib));
+        		Log.d(MAIN_TAG, "About to send the invitation");
         		ComWrapper.getComm().send(Protocol.TYPE_InvitationBean, ib);
         	}
 	        else if(requestCode == VIEW_VOTES)
