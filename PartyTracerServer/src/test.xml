@@ -1,0 +1,28 @@
+<testdata>
+<destination
+  name="CMU Forbes and Morewood"
+  latitude="40444314"
+  longitude="-79942961">
+</destination>
+<client>
+  <id>User A</id>
+  <latoffset>4000</latoffset>
+  <lngoffset>20000</lngoffset>
+  <step>14</step>
+  <randomdelay>200</randomdelay>
+</client>
+<client>
+  <id>User B</id>
+  <latoffset>-4000</latoffset>
+  <lngoffset>40000</lngoffset>
+  <step>20</step>
+  <randomdelay>40</randomdelay>
+</client>
+<client>
+  <id>User C</id>
+  <latoffset>-10000</latoffset>
+  <lngoffset>-20000</lngoffset>
+  <step>18</step>
+  <randomdelay>30</randomdelay>
+</client>
+</testdata>

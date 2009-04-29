@@ -1,5 +1,6 @@
 package edu.cmu.partytracer.serverThread;
 
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -34,15 +35,13 @@ public class ServerUDPThread {
 		threads.add(sr);
 		threads.add(ss);
 
-		cThread ct1 = new cThread(20, 14, "Phone1", 10001, 40443611, -79927962);
-		cThread ct2 = new cThread(40, 20, "Phone2", 10002, 40439548, -80009308);
-		cThread ct3 = new cThread(30, 18, "Phone3", 10003, 40459548, -79926308);
-		ct1.start();
-		ct2.start();
-		ct3.start();
-		threads.add(ct1);
-		threads.add(ct2);
-		threads.add(ct3);
+		XMLParser p = new XMLParser(args[1]);
+		XMLParser.Destination d = p.getDestination();
+		for(XMLParser.Client c:p.getClientList()) {
+			cThread ct = new cThread(c,d);
+			ct.start();
+			threads.add(ct);
+		}
 
 	}
 
@@ -58,23 +57,35 @@ public class ServerUDPThread {
 	// ------------------------------------------------------------------------
 	/**
 	 * simulate client thread sending location packets
+	 * it is only for the purpose of testing
 	 */
 	public static class cThread extends Thread {
-		int desLat = 40444314;
-		int desLng = -79942961;
-		static int EPOCH = Protocol.EPOCH; // the rhythm of sending packets
+		int desLat;// =40444314;
+		int desLng;// =-79942961;
+		static int EPOCH = Protocol.EPOCH; //the rhythm of sending packets
 		String id;
-
+		
 		int lat;
 		int lng;
 		int step;
-
+		
 		int sleepTime;
 		int desPort = 8888;
+		static int PORT = 10000;
 		int port;
 		String addr = "127.0.0.1";
 		static Random r = new Random();
 
+		public cThread(XMLParser.Client c, XMLParser.Destination d) {
+			this.sleepTime = c.getRandomDelay();
+			this.step = c.getStep();
+			this.id = c.getId();
+			this.port = PORT++;
+			this.desLat = d.getLatitude();
+			this.desLng = d.getLongitude();
+			this.lat = c.getLatOffset()+d.getLatitude();
+			this.lng = c.getLngOffset()+d.getLongitude();
+		}
 		public cThread(int sleepTime, int step, String id, int port, int lat, int lng) {
 			this.sleepTime = sleepTime;
 			this.step = step;
@@ -83,7 +94,7 @@ public class ServerUDPThread {
 			this.lat = lat;
 			this.lng = lng;
 		}
-
+		
 		public void run() {
 
 			try {
@@ -91,31 +102,31 @@ public class ServerUDPThread {
 			} catch (InterruptedException e1) {
 				interrupt();
 			}
-
-			int i = 0;
-			while (i < step) {
-				if (isInterrupted()) {
+			
+			int i=0;
+			while(i<step){
+				if(isInterrupted())	{
 					break;
 				}
 				i++;
 				try {
-					// add fluctuation to sleep time, simulate propagation delay
-					Thread.sleep(EPOCH + (r.nextInt() % sleepTime) - sleepTime / 2);
+					//add fluctuation to sleep time, simulate propagation delay
+					Thread.sleep(EPOCH+(r.nextInt()%sleepTime)-sleepTime/2);
 				} catch (InterruptedException e1) {
 					interrupt();
 				}
 
-				int curlat = lat + i * (desLat - lat) / step;
-				int curlng = lng + i * (desLng - lng) / step;
-
+				int curlat = lat+i*(desLat-lat)/step;
+				int curlng = lng+i*(desLng-lng)/step;
+				
 				DatagramSocket s;
 				try {
 					s = new DatagramSocket(port);
-					LocationBean lb = new LocationBean(new Location(id, curlat, curlng), false);
-
+					LocationBean lb = new LocationBean(new Location(id,curlat,curlng),false);
+			
 					byte[] bs = Util.objToBytes(BeanVector.wrapBean(lb));
 					InetAddress ip = InetAddress.getByName(addr);
-					DatagramPacket p = new DatagramPacket(bs, bs.length, ip, desPort);
+					DatagramPacket p = new DatagramPacket(bs,bs.length,ip,desPort);
 					s.send(p);
 					s.close();
 					System.out.println("Client sent LocationBean");
@@ -128,7 +139,7 @@ public class ServerUDPThread {
 				}
 			}
 		}
-
+		
 	}
 
 	/**
