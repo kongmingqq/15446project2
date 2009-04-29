@@ -23,7 +23,7 @@ public class MessageSender {
 			myBean.setOptions(options);
 			myVector.add("INIT");
 			myVector.add(myBean);
-			Socket mySocket = new Socket("128.237.231.245", 1544);
+			Socket mySocket = new Socket("localhost", 15446);
 			ObjectOutputStream out = new ObjectOutputStream(mySocket.getOutputStream());
 			out.writeObject(myVector);
 			out.close();

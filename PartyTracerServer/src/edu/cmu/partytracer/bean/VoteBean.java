@@ -31,7 +31,15 @@ public class VoteBean implements Serializable{
 	private String partyId;
 	private String[] voters;
 	private String[] data;
-	
+	//for Test
+	private Location resultLocation;
+	//TODO: change to xml content
+	public Location getResultLocation() {
+		return resultLocation;
+	}
+	public void setResultLocation(Location resultLocation) {
+		this.resultLocation = resultLocation;
+	}
 	public VoteBean(){};
 }
 

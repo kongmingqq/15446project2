@@ -1,27 +1,16 @@
 package edu.cmu.partytracer.dataProcessor;
 
-import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Vector;
 
-import edu.cmu.partytracer.bean.AggLocationBean;
-import edu.cmu.partytracer.bean.Bean;
-import edu.cmu.partytracer.bean.BeanVector;
 import edu.cmu.partytracer.bean.InvitationBean;
-import edu.cmu.partytracer.bean.Location;
 import edu.cmu.partytracer.bean.LocationBean;
 import edu.cmu.partytracer.bean.Protocol;
-import edu.cmu.partytracer.bean.VoteBean;
 import edu.cmu.partytracer.serverThread.ServerSingleton;
-import edu.cmu.partytracer.serverThread.Util;
 import edu.cmu.partytracer.serverThread.ServerUDPThread.ServerCacheQueue;
+import edu.cmu.partytracer.serverThread.ServerUDPThread.cThread;
 
 /**
  * Communicate with the client 
@@ -103,10 +92,11 @@ public class ClientCommunicator {
 			ServerSingleton.getInstance().setLocationCache(partyID, serverCacheQueue.dequeueLocationBatch(serverCacheQueue.size()/2));
 		}
 		DatagramSocket s;
+		
+		//Real code, but not feasible for testing
+		/*
 		try {
 			s = new DatagramSocket(ServerSingleton.serverUDPPort);
-			// TODO split large list into smaller ones and send
-			// separately
 			Bean bp = new AggLocationBean(0, (List<Location>)ServerSingleton.getInstance().getLocationCache(partyID)[1]);
 			byte[] bs = Util.objToBytes(BeanVector.wrapBean(bp));
 			InetAddress ip = InetAddress.getByName(clientIPAddress);
@@ -121,6 +111,13 @@ public class ClientCommunicator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		*/
+		cThread ct1 = new cThread(20,14,"Phone1",10001,40443611,-79927962);
+		cThread ct2 = new cThread(40,20,"Phone2",10002,40439548,-80009308);
+		cThread ct3 = new cThread(30,18,"Phone3",10003,40459548,-79926308);
+		ct1.start();
+		ct2.start();
+		ct3.start();
 	}
 	
 }
