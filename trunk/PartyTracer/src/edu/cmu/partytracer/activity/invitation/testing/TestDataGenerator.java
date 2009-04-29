@@ -1,5 +1,6 @@
 package edu.cmu.partytracer.activity.invitation.testing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -32,6 +33,28 @@ public class TestDataGenerator {
 		
 		return phoneNumbers.get(contact);
 	}
+	
+	public static String getUserNameFromPhoneNumber(String number)
+	{
+		if(phoneNumbers == null)
+		{
+			phoneNumbers = new HashMap<String, String>();
+			phoneNumbers.put("User A", "15852084274");
+			phoneNumbers.put("User B", "16666666666");
+			phoneNumbers.put("User C", "17777777777");
+			phoneNumbers.put("User D", "18888888888");
+		}
+		
+		ArrayList<String> keys = new ArrayList<String>(phoneNumbers.keySet());
+		for(int i=0; i<keys.size(); i++)
+		{
+			String value = phoneNumbers.get(keys.get(i));
+			if(value.equals(number))
+				return keys.get(i);
+		}
+		return "Unknown User";
+	}
+	
 	public static int getNewId()
 	{
 		if(r == null)
