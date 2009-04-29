@@ -9,7 +9,8 @@ import edu.cmu.partytracer.serverThread.ServerSingleton;
 
 public class DataDispatcher {
 	public static void storeInvitationMsg(InvitationBean invitationBean) {
-		String partyID = ServerSingleton.getInstance().getModel().getInvitationDAO().storeInvitationData(invitationBean);
+//		String partyID = ServerSingleton.getInstance().getModel().getInvitationDAO().storeInvitationData(invitationBean);
+		String partyID = "1000";
 		ServerSingleton.getInstance().setCurStatus(partyID, "GET_FIRST_INVITATION");
 		ServerSingleton.getInstance().setInvitationBean(partyID, invitationBean);
 		new VoteTimer(invitationBean.getTimeout(), partyID);
