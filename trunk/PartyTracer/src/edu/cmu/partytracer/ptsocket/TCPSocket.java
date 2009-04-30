@@ -20,7 +20,7 @@ public class TCPSocket implements PTSocket {
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
 	
-	//for receiving
+	//for receiving or server
 	public TCPSocket(int port) throws IOException {
 		this.port = port;
 		ServerSocket ss = new ServerSocket(port);
@@ -35,7 +35,7 @@ public class TCPSocket implements PTSocket {
 		ois = new ObjectInputStream(socket.getInputStream());
 	}
 	
-	//for sending
+	//for sending or client
 	public TCPSocket(String destAddr, int destPort) throws IOException {
 		destIp = InetAddress.getByName(destAddr);
 		socket = new Socket(destIp, destPort);
