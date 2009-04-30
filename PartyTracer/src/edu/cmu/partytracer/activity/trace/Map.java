@@ -109,9 +109,7 @@ public class Map extends MapActivity {
         mc.setZoom(13);
         mc.setCenter(destinationPoint);
 
-        while(CACHE.dequeue()!=null) {
-        	;//clean up cache
-        }
+        CACHE.clear();
         
         if(Application.TRACE_SEND_THREAD==null) {
             Thread tst = new TraceSendThread();

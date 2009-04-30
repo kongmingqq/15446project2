@@ -27,11 +27,14 @@ public class CacheQueue {
 		}
 		next = alb;
 	}
-	
 	public synchronized AggLocationBean dequeue() {
 		AggLocationBean rv = current;
 		current = next;
 		next = null;
 		return rv;
+	}
+	public synchronized void clear() {
+		current = null;
+		next = null;
 	}
 }
