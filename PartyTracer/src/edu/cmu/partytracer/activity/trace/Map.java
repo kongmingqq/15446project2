@@ -347,7 +347,7 @@ public class Map extends MapActivity {
 					break;
 				}
 				//TODO update hardcoded values
-				if((i>5 && retryAttemp > 10) || retryAttemp>30) {
+				if((i>5 && retryAttemp > 20) || retryAttemp>50) {
 					terminate("Cannot get location info from server, quit",true);
 					Log.v("!!!!!!!","Leaving thread! ");
 					break;
