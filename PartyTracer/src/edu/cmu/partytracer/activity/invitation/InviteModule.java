@@ -53,7 +53,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         Button viewVotes = (Button) findViewById(R.id.vote);
         Button request = (Button) findViewById(R.id.request);
         Button exit = (Button) findViewById(R.id.exit);
-        Button set = (Button) findViewById(R.id.setcurrent);
+        Button set = (Button) findViewById(R.id.setcurrentinvite);
         
         createInvite.setOnClickListener(this);
         viewActive.setOnClickListener(this);
@@ -191,7 +191,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			//We'll need to return some data representing the votes that the user chose
 			startActivityForResult(viewVotes, VIEW_VOTES);
 		}
-		else if(v.getId() == R.id.setcurrent)
+		else if(v.getId() == R.id.setcurrentinvite)
 		{
 			Intent setCurrent = new Intent(this, edu.cmu.partytracer.activity.invitation.SetCurrentInviteDialog.class);
 			
