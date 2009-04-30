@@ -40,8 +40,10 @@ public class Communicator extends AbstractComm{
 
 			Log.d("Communicator", "Opening socket");
 			outputSocket = new Socket(Application.SERVER_IP, 15446);
+			Log.d("Communicator", "Opened");
 			ObjectOutputStream objStream = new ObjectOutputStream(outputSocket.getOutputStream());
 			objStream.writeObject(data);
+			Log.d("Communicator", "Wrote an object");
 			objStream.flush();
 			Log.d("Communicator", "Closing socket");
 			outputSocket.close();

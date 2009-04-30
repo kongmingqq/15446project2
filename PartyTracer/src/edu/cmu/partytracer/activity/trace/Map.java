@@ -68,11 +68,10 @@ public class Map extends MapActivity {
         
         linearLayout = (LinearLayout) findViewById(R.id.zoomview);
         mapView = (MapView) findViewById(R.id.mapview);
-        //TODO extends ZoomControls to provide fit button and quit button(or catch key events)
+
         mapZoom = (ZoomControls) mapView.getZoomControls();
         linearLayout.addView(mapZoom);
 
-        mapOverlays = mapView.getOverlays();
         marker = this.getResources().getDrawable(R.drawable.marker);
         marker_unknown = this.getResources().getDrawable(R.drawable.marker_unknown);
         marker_destination = this.getResources().getDrawable(R.drawable.marker_destination);
@@ -84,14 +83,12 @@ public class Map extends MapActivity {
         OverlayItem destination = new OverlayItem(destinationPoint, "Destination", "party info here");
         destinationOverlay = new MapItemizedOverlay(marker_destination);
         destinationOverlay.addOverlay(destination);
-        mapOverlays.add(destinationOverlay);
         
         GeoPoint myPoint = new GeoPoint(40442334,-79945971);
         OverlayItem me = new OverlayItem(myPoint, "Me", "Myself");
         MapItemizedOverlay myLocOverlay = new MapItemizedOverlay(marker_me);
         myLocOverlay.addOverlay(me);
         myLocOverlay.setMarker(0, marker_me);
-        mapOverlays.add(myLocOverlay);
         
         //TODO my location info and my location update thread
         //myLocationOverlay = new MyLocationOverlay(this, mapView);
@@ -101,6 +98,10 @@ public class Map extends MapActivity {
         itemizedOverlay = new MapItemizedOverlay(marker_unknown);
         itemizedOverlay.addOverlay(info);
         itemizedOverlay.setMarker(0, info_waiting);
+        
+        mapOverlays = mapView.getOverlays();
+        mapOverlays.add(destinationOverlay);
+        mapOverlays.add(myLocOverlay);
         mapOverlays.add(itemizedOverlay);
         
         
@@ -108,6 +109,10 @@ public class Map extends MapActivity {
         mc.setZoom(13);
         mc.setCenter(destinationPoint);
 
+        while(CACHE.dequeue()!=null) {
+        	;//clean up cache
+        }
+        
         if(Application.TRACE_SEND_THREAD==null) {
             Thread tst = new TraceSendThread();
             tst.start();
@@ -281,12 +286,12 @@ public class Map extends MapActivity {
 		
 		@Override
 		public synchronized boolean onTap(int index) {
-			synchronized(mapView) {
+			//synchronized(mapView) {
 				OverlayItem current = mOverlays.get(index);
 				//bad for concurrent control
 				//mapView.getController().animateTo(current.getPoint());
 				Toast.makeText(getBaseContext(), current.getTitle()+"\n"+TestDataGenerator.lookUpContact(current.getTitle()), Toast.LENGTH_SHORT).show();
-			}
+			//}
 			return true;
 		}
 		
@@ -422,18 +427,21 @@ public class Map extends MapActivity {
 						}
 						newItemizedOverlay.commitPopulate();
 						}
-
+						long a = (new Date()).getTime();
+						System.out.println("|||||||TRY: "+a);
 						synchronized(mapView) {
-							synchronized(mapOverlays) {
-								synchronized(itemizedOverlay) {
+							System.out.println("|||||||GOT: "+((new Date()).getTime()-a));
+							synchronized(mapView.getOverlays()) {
+								synchronized(mapOverlays) {
 									mapOverlays.remove(itemizedOverlay);
+									mapOverlays.add(newItemizedOverlay);
 									itemizedOverlay = newItemizedOverlay;
-									mapOverlays.add(itemizedOverlay);
 									mapView.postInvalidate();
 							        //TODO some code to adjust scale
 								}
 							}
 						}
+						System.out.println("|||||||RELEASED: "+((new Date()).getTime()-a));
 						
 				        try {
 							sleep(TIME_GRAIN);

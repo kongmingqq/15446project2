@@ -10,17 +10,24 @@
     android:text="@string/hello"
     />
 <Button
-    android:id="@+id/module_trace"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_marginLeft="10dip"
-    android:text="Module: Map Tracer" />
-<Button
     android:id="@+id/module_invite"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
     android:layout_marginLeft="10dip"
-    android:text="Module: Invitation" />
+    android:text="Send an Invitation" />
+<Button
+    android:id="@+id/module_trace"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="10dip"
+    android:text="Trace a Party" />
+<Button
+    android:id="@+id/test_tracetoggle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="10dip"
+    android:text="Toggle party id for testing trace module" />
 </LinearLayout>

@@ -27,7 +27,7 @@ public class LocationMap implements Cloneable {
 		int maxLng = Integer.MIN_VALUE;
 		int minLng = Integer.MAX_VALUE;
 		for(Location l:alb.getLocations()) {
-			if(l.getId()==Application.MY_PHONE_ID) continue; //me is different
+			if(l.getId().equals(Application.MY_PHONE_ID)) continue; //me is different
 			LocationWithMove lwm = new LocationWithMove(l.getId(),l.getLatitude(),l.getLongitude());
 			map.put(l.getId(), lwm);
 			maxLat = Math.max(maxLat, l.getLatitude());
