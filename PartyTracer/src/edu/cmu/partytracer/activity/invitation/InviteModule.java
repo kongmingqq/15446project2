@@ -99,8 +99,56 @@ public class InviteModule extends Activity implements View.OnClickListener{
     	Log.d(MAIN_TAG, "This user's number is " + myNumber);
     }
     
+    private void startViewDialog(boolean active)
+    {
+		Intent viewInvites = new Intent(this, edu.cmu.partytracer.activity.invitation.ViewInvitesDialog.class);
+
+		//The same dialog is launched whether we're looking at active or vote invites, so let the dialog know 
+		// which one was selected
+		viewInvites.putExtra("active", active);
+		
+		//Get a list of each of this user's active invites, and store each one in the intent used to
+		// launch the new activity
+		Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
+		int item = 0;
+		for(int i=0; i<myInvites.length; i++)
+		{
+			if(myInvites[i].isActive() == active)
+			{
+				InvitationBean ib = myInvites[i].toInvitationBean();
+				viewInvites.putExtra(ViewInvitesDialog.INVITE + item, constructInviteBundle(ib));
+				item++;
+			}
+		}
+		
+		if(active)
+			//Since we don't need to return anything, just start the activity as normal
+			startActivity(viewInvites);
+		else
+			startActivityForResult(viewInvites, VIEW_VOTES);
+    }
+    
+    private void setCurrentPartyId()
+    {
+		Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
+		
+		if(currentInvite == null)
+		{
+			for(int i=0; i<myInvites.length; i++)
+			{
+				if(myInvites[i].isActive())
+				{
+					Application.CURRENT_PARTY_ID = Integer.toString(myInvites[i].getId());
+					break;
+				}
+			}
+		}
+		else
+			Application.CURRENT_PARTY_ID = UserSingleton.getUser().getInviteIdOf(currentInvite);
+    }
+    
 	public void onClick(View v) {
-		//There are three buttons that the user can click from this screen, and each one launches a new activity
+		//There are six buttons that the user can click from this screen, and each one launches a new activity
 		
 		if(v.getId() == R.id.create)
 		{
@@ -120,21 +168,8 @@ public class InviteModule extends Activity implements View.OnClickListener{
 			//Start a trace thread here
 			Application.TRACE_SEND_THREAD = new TraceSendThread();
 			Application.MY_PHONE_ID = UserSingleton.getUser().getNumber();
-			Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
 			
-			if(currentInvite == null)
-			{
-				for(int i=0; i<myInvites.length; i++)
-				{
-					if(myInvites[i].isActive())
-					{
-						Application.CURRENT_PARTY_ID = Integer.toString(myInvites[i].getId());
-						break;
-					}
-				}
-			}
-			else
-				Application.CURRENT_PARTY_ID = UserSingleton.getUser().getInviteIdOf(currentInvite);
+			setCurrentPartyId();
 			
 			Log.d(MAIN_TAG, "Party ID is " + Application.CURRENT_PARTY_ID);
 			Application.TRACE_SEND_THREAD.start();
@@ -142,54 +177,11 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		}
 		else if(v.getId() == R.id.active)
 		{
-			//The second is a dialog to view all invitations which are "active"
-			Intent viewActive = new Intent(this, edu.cmu.partytracer.activity.invitation.ViewInvitesDialog.class);
-
-			//The same dialog is launched whether we're looking at active or vote invites, so let the dialog know 
-			// which one was selected
-			viewActive.putExtra("active", true);
-			
-			//Get a list of each of this user's active invites, and store each one in the intent used to
-			// launch the new activity
-			Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
-			int item = 0;
-			for(int i=0; i<myInvites.length; i++)
-			{
-				if(myInvites[i].isActive())
-				{
-					InvitationBean ib = myInvites[i].toInvitationBean();
-					viewActive.putExtra(ViewInvitesDialog.INVITE + item, constructInviteBundle(ib));
-					item++;
-				}
-			}
-			
-			//Since we don't need to return anything, just start the activity as normal
-			startActivity(viewActive);
+			startViewDialog(true);
 		}
 		else if(v.getId() == R.id.vote)
 		{
-			//This launches a dialog to vote on any voting invites the user might have
-			Intent viewVotes = new Intent(this, edu.cmu.partytracer.activity.invitation.ViewInvitesDialog.class);
-			viewVotes.putExtra("active", false);
-			Log.d(MAIN_TAG, "View Voting invites clicked");
-			
-			//Get a list of each of this user's voting invites, and store each one in the intent used to
-			// launch the new activity 
-			Invitation[] myInvites = UserSingleton.getUser().getMyInvites();
-			int item = 0;
-			for(int i=0; i<myInvites.length; i++)
-			{
-				if(!myInvites[i].isActive())
-				{
-					Log.d(MAIN_TAG, "Putting item number " + item);
-					InvitationBean ib = myInvites[i].toInvitationBean();
-					viewVotes.putExtra(ViewInvitesDialog.INVITE + item, constructInviteBundle(ib));
-					item++;
-				}
-			}
-			
-			//We'll need to return some data representing the votes that the user chose
-			startActivityForResult(viewVotes, VIEW_VOTES);
+			startViewDialog(false);
 		}
 		else if(v.getId() == R.id.setcurrentinvite)
 		{
