@@ -1,0 +1,40 @@
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+
+public class ClientTCPThread extends Thread{
+
+	private String host;
+	private int portNumber;
+	
+	public ClientTCPThread(String name, int port)
+	{
+		host = name;
+		portNumber = port;
+	}
+	
+	public void run()
+	{
+		while(true)
+		{
+			try {
+				Socket s = new Socket(host, portNumber);
+				ObjectOutputStream objStream = new ObjectOutputStream(s.getOutputStream());
+				
+				objStream.writeObject("I Said PLUUUHHH!!!");
+				objStream.flush();
+				s.close();
+				System.out.println("Success");
+			} catch (UnknownHostException e) {
+				System.out.println("Fail");
+				System.out.println("Unknown host, apparently");
+			} catch (IOException e) {
+				System.out.println("Double fail");
+			}
+			
+			
+		}
+	}
+}

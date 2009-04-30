@@ -1,0 +1,13 @@
+
+public class ThreadRunner {
+
+	public static void main(String[] args) {
+		Thread serverTCPThread = null;
+		//set up port to listen
+		serverTCPThread = new ServerTCPThread(1544);
+		System.out.println("TCP Thread Start!");
+		serverTCPThread.start();
+		System.out.println("UDP Thread Start!");
+	}
+
+}

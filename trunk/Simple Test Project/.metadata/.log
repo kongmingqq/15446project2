@@ -1,0 +1,27 @@
+!SESSION 2009-04-26 00:03:33.060 -----------------------------------------------
+eclipse.buildId=I20080617-2000
+java.version=1.6.0_11
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.emf.ecore 2 0 2009-04-26 00:03:49.455
+!MESSAGE Both 'com.omondo.uml.core' and 'org.eclipse.uml2.uml' register an extension parser for 'uml'
+!SESSION 2009-04-28 19:50:11.214 -----------------------------------------------
+eclipse.buildId=I20080617-2000
+java.version=1.6.0_11
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.emf.ecore 2 0 2009-04-28 19:50:26.377
+!MESSAGE Both 'com.omondo.uml.core' and 'org.eclipse.uml2.uml' register an extension parser for 'uml'
+!SESSION 2009-04-29 20:02:28.766 -----------------------------------------------
+eclipse.buildId=I20080617-2000
+java.version=1.6.0_11
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.emf.ecore 2 0 2009-04-29 20:02:58.170
+!MESSAGE Both 'com.omondo.uml.core' and 'org.eclipse.uml2.uml' register an extension parser for 'uml'
