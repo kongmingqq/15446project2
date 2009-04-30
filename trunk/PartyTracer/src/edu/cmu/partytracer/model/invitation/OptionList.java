@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import android.util.Log;
+
 /**
  * 
  * @author Eric Foote
@@ -93,9 +95,13 @@ public class OptionList {
 		String decision = allOptions.get(0);
 		int maxvotes = getNumVotesFor(decision);
 		
+		Log.d("Option List", maxvotes + " votes for " + decision);
+		
 		for(int i=1; i<allOptions.size(); i++)
 		{
 			int votes = getNumVotesFor(allOptions.get(i));
+			Log.d("Option List", votes + " votes for " + allOptions.get(i));
+			
 			if(votes > maxvotes)
 			{
 				maxvotes = votes;
