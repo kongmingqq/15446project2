@@ -14,6 +14,25 @@ public class MessageHandler {
 
 	private static String HANDLER_TAG = "Message Handler";
 	
+	public static void forward(InvitationBean ib)
+	{
+		Log.d(HANDLER_TAG, "Processing Invitation Bean");
+		
+		Invitation newInvite = Invitation.fromInvitationBean(ib);
+		if(!UserSingleton.getUser().isInvitedTo(newInvite))
+			UserSingleton.getUser().addInvite(newInvite);
+	}
+	
+	public static void forward(VoteBean vb)
+	{
+		Log.d(HANDLER_TAG, "Processing Vote Bean");
+		UserSingleton.getUser().addVote(vb);
+		UserSingleton.getUser().activateEvent(Integer.valueOf(vb.getPartyId()));
+		
+		String inviteName = UserSingleton.getUser().getNameOf(Integer.valueOf(vb.getPartyId()));
+		ComWrapper.getComm().addAlert("Event " + inviteName + " has finished voting");
+	}
+	
 	public static void forward(Vector<Object> data)
 	{
 		String type = (String) data.get(0);

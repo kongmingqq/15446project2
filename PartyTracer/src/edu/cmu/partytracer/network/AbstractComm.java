@@ -6,7 +6,7 @@ public abstract class AbstractComm {
 	private ArrayList<String> alertList;
 	
 	public abstract String getMyNumber();
-	public abstract boolean send(String identifier, Object obj);
+	public abstract void send(String identifier, Object obj);
 	public abstract void initNumber(String myNumber);
 	
 	public void addAlert(String message)

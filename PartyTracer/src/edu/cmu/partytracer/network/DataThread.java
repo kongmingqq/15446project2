@@ -1,24 +1,22 @@
 package edu.cmu.partytracer.network;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Vector;
+
+import edu.cmu.partytracer.bean.InvitationBean;
+import edu.cmu.partytracer.bean.VoteBean;
+import edu.cmu.partytracer.ptsocket.TCPSocket;
 
 import android.util.Log;
 
 public class DataThread extends Thread {
 
-	private ServerSocket inputSocket;
+	private TCPSocket inputSocket;
+	public volatile boolean shouldRun = true;
 	
-	public DataThread(int port)
+	public DataThread(TCPSocket s)
 	{
-		try {
-			inputSocket = new ServerSocket(port);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		inputSocket = s;
 	}
 	
 	private void closeInputSocket()
@@ -26,41 +24,72 @@ public class DataThread extends Thread {
 		try {
 			inputSocket.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+
+		}
+	}
+	
+	private void threadSleep(int ms)
+	{
+		try
+		{
+			Thread.sleep(ms);
+		}
+		catch(InterruptedException e)
+		{
+			Log.d("Data Thread", "Data Thread Process Was Interrupted");
+		}
+	}
+	
+	private void forwardObject(Object obj)
+	{
+		Vector<Object> dataIn = new Vector<Object>();
+		
+		if(obj instanceof Vector)
+		{
+			dataIn = (Vector<Object>) obj;
+			Log.d("Data Thread", "Received a message");
+			MessageHandler.forward(dataIn);
+		}
+		else if(obj instanceof InvitationBean)
+		{
+			InvitationBean ib = (InvitationBean) obj;
+			Log.d("Data Thread", "Received an invitation bean");
+			MessageHandler.forward(ib);
+		}
+		else if(obj instanceof VoteBean)
+		{
+			VoteBean vb = (VoteBean) obj;
+			Log.d("Data Thread", "Received a vote bean");
+			MessageHandler.forward(vb);
+		}
+		else
+		{
+			Log.d("Data Thread", "Received an unrecognizable message");
+			Log.d("Data Thread", obj.toString());
 		}
 	}
 	
 	public void run()
 	{		
-		try {
-			Vector<Object> dataIn = new Vector<Object>();
-			Log.d("Data Thread", "Entering run function");
-			
-			while(true)
-			{
-				Log.d("Data Thread", "Checking for incoming messages");
-				Socket s = inputSocket.accept();
-				ObjectInputStream objStream = new ObjectInputStream(s.getInputStream());
-				Object next = objStream.readObject();
-				
-				if(next instanceof Vector)
-				{
-					dataIn = (Vector<Object>) objStream.readObject();
-					Log.d("Data Thread", "Received a message");
-					MessageHandler.forward(dataIn);
-				}
-				else
-				{
-					Log.d("Data Thread", "Received a non-vector message");
-					Log.d("Data Thread", next.toString());
-				}
-				Thread.sleep(1000);
+		Log.d("Data Thread", "Entering run function");
+		
+		while(shouldRun)
+		{
+			Log.d("Data Thread", "Checking for incoming messages");
+			try {
+				Object next;
+				next = inputSocket.receiveObject();
+				forwardObject(next);
+			} catch (IOException e1) {
+				Log.d("Data Thread", "Error receiving, possibly disconnected");
+			} catch (ClassNotFoundException e1) {
+				Log.d("Data Thread", "Received an unrecognizable message");
+				Log.d("Data Thread", e1.toString());
 			}
 			
-		} catch (Exception e) {
-			closeInputSocket();
-			e.printStackTrace();
+			threadSleep(1000);
 		}
 		
+		closeInputSocket();
 	}
 }
