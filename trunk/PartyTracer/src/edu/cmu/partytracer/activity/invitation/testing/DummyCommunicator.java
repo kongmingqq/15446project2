@@ -18,7 +18,7 @@ public class DummyCommunicator extends AbstractComm{
 		return storedNumber;
 	}
 
-	public boolean send(String identifier, Object obj) {
+	public void send(String identifier, Object obj) {
 		Log.d(NET_TAG, "Received a message");
 		Log.d(NET_TAG, "Identifier is " + identifier);
 		
@@ -27,8 +27,6 @@ public class DummyCommunicator extends AbstractComm{
 			InvitationBean ib = (InvitationBean)obj;
 			sendInvite(ib);
 		}
-		
-		return true;
 	}
 
 	public void initNumber(String myNumber) {
