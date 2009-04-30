@@ -1,0 +1,8 @@
+public class ThreadRunner {
+
+	public static void main(String[] args) {
+		ClientTCPThread cThread = new ClientTCPThread("localhost", 1544);
+		cThread.start();
+	}
+
+}
