@@ -16,7 +16,7 @@ public class InvitationDAO {
 		try {
 			Connection con = connPool.getConnection();
 //			String partyID = System.currentTimeMillis() + "";
-			String partyID = "100";
+			String partyID = "1000";
 			PreparedStatement pstmt1 = con.prepareStatement("INSERT INTO PARTYTRACER(PARTY_ID,PARTY_SENDER, PARTY_TIMEOUT) VALUES(?,?,?)");
 			PreparedStatement pstmt2 = con.prepareStatement("INSERT INTO OPTIONLIST(OPTION_CONTENT, PARTY_ID, VOTE_CNT) VALUES(?,?,?)");
 			PreparedStatement pstmt3 = con.prepareStatement("INSERT INTO INVITELIST(INVITE_PERSON, PARTY_ID) VALUES(?,?)");

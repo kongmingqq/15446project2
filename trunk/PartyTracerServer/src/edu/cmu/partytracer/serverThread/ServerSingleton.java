@@ -32,10 +32,10 @@ public class ServerSingleton {
 	public HashMap<String, Object[]> locationCacheMap;
 	//use to process the vote and get the result
 	public HashMap<String, Invitation> voteProcessMap;
-	public static final int clientPort = 1544;
-	public static final int serverPortNumber = 15446;
-	public static final int serverUDPPort = 8889;
-	public static final int clientUDPPort = 9999;
+//	public static final int clientPort = 1544;
+//	public static final int serverPortNumber = 15446;
+//	public static final int serverUDPPort = 8889;
+//	public static final int clientUDPPort = 9999;
 
 	private static ServerSingleton unique_instance;
 

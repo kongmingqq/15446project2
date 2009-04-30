@@ -7,7 +7,7 @@ public class SendEmail {
 	private static final String emailSubjectTxt = "15446 test message";
 	private static final String emailFromAddress = "partytracer@gmail.com";
 	// Add List of Email address to who email needs to be sent to
-	private static final String[] emailList = { "4129994538@teleflip.com",
+	private static final String[] emailList = { "4129994538@text.att.com",
 			"ctrlhxj@163.com" };
 
 	public static void main(String args[]) throws Exception {

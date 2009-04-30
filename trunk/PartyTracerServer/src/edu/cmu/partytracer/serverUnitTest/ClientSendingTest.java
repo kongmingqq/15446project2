@@ -1,4 +1,4 @@
-package edu.cmu.partytracer.serverThread;
+package edu.cmu.partytracer.serverUnitTest;
 
 
 import java.io.IOException;
@@ -7,7 +7,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,15 +14,39 @@ import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
 
-import edu.cmu.partytracer.bean.*;
+import edu.cmu.partytracer.bean.AggLocationBean;
+import edu.cmu.partytracer.bean.Bean;
+import edu.cmu.partytracer.bean.BeanVector;
+import edu.cmu.partytracer.bean.Location;
+import edu.cmu.partytracer.bean.LocationBean;
+import edu.cmu.partytracer.bean.Protocol;
 import edu.cmu.partytracer.bean.BeanVector.BeanVectorException;
 import edu.cmu.partytracer.dataProcessor.DataDispatcher;
+import edu.cmu.partytracer.serverThread.Util;
+import edu.cmu.partytracer.serverThread.XMLParser;
 
-public class ServerUDPThread {
+public class ClientSendingTest {
 	static int STEP = 20;
 	static int EPOCH = Protocol.EPOCH;
 	static ServerCacheQueue sCache = new ServerCacheQueue();
 	static Set<Thread> threads = new HashSet<Thread>();
+	static String clientIP;
+
+	public static void main(String[] args) {
+		clientIP = "128.237.222.222";
+		Thread ss = new ssThread();
+		ss.start();
+		threads.add(ss);
+
+		XMLParser p = new XMLParser("test.xml");
+		XMLParser.Destination d = p.getDestination();
+		for(XMLParser.Client c:p.getClientList()) {
+			cThread ct = new cThread(c,d);
+			ct.start();
+			threads.add(ct);
+		}
+
+	}
 
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
@@ -126,13 +149,6 @@ public class ServerUDPThread {
 	 * Server sending packets
 	 */
 	public static class ssThread extends Thread {
-		String clientIP;
-		String partyID;
-		public ssThread(String clientIP, String partyID){
-			this.clientIP = clientIP;
-			this.partyID = partyID;
-		}
-		
 		public void run() {
 			// delay 3 epoches to wait enough pakcets
 			try {
@@ -169,16 +185,14 @@ public class ServerUDPThread {
 				}
 				if (locs != null) {
 					DatagramSocket s;
-					int port = Protocol.SERVER_TRACE_SEND_PORT;
+					int port = 8889;
 					String addr = clientIP;
-					int desPort = Protocol.CLIENT_TRACE_RECEIVE_PORT;
+					int desPort = 9999;
 					try {
 						s = new DatagramSocket(port);
 						// TODO split large list into smaller ones and send
 						// separately
-						Bean bp = new AggLocationBean(0, (List<Location>)ServerSingleton.getInstance().getLocationCache(partyID)[1]);
-						List<Location> tmpLoc = (List<Location>)ServerSingleton.getInstance().getLocationCache(partyID)[1];
-						System.out.println("Sending message: "+tmpLoc+"\n with size "+tmpLoc.size());
+						Bean bp = new AggLocationBean(0, locs);
 						byte[] bs = Util.objToBytes(BeanVector.wrapBean(bp));
 						InetAddress ip = InetAddress.getByName(addr);
 						DatagramPacket p = new DatagramPacket(bs, bs.length, ip, desPort);
@@ -236,7 +250,7 @@ public class ServerUDPThread {
 //							continue;
 //						}
 						System.out.println("Server receiving LocationBean:" + loc);
-//						System.out.println("IP Address is: " + p.getAddress().getHostAddress());
+						System.out.println("IP Address is: " + p.getAddress().getHostAddress());
 						DataDispatcher.storeLocationMsg((LocationBean) bv.getBean(), p.getAddress().getHostAddress());
 					}
 				} catch (SocketException e) {

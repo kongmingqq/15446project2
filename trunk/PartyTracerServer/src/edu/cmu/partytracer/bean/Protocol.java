@@ -14,9 +14,15 @@ public final class Protocol {
 	public static final String TYPE_VoteBean = "MODEL:VOTE";
 	public static final String TYPE_Request = "MODEL:REQUEST";
 	public static final String TYPE_VoteResult = "MODEL:VOTERESULT";
+
 	public static final int EPOCH = 5000;
 	
 	//protocol port numbers
+	public static final int CLIENT_MODEL_RECEIVE_PORT = 1544;
 	public static final int CLIENT_TRACE_RECEIVE_PORT = 9999;
+	public static final int SERVER_TCP_PORT = 15446;
 	public static final int SERVER_TRACE_RECEIVE_PORT = 8889;
+	public static final int SERVER_TRACE_SEND_PORT = 7779;
+	public static final int SERVER_TERM_SEND_PORT = 6669;
+	
 }
