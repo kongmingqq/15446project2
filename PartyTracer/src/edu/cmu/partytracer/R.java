@@ -23,7 +23,7 @@ public final class R {
         public static final int menu_zoom=0x7f020009;
     }
     public static final class id {
-        public static final int active=0x7f05000f;
+        public static final int active=0x7f050010;
         public static final int addcategory=0x7f050006;
         public static final int addinvitedusers=0x7f050004;
         public static final int allactiveinvites=0x7f05001d;
@@ -56,10 +56,10 @@ public final class R {
         public static final int scrollleft=0x7f050005;
         public static final int scrollright=0x7f050007;
         public static final int sendrequest=0x7f05001c;
-        public static final int setcurrent=0x7f050011;
+        public static final int setcurrentinvite=0x7f05000f;
         public static final int timeoutentry=0x7f05000a;
         public static final int timeoutlabel=0x7f050009;
-        public static final int vote=0x7f050010;
+        public static final int vote=0x7f050011;
         public static final int zoomview=0x7f050021;
     }
     public static final class layout {
