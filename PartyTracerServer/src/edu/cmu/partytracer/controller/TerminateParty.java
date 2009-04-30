@@ -6,6 +6,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+
+import edu.cmu.partytracer.bean.Protocol;
 import edu.cmu.partytracer.serverThread.ServerSingleton;
 import edu.cmu.partytracer.serverThread.Util;
 
@@ -18,14 +20,14 @@ public class TerminateParty {
 	public static void terminatePary(String partyID) {
 		DatagramSocket s;
 		try {
-			s = new DatagramSocket(ServerSingleton.serverUDPPort);
+			s = new DatagramSocket(Protocol.SERVER_TERM_SEND_PORT);
 			// TODO split large list into smaller ones and send
 			// separately
 			String termMsg = "TERM";
 			byte[] bs = Util.objToBytes(termMsg);
 			for (String eachClient : ServerSingleton.getInstance().clientAddressMap.get(partyID)) {
 				InetAddress ip = InetAddress.getByName(eachClient);
-				DatagramPacket p = new DatagramPacket(bs, bs.length, ip, ServerSingleton.clientUDPPort);
+				DatagramPacket p = new DatagramPacket(bs, bs.length, ip, Protocol.CLIENT_TRACE_RECEIVE_PORT);
 				s.send(p);
 			}
 			s.close();

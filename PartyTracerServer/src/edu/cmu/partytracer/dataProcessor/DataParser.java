@@ -19,14 +19,15 @@ public class DataParser {
 		if (msgType.equals(Protocol.TYPE_InvitationBean) ) {
 			// format is <INIT, invitationBean>
 			DataDispatcher.storeInvitationMsg((InvitationBean)input.get(1));
-		} else if (msgType.equals(Protocol.TYPE_Request) && ServerSingleton.getInstance().curStatus.get(input.get(1).toString())!= null && ServerSingleton.getInstance().curStatus.get(input.get(1).toString()).equals("SEND_FIRST_INVITATION")) {
+//			&& ServerSingleton.getInstance().curStatus.get(input.get(1).toString())!= null && ServerSingleton.getInstance().curStatus.get(input.get(1).toString()).equals("SEND_FIRST_INVITATION")
+		} else if (msgType.equals(Protocol.TYPE_Request) ) {
 			// format is <"REQ", partyID>
 			ClientCommunicator.sendVoteOptionInformation(input.get(1).toString(), clientIPAddress);
 		} else if (msgType.equals(Protocol.TYPE_VoteBean) && ServerSingleton.getInstance().curStatus.get(input.get(1).toString())!= null && ServerSingleton.getInstance().curStatus.get(input.get(1).toString()).equals("SENDING_OPTIONS")) {
 			// format is <VOTE, voteBean>
 			DataDispatcher.storeVoteMsg((VoteBean)input.get(1), clientIPAddress);
 		} else {
-			System.out.println("throw away unknown message");
+			System.out.println("throw away unknown message"+input.get(0));
 		}
 	}
 

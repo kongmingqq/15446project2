@@ -16,12 +16,12 @@ public class MessageSender {
 			Vector<Object> myVector = new Vector<Object>();
 			InvitationBean myBean = new InvitationBean();
 			myBean.setTimeout(999999);
-			myBean.setSender("Sender_xiaojian");
-			String[] inviteList = { "4125892943", "4129994538", "5852084274"};
+			myBean.setSender("14345552938");
+			String[] inviteList = { "14125892943", "14129994538", "15852084274"};
 			myBean.setInviteList(inviteList);
 			String[] options = { "OptionCMU", "optionHBH" };
 			myBean.setOptions(options);
-			myVector.add("INIT");
+			myVector.add("MODEL:INVITATION");
 			myVector.add(myBean);
 			Socket mySocket = new Socket("localhost", 15446);
 			ObjectOutputStream out = new ObjectOutputStream(mySocket.getOutputStream());

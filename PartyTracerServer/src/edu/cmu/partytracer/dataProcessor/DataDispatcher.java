@@ -9,8 +9,8 @@ import edu.cmu.partytracer.serverThread.ServerSingleton;
 
 public class DataDispatcher {
 	public static void storeInvitationMsg(InvitationBean invitationBean) {
-//		String partyID = ServerSingleton.getInstance().getModel().getInvitationDAO().storeInvitationData(invitationBean);
-		String partyID = "1000";
+		String partyID = ServerSingleton.getInstance().getModel().getInvitationDAO().storeInvitationData(invitationBean);
+//		String partyID = "1000";
 		ServerSingleton.getInstance().setCurStatus(partyID, "GET_FIRST_INVITATION");
 		ServerSingleton.getInstance().setInvitationBean(partyID, invitationBean);
 		new VoteTimer(invitationBean.getTimeout(), partyID);
@@ -18,8 +18,11 @@ public class DataDispatcher {
 		try {
 			System.out.println("Insert invitation bean successful!");
 			SendMailUsingAuthentication smtpMailSender = new SendMailUsingAuthentication();
-			String[] invitationList = DataParser.parseInvitationList(invitationBean);
-			smtpMailSender.postMail(invitationList, "You have a new Invitation", partyID, "partytracer@gmail.com");
+//			String[] invitationList = DataParser.parseInvitationList(invitationBean);
+//			for(String each : invitationList){
+//				System.out.println("phone number is: "+each);
+//			}
+//			smtpMailSender.postMail(invitationList, "You have a new Invitation", partyID, "partytracer@gmail.com");
 			System.out.println("Sucessfully Sent mail to All Users");
 			ServerSingleton.getInstance().setCurStatus(partyID, "SEND_FIRST_INVITATION");
 		} catch (Exception e) {
@@ -55,6 +58,7 @@ public class DataDispatcher {
 	public static void storeLocationMsg(LocationBean loc, String clientIPAddress) {
 		ServerSingleton.getInstance().addToLocationQueue(loc.getPartyID(), loc);
 		if (!loc.isSleepMode()){
+			System.out.println("Client is not in sleep mode, send the information");
 			ClientCommunicator.sendAggregatedLocation(loc.getPartyID(), clientIPAddress, loc);
 		}
 	}
