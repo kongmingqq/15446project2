@@ -30,4 +30,15 @@
     android:layout_alignParentLeft="true"
     android:layout_marginLeft="10dip"
     android:text="Toggle party id for testing trace module" />
+<EditText
+   	android:id="@+id/test_serverip"
+   	android:layout_width="fill_parent"
+   	android:layout_height="wrap_content" />
+<Button
+    android:id="@+id/test_setserver"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="10dip"
+    android:text="Set server ip" />
 </LinearLayout>
