@@ -21,6 +21,15 @@ public class DataThread extends Thread {
 		}
 	}
 	
+	private void closeInputSocket()
+	{
+		try {
+			inputSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void run()
 	{		
 		try {
@@ -49,6 +58,7 @@ public class DataThread extends Thread {
 			}
 			
 		} catch (Exception e) {
+			closeInputSocket();
 			e.printStackTrace();
 		}
 		
