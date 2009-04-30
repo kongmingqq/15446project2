@@ -17,7 +17,15 @@
     	android:layout_height="wrap_content"
     	android:layout_below="@id/create"
     	android:text="Subscribe to Invitation" />
-
+		
+	<Button
+		android:id="@+id/setcurrentinvite"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/create"
+		android:layout_toRightOf="@id/request"
+		android:text="Set Current Invite" />
+		
     <Button
     	android:id="@+id/active"
         android:layout_width="wrap_content"
@@ -33,20 +41,12 @@
         android:layout_toRightOf="@id/active"
         android:text="View Voting Invites" />
         
-	<Button
-		android:id="@+id/setcurrent"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android_layout_below="@id/active"
-		android:text="Set Current Invite" />
-        
 	<LinearLayout
 		android:id="@+id/allalerts"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:layout_below="@id/active"
-		android:layout_toRightOf="@id/setcurrent"/>
+		android:layout_below="@id/active"/>
 		
 	<Button
 		android:id="@+id/exit"
@@ -54,4 +54,5 @@
 		android:layout_height="wrap_content"
 		android:layout_below="@id/allalerts"
 		android:text="Exit module"/>
+
 </RelativeLayout>
