@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 
 import edu.cmu.partytracer.bean.Protocol;
 /**
- * UDP version of PTSocket implementation, untested
+ * UDP version of PTSocket implementation, tested
  * @author km
  *
  */
