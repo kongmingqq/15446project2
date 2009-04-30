@@ -94,6 +94,19 @@ public class User {
 		return myInvites.contains(invite);
 	}
 	
+	public String getInviteIdOf(String eventName)
+	{
+		for(int i=0; i<myInvites.size(); i++)
+		{
+			if(myInvites.get(i).getTitle().equals(eventName))
+			{
+				return Integer.toString(myInvites.get(i).getId());
+			}
+		}
+		
+		return null;
+	}
+	
 	public void activateEvent(int invId)
 	{
 		for(int i=0; i<myInvites.size(); i++)

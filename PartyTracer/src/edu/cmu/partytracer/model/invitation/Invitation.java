@@ -117,12 +117,18 @@ public class Invitation {
 			{
 				Log.d(INVITE_TAG, "Looking at category " + categories.get(i));
 				int catIndex = voteData.indexOf(categories.get(i), voterIndex);
-				int catEnd = voteData.indexOf(categoryString, catIndex);
+				int catEnd = Math.min(voteData.indexOf(categoryString, catIndex), voteData.indexOf(endString, catIndex));
 				
 				if(catEnd == -1)
+				{
+					Log.d(INVITE_TAG, "At the last category");
 					catEnd = voteData.indexOf(endString, catIndex);
+				}
 				
-				for(int j=catIndex+1; j<catEnd; j++)
+				catIndex++;
+				Log.d(INVITE_TAG, "going from " + catIndex + " to " + catEnd);
+				
+				for(int j=catIndex; j<catEnd; j++)
 				{
 					Log.d(INVITE_TAG, "User voted for " + voteData.get(j));
 					options.get(categories.get(i)).addVote(voter, voteData.get(j));
@@ -144,10 +150,43 @@ public class Invitation {
 	{
 		VoteBean vb = new VoteBean();
 		vb.setPartyId(Integer.toString(iid));
-		vb.setVoters(getInvitedUsers());
+		vb.setVoters(getAllVoters());
 		vb.setData(createVotingArray());
 		
 		return vb;
+	}
+	
+	private String[] getAllVoters()
+	{
+		ArrayList<String> voters = new ArrayList<String>(Arrays.asList(getInvitedUsers()));
+		voters.add(creator);
+		String[] voterArray = new String[voters.size()];
+		
+		for(int i=0; i<voters.size(); i++)
+		{
+			voterArray[i] = voters.get(i);
+		}
+		
+		return voterArray;
+	}
+	
+	private ArrayList<String> addVotesFromUser(String voterId)
+	{
+		ArrayList<String> userData = new ArrayList<String>();
+		userData.add(voterString + voterId);
+		Log.d(INVITE_TAG, "adding " + voterString + voterId);
+		ArrayList<String> categories = new ArrayList<String>(options.keySet());
+		
+		for(int j=0; j<categories.size(); j++)
+		{
+			OptionList catOptions = options.get(categories.get(j));
+			userData.add(categoryString);
+			userData.add(categories.get(j));
+			
+			Log.d(INVITE_TAG, "adding category " + categories.get(j));
+			userData.addAll(Arrays.asList(catOptions.getVotesOf(voterId)));
+		}
+		return userData;
 	}
 	
 	//Creates an array of vote data that can be stored in a vote bean. The bean can then be sent to the server
@@ -156,25 +195,17 @@ public class Invitation {
 	{
 		Log.d(INVITE_TAG, "Writing out voting data");
 		ArrayList<String> voteData = new ArrayList<String>();
-		ArrayList<String> categories = new ArrayList<String>(options.keySet());
 		
 		for(int i=0; i<invitedUsers.size(); i++)
 		{
 			String voterId = invitedUsers.get(i);
-			voteData.add(voterString + voterId);
-			Log.d(INVITE_TAG, "adding " + voterString + voterId);
-			
-			for(int j=0; j<categories.size(); j++)
-			{
-				OptionList catOptions = options.get(categories.get(i));
-				voteData.add(categoryString);
-				voteData.add(categories.get(j));
-				
-				Log.d(INVITE_TAG, "adding category " + categories.get(j));
-				voteData.addAll(Arrays.asList(catOptions.getVotesOf(voterId)));
-			}
+
+			voteData.addAll(addVotesFromUser(voterId));
 			voteData.add(endString);
 		}
+		
+		voteData.addAll(addVotesFromUser(creator));
+		voteData.add(endString);
 		
 		String[] votesAsArray = new String[voteData.size()];
 		for(int i=0; i<votesAsArray.length; i++)
@@ -404,7 +435,8 @@ public class Invitation {
 		
 		for(int i=0; i<headers.size(); i++)
 		{
-			options.get(i).finalize();
+			Log.d(INVITE_TAG, "Finalizing category " + headers.get(i));
+			options.get(headers.get(i)).finalize();
 		}
 	}
 	

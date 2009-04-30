@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.util.Log;
 import android.view.View;
 
 public class SetCurrentInviteDialog extends Activity implements View.OnClickListener, OnCheckedChangeListener{
@@ -32,8 +33,9 @@ public class SetCurrentInviteDialog extends Activity implements View.OnClickList
 		
 		while(iData.hasExtra(ViewInvitesDialog.INVITE + item))
 		{
+			Log.d("Set Current", "Listing invite number " + item);
 			RadioButton nextInvite = new RadioButton(this);
-			nextInvite.setText(iData.getStringExtra(ViewInvitesDialog.INVITE));
+			nextInvite.setText(iData.getStringExtra(ViewInvitesDialog.INVITE + item));
 			list.addView(nextInvite);
 			
 			item++;

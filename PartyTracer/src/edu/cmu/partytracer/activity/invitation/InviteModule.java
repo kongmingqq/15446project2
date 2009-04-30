@@ -134,7 +134,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 				}
 			}
 			else
-				Application.CURRENT_PARTY_ID = currentInvite;
+				Application.CURRENT_PARTY_ID = UserSingleton.getUser().getInviteIdOf(currentInvite);
 			
 			Log.d(MAIN_TAG, "Party ID is " + Application.CURRENT_PARTY_ID);
 			Application.TRACE_SEND_THREAD.start();

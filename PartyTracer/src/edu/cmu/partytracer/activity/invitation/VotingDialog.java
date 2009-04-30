@@ -73,7 +73,7 @@ public class VotingDialog extends Activity implements View.OnClickListener,
 			else
 			{
 				TextView fixedOption = new TextView(this);
-				fixedOption.setText(voteOptions[0]);
+				fixedOption.setText(": " + voteOptions[0]);
 				singleCategory.addView(fixedOption);
 			}
 			
