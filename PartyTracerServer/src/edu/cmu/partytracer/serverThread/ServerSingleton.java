@@ -7,6 +7,7 @@ import java.util.List;
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.Location;
 import edu.cmu.partytracer.bean.LocationBean;
+import edu.cmu.partytracer.controller.PartyTimer;
 import edu.cmu.partytracer.model.database.Model;
 import edu.cmu.partytracer.model.invitation.Invitation;
 import edu.cmu.partytracer.serverThread.ServerUDPThread.ServerCacheQueue;
@@ -32,6 +33,8 @@ public class ServerSingleton {
 	public HashMap<String, Object[]> locationCacheMap;
 	//use to process the vote and get the result
 	public HashMap<String, Invitation> voteProcessMap;
+	public int Server_UDP_Send;
+	public HashMap<String, PartyTimer> partyTimerThreadMap;
 //	public static final int clientPort = 1544;
 //	public static final int serverPortNumber = 15446;
 //	public static final int serverUDPPort = 8889;
@@ -48,6 +51,8 @@ public class ServerSingleton {
 		locationQueueMap = new HashMap<String, ServerCacheQueue>();
 		locationCacheMap = new HashMap<String, Object[]>();
 		voteProcessMap = new HashMap<String, Invitation>();
+		partyTimerThreadMap = new HashMap<String, PartyTimer>();
+		this.Server_UDP_Send = 20000;
 	}
 
 	public static synchronized ServerSingleton getInstance() {
@@ -134,5 +139,10 @@ public class ServerSingleton {
 		tmp[0] = System.currentTimeMillis();
 		tmp[1] = locationCache;
 		this.locationCacheMap.put(partyID, tmp);
+	}
+	
+	public int getServerUDPPort(){
+		this.Server_UDP_Send++;
+		return this.Server_UDP_Send;
 	}
 }

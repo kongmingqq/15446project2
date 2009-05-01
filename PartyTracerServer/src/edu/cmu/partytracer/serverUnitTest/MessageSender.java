@@ -16,8 +16,8 @@ public class MessageSender {
 			Vector<Object> myVector = new Vector<Object>();
 			InvitationBean myBean = new InvitationBean();
 			myBean.setTimeout(999999);
-			myBean.setSender("14345552938");
-			String[] inviteList = { "14125892943", "14129994538", "15852084274"};
+			myBean.setSender("14345552932");
+			String[] inviteList = { "14125892912", "14129994537", "15852084273"};
 			myBean.setInviteList(inviteList);
 			String[] options = { "OptionCMU", "optionHBH" };
 			myBean.setOptions(options);

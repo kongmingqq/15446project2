@@ -20,7 +20,7 @@ import edu.cmu.partytracer.bean.BeanVector.BeanVectorException;
 import edu.cmu.partytracer.dataProcessor.DataDispatcher;
 
 public class ServerUDPThread {
-	static int STEP = 20;
+	static int STEP = Protocol.STEP;
 	static int EPOCH = Protocol.EPOCH;
 	static ServerCacheQueue sCache = new ServerCacheQueue();
 	static Set<Thread> threads = new HashSet<Thread>();
@@ -169,7 +169,8 @@ public class ServerUDPThread {
 				}
 				if (locs != null) {
 					DatagramSocket s;
-					int port = Protocol.SERVER_TRACE_SEND_PORT;
+					int port = ServerSingleton.getInstance().getServerUDPPort();
+					System.out.println("Server port is "+port);
 					String addr = clientIP;
 					int desPort = Protocol.CLIENT_TRACE_RECEIVE_PORT;
 					try {
@@ -178,7 +179,7 @@ public class ServerUDPThread {
 						// separately
 						Bean bp = new AggLocationBean(0, (List<Location>)ServerSingleton.getInstance().getLocationCache(partyID)[1]);
 						List<Location> tmpLoc = (List<Location>)ServerSingleton.getInstance().getLocationCache(partyID)[1];
-						System.out.println("Sending message: "+tmpLoc+"\n with size "+tmpLoc.size());
+						System.out.println("Sending message: "+tmpLoc);
 						byte[] bs = Util.objToBytes(BeanVector.wrapBean(bp));
 						InetAddress ip = InetAddress.getByName(addr);
 						DatagramPacket p = new DatagramPacket(bs, bs.length, ip, desPort);
@@ -218,7 +219,8 @@ public class ServerUDPThread {
 				e1.printStackTrace();
 			}
 			;
-			while (s != null && i < step) {
+//			while (s != null && i < step) {
+			while (s != null) {
 				if (isInterrupted()) {
 					break;
 				}
@@ -232,6 +234,7 @@ public class ServerUDPThread {
 					if (bv.getType().equals(Protocol.TYPE_LocationBean)) {
 						sCache.enqueue((LocationBean) (bv.getBean()));
 						Location loc = ((LocationBean) (bv.getBean())).getLocation();
+						//TODO:enable this for real case
 //						if(ServerSingleton.getInstance().getCurStatus(loc.getId())==null || !ServerSingleton.getInstance().getCurStatus(loc.getId()).equals("VOTE_RESULT_SENT")){
 //							continue;
 //						}

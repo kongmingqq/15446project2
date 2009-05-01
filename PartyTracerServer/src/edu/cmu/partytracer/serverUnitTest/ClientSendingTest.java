@@ -33,10 +33,10 @@ public class ClientSendingTest {
 	static String clientIP;
 
 	public static void main(String[] args) {
-		clientIP = "128.237.222.222";
-		Thread ss = new ssThread();
-		ss.start();
-		threads.add(ss);
+//		clientIP = "128.237.231.14";
+//		Thread ss = new ssThread();
+//		ss.start();
+//		threads.add(ss);
 
 		XMLParser p = new XMLParser("test.xml");
 		XMLParser.Destination d = p.getDestination();
@@ -73,7 +73,7 @@ public class ClientSendingTest {
 		int step;
 		
 		int sleepTime;
-		int desPort = 8888;
+		int desPort = Protocol.SERVER_TRACE_RECEIVE_PORT;
 		static int PORT = 10000;
 		int port;
 		String addr = "127.0.0.1";
@@ -126,10 +126,10 @@ public class ClientSendingTest {
 				try {
 					s = new DatagramSocket(port);
 					LocationBean lb = new LocationBean(new Location(id,curlat,curlng),false);
-			
 					byte[] bs = Util.objToBytes(BeanVector.wrapBean(lb));
 					InetAddress ip = InetAddress.getByName(addr);
 					DatagramPacket p = new DatagramPacket(bs,bs.length,ip,desPort);
+					System.out.println();
 					s.send(p);
 					s.close();
 					System.out.println("Client sent LocationBean");

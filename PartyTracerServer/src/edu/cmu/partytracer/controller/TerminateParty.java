@@ -6,8 +6,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Vector;
 
 import edu.cmu.partytracer.bean.Protocol;
+import edu.cmu.partytracer.bean.TerminationBean;
 import edu.cmu.partytracer.serverThread.ServerSingleton;
 import edu.cmu.partytracer.serverThread.Util;
 
@@ -17,19 +19,25 @@ import edu.cmu.partytracer.serverThread.Util;
  *
  */
 public class TerminateParty {
-	public static void terminatePary(String partyID) {
+	public static void terminateParty(String partyID) {
 		DatagramSocket s;
 		try {
 			s = new DatagramSocket(Protocol.SERVER_TERM_SEND_PORT);
 			// TODO split large list into smaller ones and send
 			// separately
-			String termMsg = "TERM";
+			Vector<Object> termMsg = new Vector<Object>();
+			TerminationBean termBean = new TerminationBean(partyID);
+			termMsg.add("TERM");
+			termMsg.add(termBean);
 			byte[] bs = Util.objToBytes(termMsg);
-			for (String eachClient : ServerSingleton.getInstance().clientAddressMap.get(partyID)) {
-				InetAddress ip = InetAddress.getByName(eachClient);
+			//TODO: enable this for the real case
+//			for (String eachClient : ServerSingleton.getInstance().clientAddressMap.get(partyID)) {
+//				InetAddress ip = InetAddress.getByName(eachClient);
+			//TODO: change this IP to the client IP for test
+			InetAddress ip = InetAddress.getByName("127.0.0.1");
 				DatagramPacket p = new DatagramPacket(bs, bs.length, ip, Protocol.CLIENT_TRACE_RECEIVE_PORT);
 				s.send(p);
-			}
+//			}
 			s.close();
 			System.out.println("Server sent Terminate Message");
 		} catch (SocketException e) {
@@ -40,11 +48,11 @@ public class TerminateParty {
 			e.printStackTrace();
 		}
 		ServerSingleton.getInstance().curStatus.remove(partyID);
-//		ServerSingleton.getInstance().voteMap.remove(partyID);
 		ServerSingleton.getInstance().clientAddressMap.remove(partyID);
 		ServerSingleton.getInstance().invitationMap.remove(partyID);
 		ServerSingleton.getInstance().locationCacheMap.remove(partyID);
 		ServerSingleton.getInstance().locationQueueMap.remove(partyID);
 		ServerSingleton.getInstance().voteProcessMap.remove(partyID);
+		ServerSingleton.getInstance().partyTimerThreadMap.remove(partyID);
 	}
 }
