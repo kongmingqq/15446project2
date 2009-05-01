@@ -1,6 +1,7 @@
 package edu.cmu.partytracer.network;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Vector;
 
 import edu.cmu.partytracer.Application;
@@ -14,10 +15,12 @@ public class Communicator extends AbstractComm{
 	private Vector<Object> unsentData;
 	private boolean socketOpen;
 	private DataThread serverListener;
+	private HashMap<String, QueryThread> qThreads;
 	
 	public Communicator() {
 		socketOpen = false;
-		unsentData = new Vector<Object>();	
+		unsentData = new Vector<Object>();
+		qThreads = new HashMap<String, QueryThread>();
 		reset();
 	}
 	
@@ -25,17 +28,28 @@ public class Communicator extends AbstractComm{
 		return myNumber;
 	}
 
-	private void reset()
+	public void startQueryThread(String inviteId)
+	{
+		Log.d("Communicator", "Starting query thread for invite " + inviteId);
+		QueryThread qThread = new QueryThread(inviteId);
+		qThreads.put(inviteId, qThread);
+		qThread.start();
+	}
+	
+	public void stopQueryThread(String inviteId)
+	{
+		ComWrapper.finishedQuerying = true;
+	}
+	
+	public void reset()
 	{
 		try
 		{
-			Log.d("Communicator", "Creating TCP Socket");
 			commSocket = new TCPSocket(Application.SERVER_IP, 15446);
-			Log.d("Communicator", "Finished creating TCP Socket");
-
+			
 			serverListener = new DataThread(commSocket);
 			serverListener.start();
-
+			
 			socketOpen = true;
 		} catch (Exception e) {
 			Log.d("Communicator", "Socket couldn't be set up");
@@ -67,13 +81,12 @@ public class Communicator extends AbstractComm{
 	private boolean sendObject(Object data)
 	{
 		try {
-			Log.d("Communicator", "Sending object");
 			commSocket.sendObject(data);
-			Log.d("Communicator", "Sent object");
 			return true;
 		}
 		catch (IOException e) {
 			Log.d("Communicator", "Error sending, possibly disconnected");
+			Log.d("Commmunicator", e.toString());
 			socketOpen = false;
 			closeCommSocket();
 			return false;
@@ -83,10 +96,6 @@ public class Communicator extends AbstractComm{
 	public void send(String identifier, Object obj)
 	{
 		if(!socketOpen) reset();
-		
-		Log.d("Communicator", "Entering send function");
-
-		Log.d("Communicator", "Entering try block");
 		Vector<Object> data = new Vector<Object>();
 		data.add(identifier);
 		data.add(obj);

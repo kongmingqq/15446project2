@@ -31,12 +31,15 @@ public class MessageHandler {
 		
 		String inviteName = UserSingleton.getUser().getNameOf(Integer.valueOf(vb.getPartyId()));
 		ComWrapper.getComm().addAlert("Event " + inviteName + " has finished voting");
+		ComWrapper.getComm().stopQueryThread(vb.getPartyId());
 	}
 	
 	public static void forward(Vector<Object> data)
 	{
 		String type = (String) data.get(0);
-		if(type == Protocol.TYPE_InvitationBean)
+		Log.d(HANDLER_TAG, "Forwarding a vector of type " + type);
+		
+		if(type.equals(Protocol.TYPE_InvitationBean))
 		{
 			Log.d(HANDLER_TAG, "Processing Invitation Bean");
 			
@@ -44,7 +47,7 @@ public class MessageHandler {
 			if(!UserSingleton.getUser().isInvitedTo(newInvite))
 				UserSingleton.getUser().addInvite(newInvite);
 		}
-		else if(type == Protocol.TYPE_VoteBean)
+		else if(type.equals(Protocol.TYPE_VoteBean))
 		{
 			Log.d(HANDLER_TAG, "Processing Vote Bean");
 			VoteBean vb = (VoteBean) data.get(1);
@@ -53,6 +56,7 @@ public class MessageHandler {
 			
 			String inviteName = UserSingleton.getUser().getNameOf(Integer.valueOf(vb.getPartyId()));
 			ComWrapper.getComm().addAlert("Event " + inviteName + " has finished voting");
+			ComWrapper.getComm().stopQueryThread(vb.getPartyId());
 		}
 	}
 }
