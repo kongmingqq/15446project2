@@ -5,6 +5,7 @@ import edu.cmu.partytracer.activity.invitation.testing.TestDataGenerator;
 
 public class ComWrapper {
 	private static volatile AbstractComm communication;
+	public static volatile boolean finishedQuerying;
 	
 	public static void initInstance()
 	{

@@ -42,12 +42,13 @@ public class DataThread extends Thread {
 	
 	private void forwardObject(Object obj)
 	{
+		Log.d("Data Thread", "Forwarding Object " + obj.toString());
 		Vector<Object> dataIn = new Vector<Object>();
 		
 		if(obj instanceof Vector)
 		{
 			dataIn = (Vector<Object>) obj;
-			Log.d("Data Thread", "Received a message");
+			Log.d("Data Thread", "Received a vector");
 			MessageHandler.forward(dataIn);
 		}
 		else if(obj instanceof InvitationBean)
@@ -75,13 +76,14 @@ public class DataThread extends Thread {
 		
 		while(shouldRun)
 		{
-			Log.d("Data Thread", "Checking for incoming messages");
 			try {
 				Object next;
 				next = inputSocket.receiveObject();
+				Log.d("Data Thread", "Received an object");
 				forwardObject(next);
 			} catch (IOException e1) {
-				Log.d("Data Thread", "Error receiving, possibly disconnected");
+				//Log.d("Data Thread", "Error receiving, possibly disconnected");
+				//Log.d("Data Thread", e1.toString());
 			} catch (ClassNotFoundException e1) {
 				Log.d("Data Thread", "Received an unrecognizable message");
 				Log.d("Data Thread", e1.toString());
@@ -89,7 +91,5 @@ public class DataThread extends Thread {
 			
 			threadSleep(1000);
 		}
-		
-		closeInputSocket();
 	}
 }

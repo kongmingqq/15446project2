@@ -8,6 +8,9 @@ public abstract class AbstractComm {
 	public abstract String getMyNumber();
 	public abstract void send(String identifier, Object obj);
 	public abstract void initNumber(String myNumber);
+	public abstract void reset();
+	public abstract void startQueryThread(String inviteId);
+	public abstract void stopQueryThread(String inviteId);
 	
 	public void addAlert(String message)
 	{
