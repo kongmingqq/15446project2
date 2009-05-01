@@ -1,5 +1,6 @@
 package edu.cmu.partytracer.model.invitation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -16,7 +17,11 @@ import java.util.Set;
  * So, to add or remove the votes from a particular user, the user's phone number is passed in as an
  * argument.
  */
-public class OptionList {
+public class OptionList implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1733083017912935500L;
 	private HashMap<String, ArrayList<String>> options;
 	
 	/**
