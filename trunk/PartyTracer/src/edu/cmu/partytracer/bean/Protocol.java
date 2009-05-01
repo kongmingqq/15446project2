@@ -14,6 +14,7 @@ public final class Protocol {
 	public static final String TYPE_InvitationBean = "MODEL:INVITATION";
 	public static final String TYPE_VoteBean = "MODEL:VOTE";
 	public static final String TYPE_Request = "MODEL:REQUEST";
+	public static final String TYPE_ResultRequest = "MODEL:REQRESULT";
 	public static final int EPOCH = 5000;
 	
 	//protocol port numbers
