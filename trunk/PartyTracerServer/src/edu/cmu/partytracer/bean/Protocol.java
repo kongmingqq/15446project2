@@ -16,7 +16,7 @@ public final class Protocol {
 	public static final String TYPE_VoteResult = "MODEL:VOTERESULT";
 
 	public static final int EPOCH = 5000;
-	
+	public static final int STEP = 40;
 	//protocol port numbers
 	public static final int CLIENT_MODEL_RECEIVE_PORT = 1544;
 	public static final int CLIENT_TRACE_RECEIVE_PORT = 9999;

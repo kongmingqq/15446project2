@@ -44,6 +44,8 @@ public class ClientCommunicator {
 			String dataType = Protocol.TYPE_InvitationBean;
 			sendVector.add(dataType);
 			sendVector.add(invitationBean);
+			for(String opt : invitationBean.getOptions())
+				System.out.println("opts: "+opt);
 			System.out.println(clientIPAddress);
 			Socket sendSocket = new Socket(clientIPAddress, Protocol.CLIENT_MODEL_RECEIVE_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(sendSocket.getOutputStream());
@@ -98,11 +100,12 @@ public class ClientCommunicator {
 	 * @param loc
 	 */
 	public static void sendAggregatedLocation(String partyID, String clientIPAddress,  LocationBean loc) {
-		if (ServerSingleton.getInstance().getLocationCache(partyID)==null || Long.valueOf(ServerSingleton.getInstance().getLocationCache(partyID)[0].toString())-System.currentTimeMillis()>5000){
+		if (System.currentTimeMillis()-Long.valueOf(ServerSingleton.getInstance().getLocationCache(partyID)[0].toString())>=Protocol.EPOCH){
+			System.out.println("updateTime: "+Long.valueOf(ServerSingleton.getInstance().getLocationCache(partyID)[0].toString()));
 			System.out.println("Need to update the server cache!");
 			ServerCacheQueue serverCacheQueue= ServerSingleton.getInstance().getLocationQueue(partyID);
 			ServerSingleton.getInstance().setLocationCache(partyID, serverCacheQueue.dequeueLocationBatch(serverCacheQueue.size()/2));
-			return;
+			System.out.println("Location queue: "+ServerSingleton.getInstance().getLocationQueue(partyID).size());
 		}
 //		DatagramSocket s;
 //		

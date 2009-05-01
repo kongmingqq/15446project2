@@ -21,8 +21,7 @@ public class PartyTimer {
 
 	class ToDoTask extends TimerTask {
 		public void run() {
-			if (!ServerSingleton.getInstance().getCurStatus(partyID).equals("VOTE_RESULT_SENT"))
-				TerminateParty.terminatePary(partyID);
+			TerminateParty.terminateParty(partyID);
 			timer.cancel(); // Terminate the thread
 		}
 	}

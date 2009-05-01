@@ -3,26 +3,29 @@ package edu.cmu.partytracer.dataProcessor;
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.LocationBean;
 import edu.cmu.partytracer.bean.VoteBean;
+import edu.cmu.partytracer.controller.PartyTimer;
 import edu.cmu.partytracer.controller.VoteTimer;
 import edu.cmu.partytracer.model.invitation.Invitation;
 import edu.cmu.partytracer.serverThread.ServerSingleton;
+import edu.cmu.partytracer.serverThread.ServerUDPThread.ServerCacheQueue;
 
 public class DataDispatcher {
 	public static void storeInvitationMsg(InvitationBean invitationBean) {
 		String partyID = ServerSingleton.getInstance().getModel().getInvitationDAO().storeInvitationData(invitationBean);
-//		String partyID = "1000";
 		ServerSingleton.getInstance().setCurStatus(partyID, "GET_FIRST_INVITATION");
 		ServerSingleton.getInstance().setInvitationBean(partyID, invitationBean);
+		if (ServerSingleton.getInstance().partyTimerThreadMap.get(partyID)==null){
+			ServerSingleton.getInstance().partyTimerThreadMap.put(partyID, new PartyTimer(invitationBean.getPartyTime(),partyID));
+		}
 		new VoteTimer(invitationBean.getTimeout(), partyID);
-		new VoteTimer(invitationBean.getPartyTime(), partyID);
 		try {
 			System.out.println("Insert invitation bean successful!");
 			SendMailUsingAuthentication smtpMailSender = new SendMailUsingAuthentication();
-//			String[] invitationList = DataParser.parseInvitationList(invitationBean);
-//			for(String each : invitationList){
-//				System.out.println("phone number is: "+each);
-//			}
-//			smtpMailSender.postMail(invitationList, "You have a new Invitation", partyID, "partytracer@gmail.com");
+			String[] invitationList = DataParser.parseInvitationList(invitationBean);
+			for(String each : invitationList){
+				System.out.println("phone number is: "+each);
+			}
+			smtpMailSender.postMail(invitationList, "You have a new Invitation", partyID, "partytracer@gmail.com");
 			System.out.println("Sucessfully Sent mail to All Users");
 			ServerSingleton.getInstance().setCurStatus(partyID, "SEND_FIRST_INVITATION");
 		} catch (Exception e) {
@@ -56,8 +59,18 @@ public class DataDispatcher {
 	 * @param clientIPAddress
 	 */
 	public static void storeLocationMsg(LocationBean loc, String clientIPAddress) {
+		//test
+		if (ServerSingleton.getInstance().partyTimerThreadMap.get(loc.getPartyID())==null){
+			ServerSingleton.getInstance().partyTimerThreadMap.put(loc.getPartyID(), new PartyTimer(30,loc.getPartyID()));
+		}
+		//test
 		ServerSingleton.getInstance().addToLocationQueue(loc.getPartyID(), loc);
 		if (!loc.isSleepMode()){
+			if (ServerSingleton.getInstance().getLocationCache(loc.getPartyID())==null){
+				System.out.println("First insert!");
+				ServerCacheQueue serverCacheQueue= ServerSingleton.getInstance().getLocationQueue(loc.getPartyID());
+				ServerSingleton.getInstance().setLocationCache(loc.getPartyID(), serverCacheQueue.dequeueLocationBatch(serverCacheQueue.size()/2));
+			}
 			System.out.println("Client is not in sleep mode, send the information");
 			ClientCommunicator.sendAggregatedLocation(loc.getPartyID(), clientIPAddress, loc);
 		}
