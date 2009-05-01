@@ -96,6 +96,7 @@ public class OptionList {
 		for(int i=1; i<allOptions.size(); i++)
 		{
 			int votes = getNumVotesFor(allOptions.get(i));
+			
 			if(votes > maxvotes)
 			{
 				maxvotes = votes;
