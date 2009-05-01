@@ -38,10 +38,6 @@ public class ServerSingleton {
 	public int Server_UDP_Send;
 	public HashMap<String, PartyTimer> partyTimerThreadMap;
 	public HashMap<String, VoteTimer> voteTimerThreadMap;
-//	public static final int clientPort = 1544;
-//	public static final int serverPortNumber = 15446;
-//	public static final int serverUDPPort = 8889;
-//	public static final int clientUDPPort = 9999;
 
 	private static ServerSingleton unique_instance;
 

@@ -80,12 +80,9 @@ public class ClientCommunicator {
 				return;
 			}
 			sendVector.add(ServerSingleton.getInstance().voteProcessMap.get(partyID).getVotingInfo());
-			// Socket sendSocket = new Socket(eachClient,
-			// Protocol.CLIENT_MODEL_RECEIVE_PORT);
 			ObjectOutputStream out = new ObjectOutputStream(clientRequest.getOutputStream());
 			out.writeObject(sendVector);
 			out.close();
-			// sendSocket.close();
 			System.out.println("Send the result to all the clent");
 			ServerSingleton.getInstance().setCurStatus(partyID, "VOTE_RESULT_SENT");
 		} catch (Exception e) {
@@ -102,7 +99,7 @@ public class ClientCommunicator {
 	 */
 	public static void sendAggregatedLocation(String partyID, String clientIPAddress, LocationBean loc) {
 		if (System.currentTimeMillis() - Long.valueOf(ServerSingleton.getInstance().getLocationCache(partyID)[0].toString()) >= Protocol.EPOCH) {
-			System.out.println("updateTime: " + Long.valueOf(ServerSingleton.getInstance().getLocationCache(partyID)[0].toString()));
+//			System.out.println("updateTime: " + Long.valueOf(ServerSingleton.getInstance().getLocationCache(partyID)[0].toString()));
 			System.out.println("Need to update the server cache!");
 			ServerCacheQueue serverCacheQueue = ServerSingleton.getInstance().getLocationQueue(partyID);
 			ServerSingleton.getInstance().setLocationCache(partyID, serverCacheQueue.dequeueLocationBatch(serverCacheQueue.size() / 2));
@@ -139,6 +136,7 @@ public class ClientCommunicator {
 			String dataType = Protocol.TYPE_VoteStatus;
 			sendVector.add(dataType);
 			sendVector.add(ServerSingleton.getInstance().voteProcessMap.get(partyID));
+			System.out.println("voted Users:"+ServerSingleton.getInstance().voteProcessMap.get(partyID).numVotedUsers());
 			ObjectOutputStream out = new ObjectOutputStream(clientRequest.getOutputStream());
 			out.writeObject(sendVector);
 			out.close();

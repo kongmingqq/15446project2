@@ -29,8 +29,7 @@ public class DataParser {
 			DataDispatcher.storeVoteMsg((VoteBean)input.get(1), clientIPAddress, clientRequest);
 		} else if (msgType.equals(Protocol.TYPE_ResultRequest)){
 			DataDispatcher.queryResult(input.get(1).toString(), clientRequest);
-		}
-		else {
+		} else {
 			System.out.println("throw away unknown message"+input.get(0));
 		}
 	}

@@ -34,7 +34,9 @@ public class DataDispatcher {
 			System.out.println("Sucessfully Sent mail to All Users");
 			ServerSingleton.getInstance().setCurStatus(partyID, "SEND_FIRST_INVITATION");
 			if (ServerSingleton.getInstance().voteProcessMap.get(partyID) == null){
-				ServerSingleton.getInstance().voteProcessMap.put(partyID, new Invitation(Integer.valueOf(partyID), invitationBean.getData()[0],invitationBean.getData()[1],invitationBean.getSender()));
+				invitationBean.setId(partyID);
+				ServerSingleton.getInstance().voteProcessMap.put(partyID, Invitation.fromInvitationBean(invitationBean));
+//						new Invitatin(Integer.valueOf(partyID), invitationBean.getData()[0],invitationBean.getData()[1],invitationBean.getSender()));
 			}
 
 		} catch (Exception e) {
@@ -57,6 +59,8 @@ public class DataDispatcher {
 		Invitation curVote = ServerSingleton.getInstance().voteProcessMap.get(voteBean.getPartyId());
 //		System.out.println("Party ID:"+voteBean.getPartyId()+"\nCurVote is: "+curVote);
 		curVote.addVotes(voteBean);
+//		for (String aa : ServerSingleton.getInstance().voteProcessMap.get(voteBean.getPartyId()).getVotingInfo().getData())
+//			System.out.println("******Vote added:"+aa);
 		ServerSingleton.getInstance().voteProcessMap.put(voteBean.getPartyId(), curVote);
 	}
 	
@@ -74,7 +78,7 @@ public class DataDispatcher {
 		ServerSingleton.getInstance().addToLocationQueue(loc.getPartyID(), loc);
 		if (!loc.isSleepMode()){
 			if (ServerSingleton.getInstance().getLocationCache(loc.getPartyID())==null){
-				System.out.println("First insert!");
+//				System.out.println("First insert!");
 				ServerCacheQueue serverCacheQueue= ServerSingleton.getInstance().getLocationQueue(loc.getPartyID());
 				ServerSingleton.getInstance().setLocationCache(loc.getPartyID(), serverCacheQueue.dequeueLocationBatch(serverCacheQueue.size()/2));
 			}

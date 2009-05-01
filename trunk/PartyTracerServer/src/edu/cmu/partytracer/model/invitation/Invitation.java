@@ -154,7 +154,7 @@ public class Invitation implements Serializable {
 	public VoteBean getVotingInfo()
 	{
 		VoteBean vb = new VoteBean();
-		vb.setPartyId(Integer.toString(iid));
+		vb.setPartyId(iid+"");
 		vb.setVoters(getAllVoters());
 		vb.setData(createVotingArray());
 		
