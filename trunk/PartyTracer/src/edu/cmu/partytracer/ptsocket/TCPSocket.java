@@ -6,7 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+
+import android.util.Log;
 /**
  * TCP version of PTSocket implementation, tested
  * @author km
@@ -42,7 +43,7 @@ public class TCPSocket implements PTSocket {
 		port = socket.getLocalPort();
 		this.destPort = destPort;
 		oos = new ObjectOutputStream(socket.getOutputStream());
-		ois = new ObjectInputStream(socket.getInputStream());
+		ois = null;
 	}
 	
 	public void sendObject(Object obj) throws IOException {
@@ -51,7 +52,12 @@ public class TCPSocket implements PTSocket {
 	}
 	
 	public Object receiveObject() throws IOException, ClassNotFoundException {
-		return ois.readObject();
+		if(ois == null)
+		{
+			ois = new ObjectInputStream(socket.getInputStream());
+		}
+		Object obj = ois.readObject();
+		return obj;
 	}
 	
 	public void close() throws IOException {
