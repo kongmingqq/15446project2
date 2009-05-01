@@ -190,8 +190,6 @@ public class ClientSendingTest {
 					int desPort = 9999;
 					try {
 						s = new DatagramSocket(port);
-						// TODO split large list into smaller ones and send
-						// separately
 						Bean bp = new AggLocationBean(0, locs);
 						byte[] bs = Util.objToBytes(BeanVector.wrapBean(bp));
 						InetAddress ip = InetAddress.getByName(addr);

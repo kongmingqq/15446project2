@@ -143,7 +143,7 @@ public class ServerUDPThread {
 
 			int i = 0;
 			int step = STEP;
-			while (i < step) {
+			while (true) {
 				if (isInterrupted()) {
 					break;
 				}
@@ -175,8 +175,6 @@ public class ServerUDPThread {
 					int desPort = Protocol.CLIENT_TRACE_RECEIVE_PORT;
 					try {
 						s = new DatagramSocket(port);
-						// TODO split large list into smaller ones and send
-						// separately
 						Bean bp = new AggLocationBean(0, (List<Location>)ServerSingleton.getInstance().getLocationCache(partyID)[1]);
 						List<Location> tmpLoc = (List<Location>)ServerSingleton.getInstance().getLocationCache(partyID)[1];
 						System.out.println("Sending message: "+tmpLoc);

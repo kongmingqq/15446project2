@@ -23,8 +23,6 @@ public class TerminateParty {
 		DatagramSocket s;
 		try {
 			s = new DatagramSocket(Protocol.SERVER_TERM_SEND_PORT);
-			// TODO split large list into smaller ones and send
-			// separately
 			Vector<Object> termMsg = new Vector<Object>();
 			TerminationBean termBean = new TerminationBean(partyID);
 			termMsg.add("TERM");
@@ -47,12 +45,12 @@ public class TerminateParty {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		ServerSingleton.getInstance().curStatus.remove(partyID);
-		ServerSingleton.getInstance().clientAddressMap.remove(partyID);
-		ServerSingleton.getInstance().invitationMap.remove(partyID);
-		ServerSingleton.getInstance().locationCacheMap.remove(partyID);
-		ServerSingleton.getInstance().locationQueueMap.remove(partyID);
-		ServerSingleton.getInstance().voteProcessMap.remove(partyID);
-		ServerSingleton.getInstance().partyTimerThreadMap.remove(partyID);
+//		ServerSingleton.getInstance().curStatus.remove(partyID);
+//		ServerSingleton.getInstance().clientAddressMap.remove(partyID);
+//		ServerSingleton.getInstance().invitationMap.remove(partyID);
+//		ServerSingleton.getInstance().locationCacheMap.remove(partyID);
+//		ServerSingleton.getInstance().locationQueueMap.remove(partyID);
+//		ServerSingleton.getInstance().voteProcessMap.remove(partyID);
+//		ServerSingleton.getInstance().partyTimerThreadMap.remove(partyID);
 	}
 }

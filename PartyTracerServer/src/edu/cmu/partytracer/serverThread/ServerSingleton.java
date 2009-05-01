@@ -1,5 +1,6 @@
 package edu.cmu.partytracer.serverThread;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.Location;
 import edu.cmu.partytracer.bean.LocationBean;
 import edu.cmu.partytracer.controller.PartyTimer;
+import edu.cmu.partytracer.controller.VoteTimer;
 import edu.cmu.partytracer.model.database.Model;
 import edu.cmu.partytracer.model.invitation.Invitation;
 import edu.cmu.partytracer.serverThread.ServerUDPThread.ServerCacheQueue;
@@ -35,6 +37,7 @@ public class ServerSingleton {
 	public HashMap<String, Invitation> voteProcessMap;
 	public int Server_UDP_Send;
 	public HashMap<String, PartyTimer> partyTimerThreadMap;
+	public HashMap<String, VoteTimer> voteTimerThreadMap;
 //	public static final int clientPort = 1544;
 //	public static final int serverPortNumber = 15446;
 //	public static final int serverUDPPort = 8889;
@@ -52,6 +55,7 @@ public class ServerSingleton {
 		locationCacheMap = new HashMap<String, Object[]>();
 		voteProcessMap = new HashMap<String, Invitation>();
 		partyTimerThreadMap = new HashMap<String, PartyTimer>();
+		voteTimerThreadMap = new HashMap<String, VoteTimer>();
 		this.Server_UDP_Send = 20000;
 	}
 

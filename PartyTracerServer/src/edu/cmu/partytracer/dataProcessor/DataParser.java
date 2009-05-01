@@ -1,6 +1,6 @@
 package edu.cmu.partytracer.dataProcessor;
 
-import java.util.HashMap;
+import java.net.Socket;
 import java.util.Vector;
 
 import edu.cmu.partytracer.bean.InvitationBean;
@@ -14,19 +14,23 @@ public class DataParser {
 	 * @param input
 	 * @param clientIPAddress
 	 */
-	public static void parseMsg(Vector<Object> input, String clientIPAddress) {
+	public static void parseMsg(Vector<Object> input, String clientIPAddress, Socket clientRequest) {
 		String msgType = input.get(0).toString();
 		if (msgType.equals(Protocol.TYPE_InvitationBean) ) {
 			// format is <INIT, invitationBean>
 			DataDispatcher.storeInvitationMsg((InvitationBean)input.get(1));
-//			&& ServerSingleton.getInstance().curStatus.get(input.get(1).toString())!= null && ServerSingleton.getInstance().curStatus.get(input.get(1).toString()).equals("SEND_FIRST_INVITATION")
+			//TODO: replace with commented for the real case
+//		} else if (msgType.equals(Protocol.TYPE_Request)&& ServerSingleton.getInstance().curStatus.get(input.get(1).toString())!= null && ServerSingleton.getInstance().curStatus.get(input.get(1).toString()).equals("SEND_FIRST_INVITATION") ) {
 		} else if (msgType.equals(Protocol.TYPE_Request) ) {
-			// format is <"REQ", partyID>
-			ClientCommunicator.sendVoteOptionInformation(input.get(1).toString(), clientIPAddress);
-		} else if (msgType.equals(Protocol.TYPE_VoteBean) && ServerSingleton.getInstance().curStatus.get(input.get(1).toString())!= null && ServerSingleton.getInstance().curStatus.get(input.get(1).toString()).equals("SENDING_OPTIONS")) {
+			// format is <REQ, partyID>
+			ClientCommunicator.sendVoteOptionInformation(input.get(1).toString(), clientIPAddress, clientRequest);
+		} else if (msgType.equals(Protocol.TYPE_VoteBean)) {
 			// format is <VOTE, voteBean>
-			DataDispatcher.storeVoteMsg((VoteBean)input.get(1), clientIPAddress);
-		} else {
+			DataDispatcher.storeVoteMsg((VoteBean)input.get(1), clientIPAddress, clientRequest);
+		} else if (msgType.equals(Protocol.TYPE_ResultRequest)){
+			DataDispatcher.queryResult(input.get(1).toString(), clientRequest);
+		}
+		else {
 			System.out.println("throw away unknown message"+input.get(0));
 		}
 	}
