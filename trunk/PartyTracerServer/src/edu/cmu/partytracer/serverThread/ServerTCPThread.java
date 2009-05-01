@@ -1,6 +1,7 @@
 package edu.cmu.partytracer.serverThread;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
@@ -49,7 +50,9 @@ public class ServerTCPThread extends Thread {
 					reader = new ObjectInputStream(clientRequest.getInputStream());
 					Vector<Object> input = (Vector<Object>)reader.readObject();
 					System.out.println("input class"+input.getClass());
-					DataParser.parseMsg(input, clientIPAddress);
+//					ObjectOutputStream out = new ObjectOutputStream(clientRequest.getOutputStream());
+//					out.writeObject("************************************");
+					DataParser.parseMsg(input, clientIPAddress,clientRequest);
 					try {
 						Thread.sleep(300);
 					} catch (InterruptedException e) {

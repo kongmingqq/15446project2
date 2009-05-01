@@ -24,7 +24,8 @@ public class VoteTimer {
 	class ToDoTask extends TimerTask {
 		public void run() {
 			if (!ServerSingleton.getInstance().getCurStatus(partyID).equals("VOTE_RESULT_SENT"))
-				ClientCommunicator.sendVoteResult(partyID);
+//				ClientCommunicator.sendVoteResult(partyID);
+				ServerSingleton.getInstance().setCurStatus(partyID, "RESULT_SEND_TIMEOUT");
 			timer.cancel(); // Terminate the thread
 		}
 	}

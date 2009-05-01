@@ -1,5 +1,7 @@
 package edu.cmu.partytracer.dataProcessor;
 
+import java.net.Socket;
+
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.LocationBean;
 import edu.cmu.partytracer.bean.VoteBean;
@@ -17,17 +19,24 @@ public class DataDispatcher {
 		if (ServerSingleton.getInstance().partyTimerThreadMap.get(partyID)==null){
 			ServerSingleton.getInstance().partyTimerThreadMap.put(partyID, new PartyTimer(invitationBean.getPartyTime(),partyID));
 		}
+		if (ServerSingleton.getInstance().voteTimerThreadMap.get(partyID)==null){
+			ServerSingleton.getInstance().voteTimerThreadMap.put(partyID, new VoteTimer(invitationBean.getTimeout(),partyID));
+		}
 		new VoteTimer(invitationBean.getTimeout(), partyID);
 		try {
 			System.out.println("Insert invitation bean successful!");
 			SendMailUsingAuthentication smtpMailSender = new SendMailUsingAuthentication();
 			String[] invitationList = DataParser.parseInvitationList(invitationBean);
-			for(String each : invitationList){
-				System.out.println("phone number is: "+each);
-			}
+//			for(String each : invitationList){
+//				System.out.println("phone number is: "+each);
+//			}
 			smtpMailSender.postMail(invitationList, "You have a new Invitation", partyID, "partytracer@gmail.com");
 			System.out.println("Sucessfully Sent mail to All Users");
 			ServerSingleton.getInstance().setCurStatus(partyID, "SEND_FIRST_INVITATION");
+			if (ServerSingleton.getInstance().voteProcessMap.get(partyID) == null){
+				ServerSingleton.getInstance().voteProcessMap.put(partyID, new Invitation(Integer.valueOf(partyID), invitationBean.getData()[0],invitationBean.getData()[1],invitationBean.getSender()));
+			}
+
 		} catch (Exception e) {
 			System.out.println("Error in storeInvitationMsg: " + e.getMessage());
 		}
@@ -37,7 +46,7 @@ public class DataDispatcher {
 	 * 
 	 * @param voteBean
 	 */
-	public static void storeVoteMsg(VoteBean voteBean, String clientIPAddress) {
+	public static void storeVoteMsg(VoteBean voteBean, String clientIPAddress, Socket clientRequest) {
 //		String partyID = voteBean.getPartyID();
 //		String voteOption = voteBean.getMyVote();
 //		ServerSingleton.getInstance().increaseVote(voteBean.getPartyID(), voteOption);
@@ -46,11 +55,9 @@ public class DataDispatcher {
 //			ClientCommunicator.sendVoteResult(partyID);
 //		}
 		Invitation curVote = ServerSingleton.getInstance().voteProcessMap.get(voteBean.getPartyId());
+//		System.out.println("Party ID:"+voteBean.getPartyId()+"\nCurVote is: "+curVote);
 		curVote.addVotes(voteBean);
 		ServerSingleton.getInstance().voteProcessMap.put(voteBean.getPartyId(), curVote);
-		if (ServerSingleton.getInstance().voteProcessMap.get(voteBean.getPartyId()).numVotedUsers() == ServerSingleton.getInstance().getClientList(voteBean.getPartyId()).size()){
-			ClientCommunicator.sendVoteResult(voteBean.getPartyId());
-		}
 	}
 	
 	/**
@@ -73,6 +80,13 @@ public class DataDispatcher {
 			}
 			System.out.println("Client is not in sleep mode, send the information");
 			ClientCommunicator.sendAggregatedLocation(loc.getPartyID(), clientIPAddress, loc);
+		}
+	}
+	public static void queryResult(String partyID, Socket clientRequest) {
+		if ((ServerSingleton.getInstance().voteProcessMap.get(partyID).numVotedUsers() == ServerSingleton.getInstance().getClientList(partyID).size()+1) ||ServerSingleton.getInstance().getCurStatus(partyID).equals("RESULT_SEND_TIMEOUT")){
+			ClientCommunicator.sendVoteResult(partyID, clientRequest);
+		}else{
+			ClientCommunicator.sendVoteStatus(partyID, clientRequest);
 		}
 	}
 

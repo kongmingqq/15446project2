@@ -33,7 +33,6 @@ public class VoteBean implements Serializable{
 	private String[] data;
 	//for Test
 	private Location resultLocation;
-	//TODO: change to xml content
 	public Location getResultLocation() {
 		return resultLocation;
 	}
