@@ -91,7 +91,15 @@ public class User {
 	
 	public boolean isInvitedTo(Invitation invite)
 	{
-		return myInvites.contains(invite);
+		int id = invite.getId();
+		
+		for(int i=0; i<myInvites.size(); i++)
+		{
+			if(id == myInvites.get(i).getId())
+				return true;
+		}
+		
+		return false;
 	}
 	
 	public String getInviteIdOf(String eventName)

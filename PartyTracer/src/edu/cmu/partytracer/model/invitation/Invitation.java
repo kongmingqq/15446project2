@@ -1,5 +1,6 @@
 package edu.cmu.partytracer.model.invitation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,8 +25,13 @@ import edu.cmu.partytracer.bean.VoteBean;
  * category might be a time or place that the users need to decide on; each category can then
  * have one or more options that users can choose from.
  */
-public class Invitation {
+public class Invitation implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1260649527327885417L;
+	
 	public static int TITLE_INDEX = 0;
 	public static int DESCRIPTION_INDEX = 1;
 	public static int NUM_DATA_ITEMS = 2;
@@ -37,7 +43,7 @@ public class Invitation {
 	
 	private int iid;
 	private String creator;
-	private boolean isActive;
+	private volatile boolean isActive;
 	private String title;
 	private String description;
 	private HashMap<String, OptionList> options;
