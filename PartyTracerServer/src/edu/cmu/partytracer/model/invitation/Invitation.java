@@ -1,9 +1,11 @@
 package edu.cmu.partytracer.model.invitation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
+
 
 import edu.cmu.partytracer.bean.InvitationBean;
 import edu.cmu.partytracer.bean.VoteBean;
@@ -22,8 +24,12 @@ import edu.cmu.partytracer.bean.VoteBean;
  * category might be a time or place that the users need to decide on; each category can then
  * have one or more options that users can choose from.
  */
-public class Invitation {
+public class Invitation implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1260649527327885417L;
 	public static int TITLE_INDEX = 0;
 	public static int DESCRIPTION_INDEX = 1;
 	public static int NUM_DATA_ITEMS = 2;
@@ -31,6 +37,7 @@ public class Invitation {
 	public static String categoryString = "Category";
 	public static String voterString = "Voter ";
 	public static String endString = "End";
+	private static String INVITE_TAG = "Invitation Class";
 	
 	private int iid;
 	private String creator;
@@ -72,6 +79,7 @@ public class Invitation {
 	public void addVotes(VoteBean vb)
 	{
 		String[] voters = vb.getVoters();
+		//log.d(INVITE_TAG, "Adding a vote bean");
 		
 		for(int i=0; i<voters.length; i++)
 		{
@@ -87,6 +95,13 @@ public class Invitation {
 		if(!votedUsers.contains(voter))
 			votedUsers.add(voter);
 		
+		//log.d(INVITE_TAG, "Processing votes of user " + voter);
+		//log.d(INVITE_TAG, "Voting array is:");
+		
+		for(int i=0; i<vb.getData().length; i++)
+		{
+			//log.d(INVITE_TAG, vb.getData()[i]);
+		}
 		
 		Vector<String> voteData = new Vector<String>(Arrays.asList(vb.getData()));
 		addVotesFromArray(voter, voteData);
@@ -96,6 +111,7 @@ public class Invitation {
 	// invitation
 	private void addVotesFromArray(String voter, Vector<String> voteData)
 	{
+		//log.d(INVITE_TAG, "Adding votes from user " + voter);
 		ArrayList<String> categories = new ArrayList<String>(options.keySet());
 		int voterIndex = voteData.indexOf(voterString + voter);
 		
@@ -103,22 +119,29 @@ public class Invitation {
 		{
 			for(int i=0; i<categories.size(); i++)
 			{
+				//log.d(INVITE_TAG, "Looking at category " + categories.get(i));
 				int catIndex = voteData.indexOf(categories.get(i), voterIndex);
 				int catEnd = Math.min(voteData.indexOf(categoryString, catIndex), voteData.indexOf(endString, catIndex));
 				
 				if(catEnd == -1)
 				{
+					//log.d(INVITE_TAG, "At the last category");
 					catEnd = voteData.indexOf(endString, catIndex);
 				}
 				
 				catIndex++;
+				//log.d(INVITE_TAG, "going from " + catIndex + " to " + catEnd);
 				
 				for(int j=catIndex; j<catEnd; j++)
 				{
+					//log.d(INVITE_TAG, "User voted for " + voteData.get(j));
 					options.get(categories.get(i)).addVote(voter, voteData.get(j));
 				}
 			}
 		}
+		else{
+		}
+			//log.d(INVITE_TAG, "User " + voter + " has not voted yet");
 	}
 	
 	/**
@@ -156,6 +179,7 @@ public class Invitation {
 	{
 		ArrayList<String> userData = new ArrayList<String>();
 		userData.add(voterString + voterId);
+		//log.d(INVITE_TAG, "adding " + voterString + voterId);
 		ArrayList<String> categories = new ArrayList<String>(options.keySet());
 		
 		for(int j=0; j<categories.size(); j++)
@@ -164,6 +188,7 @@ public class Invitation {
 			userData.add(categoryString);
 			userData.add(categories.get(j));
 			
+			//log.d(INVITE_TAG, "adding category " + categories.get(j));
 			userData.addAll(Arrays.asList(catOptions.getVotesOf(voterId)));
 		}
 		return userData;
@@ -173,6 +198,7 @@ public class Invitation {
 	// or another client
 	private String[] createVotingArray()
 	{
+		//log.d(INVITE_TAG, "Writing out voting data");
 		ArrayList<String> voteData = new ArrayList<String>();
 		
 		for(int i=0; i<invitedUsers.size(); i++)
@@ -204,17 +230,24 @@ public class Invitation {
 	 */
 	public static Invitation fromInvitationBean(InvitationBean ib)
 	{
+		//log.d(INVITE_TAG, "Creating new Invitation from a bean");
+		//log.d(INVITE_TAG, "ID is " + ib.getId());
+		//log.d(INVITE_TAG, "Sender is " + ib.getSender());
 		
 		int id = Integer.valueOf(ib.getId());
 		String creator = ib.getSender();
 		String[] details = ib.getData();
 		
+
+		//log.d(INVITE_TAG, "title is " + details[TITLE_INDEX]);
+		//log.d(INVITE_TAG, "description is " + details[DESCRIPTION_INDEX]);
 		Invitation invite = new Invitation(id, details[TITLE_INDEX], details[DESCRIPTION_INDEX], creator);
 		
 		String[] invited = ib.getInviteList();
 		invite.invitedUsers = new ArrayList<String>();
 		
 		for(int i=0; i<invited.length; i++) {
+			//log.d(INVITE_TAG, "User " + invited[i] + " is invited");
 			invite.invitedUsers.add(invited[i]);
 		}
 		
@@ -222,8 +255,13 @@ public class Invitation {
 		int mode = 0;
 		String catName = "";
 		
+		//log.d(INVITE_TAG, "Scanning category list");
+		//log.d(INVITE_TAG, catList.length + " items to scan");
+		
 		for(int i=0; i<catList.length; i++)
 		{
+			//log.d(INVITE_TAG, "Next entry: " + catList[i]);
+			//log.d(INVITE_TAG, "Mode is " + mode);
 			
 			if(mode == 0)
 			{
@@ -238,6 +276,7 @@ public class Invitation {
 			{
 				if(!((catList[i].equals(categoryString)) || (catList[i].equals(endString))))
 				{
+					//log.d(INVITE_TAG, "Adding option " + catList[i] + " to " + catName);
 					invite.addOption(catName, catList[i]);
 				}
 				else
@@ -246,6 +285,7 @@ public class Invitation {
 		}
 		
 		invite.isActive = ib.getActive();
+		//log.d(INVITE_TAG, "Done constructing invite");
 		
 		return invite;
 	}
@@ -259,12 +299,17 @@ public class Invitation {
 	public InvitationBean toInvitationBean()
 	{
 		InvitationBean ib = new InvitationBean();
+		//log.d(INVITE_TAG, "Constructing invitation bean");
 
 		ib.setId(Integer.toString(iid));
 		ib.setSender(creator);
+
+		//log.d(INVITE_TAG, "Id is " + iid);
+		//log.d(INVITE_TAG, "sender is " + creator);
 		
 		String[] invited = new String[invitedUsers.size()];
 		for(int i=0; i<invited.length; i++) {
+			//log.d(INVITE_TAG, "User " + invitedUsers.get(i) + " is invited");
 			invited[i] = invitedUsers.get(i);
 		}
 		
@@ -274,22 +319,28 @@ public class Invitation {
 		data[TITLE_INDEX] = title;
 		data[DESCRIPTION_INDEX] = description;
 		
+		//log.d(INVITE_TAG, "Title is " + title);
+		//log.d(INVITE_TAG, "Description is " + description);
+		
 		ib.setData(data);
 		ib.setActive(isActive);
 		ib.setVoteData(new String[0]);
 		
 		ArrayList<String> categories = new ArrayList<String>();
 		ArrayList<String> headers = new ArrayList<String>(options.keySet());
+		//log.d(INVITE_TAG, "Making category array");
 		for(int i=0; i<headers.size(); i++)
 		{
 			categories.add(categoryString);
 			categories.add(headers.get(i));
 			
+			//log.d(INVITE_TAG, "Entered category " + headers.get(i));
 			
 			String[] optList = options.get(headers.get(i)).getAllOptions();
 			for(int j=0; j<optList.length; j++)
 			{
 				categories.add(optList[j]);
+				//log.d(INVITE_TAG, "Entered option " + optList[j]);
 			}
 		}
 		categories.add(endString);
@@ -298,6 +349,7 @@ public class Invitation {
 		for(int i=0; i<catArray.length; i++)
 		{
 			catArray[i] = categories.get(i);
+			//log.d(INVITE_TAG, catArray[i]);
 		}
 		
 		ib.setOptions(catArray);
@@ -388,6 +440,7 @@ public class Invitation {
 		
 		for(int i=0; i<headers.size(); i++)
 		{
+			//log.d(INVITE_TAG, "Finalizing category " + headers.get(i));
 			options.get(headers.get(i)).finalize();
 		}
 	}
