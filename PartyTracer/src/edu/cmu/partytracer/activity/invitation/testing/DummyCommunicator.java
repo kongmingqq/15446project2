@@ -21,6 +21,19 @@ public class DummyCommunicator extends AbstractComm{
 		return storedNumber;
 	}
 
+	public void reset()
+	{
+		
+	}
+	public void startQueryThread(String inviteId)
+	{
+		
+	}
+	
+	public void stopQueryThread(String inviteId)
+	{
+		
+	}
 	public void send(String identifier, Object obj) {
 		Log.d(NET_TAG, "Received a message");
 		Log.d(NET_TAG, "Identifier is " + identifier);
