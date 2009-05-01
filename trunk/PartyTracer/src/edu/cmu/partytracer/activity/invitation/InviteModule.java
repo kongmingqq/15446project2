@@ -276,6 +276,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
         		//UserSingleton.getUser().addInvite(Invitation.fromInvitationBean(ib));
         		Log.d(MAIN_TAG, "About to send the invitation");
         		ComWrapper.getComm().send(Protocol.TYPE_InvitationBean, ib);
+        		ComWrapper.getComm().reset();
         	}
 	        else if(requestCode == VIEW_VOTES)
 	        {
@@ -283,6 +284,7 @@ public class InviteModule extends Activity implements View.OnClickListener{
 	        	int item = 0;
 	        	String[] singleVoter = new String[1];
 	        	singleVoter[0] = UserSingleton.getUser().getNumber();
+	        	ArrayList<String> invitesToQuery = new ArrayList<String>();
 	        	
 	        	while(data.hasExtra(ViewInvitesDialog.VOTING + item))
 	        	{
@@ -307,8 +309,17 @@ public class InviteModule extends Activity implements View.OnClickListener{
 		        	vb.setVoters(singleVoter);
 		        	vb.setPartyId(Integer.toString(voteProps.getInt(ViewInvitesDialog.INVITE)));
 		        	
+		        	Log.d(MAIN_TAG, vb.getPartyId() + "_is_the_id");
+		        	invitesToQuery.add(vb.getPartyId());
+		        	
 		        	ComWrapper.getComm().send(Protocol.TYPE_VoteBean, vb);
+		        	ComWrapper.getComm().reset();
 		        	item++;
+	        	}
+	        	
+	        	for(int i=0; i<invitesToQuery.size(); i++)
+	        	{
+	        		ComWrapper.getComm().startQueryThread(invitesToQuery.get(i));
 	        	}
 	        }
 	        else if(requestCode == SET_CURRENT)

@@ -29,6 +29,7 @@ public class RequestDialog extends Activity implements View.OnClickListener{
 		String inviteId = id.getText().toString();
 		Log.d("Request Dialog", "Sending request for invite " + inviteId);
 		ComWrapper.getComm().send(Protocol.TYPE_Request, inviteId);
+		ComWrapper.getComm().reset();
 		finish();
 	}
 }

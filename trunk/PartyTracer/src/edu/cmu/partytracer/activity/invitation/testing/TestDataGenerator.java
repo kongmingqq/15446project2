@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class TestDataGenerator {
 
-	public static boolean TEST_MODE_ON = true;
+	public static boolean TEST_MODE_ON = false;
 	private static volatile HashMap<String, String> phoneNumbers;
 	private static volatile Random r;
 	
